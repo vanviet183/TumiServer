@@ -22,4 +22,13 @@ public class Chapter extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "chapter")
     private Set<Question> questions = new HashSet<>();
 
+    public void addRelationQuestion(Question question) {
+        questions.add(question);
+        question.setChapter(this);
+    }
+    public void deleteRelationQuestion(Question question) {
+        questions.remove(question);
+        question.setChapter(null);
+    }
+
 }

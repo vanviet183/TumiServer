@@ -15,14 +15,35 @@ public class User extends BaseEntity {
     private String password;
     private String email;
     private String phone;
+    private String avatar;
 
     //link to table Notification
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Notification> notifications;
 
+    public void addRelationNotification(Notification notification) {
+        notifications.add(notification);
+        notification.setUser(this);
+    }
+    public void deleteRelationNotification(Notification notification) {
+        notifications.remove(notification);
+        notification.setUser(null);
+    }
+
+
     //link to table Help
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Help> helps;
+
+    public void addRelationHelp(Help help) {
+        helps.add(help);
+        help.setUser(this);
+    }
+    public void deleteRelationHelp(Help help) {
+        helps.remove(help);
+        help.setUser(null);
+    }
+
 
     //link to table Role
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -32,6 +53,7 @@ public class User extends BaseEntity {
     )
     private Set<Role> roles = new HashSet<>();
 
+
     //link to table Gift
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_gift",
@@ -39,6 +61,7 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "gift_id", referencedColumnName = "id")
     )
     private Set<Gift> gifts = new HashSet<>();
+
 
     //link to table Course
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -14,7 +14,6 @@ public class Help extends BaseEntity{
     private String title;
 
     //link to table Users
-
     @ManyToOne
     @JoinColumn(name = "users_id")
     private User user;
