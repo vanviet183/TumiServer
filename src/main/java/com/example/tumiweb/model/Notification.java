@@ -2,8 +2,7 @@ package com.example.tumiweb.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "notification")
@@ -12,5 +11,11 @@ public class Notification extends BaseEntity{
 
     private String title;
     private String path;
+
+    //link to table User
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "users_id")
+    private User user;
 
 }
