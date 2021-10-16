@@ -17,4 +17,8 @@ public interface IUserService {
     User deleteUserById(Long id);
     User changeStatusById(Long id);
     String changeAvatarById(Long id, MultipartFile avatar) throws IOException;
+
+    //
+    String registerCourseByUserIdAndCourseId(Long userId, Long courseId);
+    String cancelCourseByUserIdAndCourseId(Long userId, Long courseId);
 }

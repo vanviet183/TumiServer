@@ -11,10 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class NotificationServiceImp implements INotificationService {
@@ -35,18 +32,28 @@ public class NotificationServiceImp implements INotificationService {
     }
 
     @Override
-    public Set<Notification> getAllNotification() {
-        List<Notification> notifications = notificationRepository.findAll();
-        if(notifications.isEmpty()) {
-            throw new NotFoundException("Notification list is empty");
+    public Set<Notification> getAllNotification(Long page, int size, boolean active) {
+        List<Notification> notifications;
+        if(page != null) {
+            Page<Notification> notificationPage = notificationRepository.findAll(PageRequest.of(page.intValue(), size));
+            notifications = notificationPage.getContent();
+        }else {
+            notifications = notificationRepository.findAll();
         }
-        return new HashSet<>(notifications);
-    }
 
-    @Override
-    public Set<Notification> getAllNotificationWidthPage(Long page, int size) {
-        Page<Notification> notificationPage = notificationRepository.findAll(PageRequest.of(page.intValue(), size));
-        List<Notification> notifications = notificationPage.getContent();
+        if(active) {
+            if(page != null) {
+                int length = notifications.size();
+                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
+                if(totalPage > page.intValue()) {
+                    return new HashSet<>();
+                }
+                notifications = notifications.subList(page.intValue()*size, page.intValue()*size + size);
+            }else {
+                notifications = new ArrayList<>(notificationRepository.findAllByStatus(true));
+            }
+        }
+
         if(notifications.isEmpty()) {
             throw new NotFoundException("Notification list is empty");
         }

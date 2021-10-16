@@ -3,6 +3,7 @@ package com.example.tumiweb.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import java.util.Set;
 @Data
 public class Role extends BaseEntity{
 
+    @NotBlank
     private String name;
     private String description;
 

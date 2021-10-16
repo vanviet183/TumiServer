@@ -3,6 +3,9 @@ package com.example.tumiweb.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +14,12 @@ import java.util.Set;
 @Data
 public class Gift extends BaseEntity {
 
-    private String title;
+    @NotBlank
+    private String name;
+    @Min(0)
+    @Max(100)
+    private Long mark;
+    private String avatar;
 
     //link to table User
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "gifts")

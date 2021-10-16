@@ -3,6 +3,7 @@ package com.example.tumiweb.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 public class GiftOrder extends BaseEntity {
 
     private Long quality;
+    @Email
     private String email;
 
     //link to table gift

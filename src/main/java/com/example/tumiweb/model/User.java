@@ -3,6 +3,8 @@ package com.example.tumiweb.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,8 +13,11 @@ import java.util.Set;
 @Data
 public class User extends BaseEntity {
 
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
+    @Email
     private String email;
     private String phone;
     private String avatar;

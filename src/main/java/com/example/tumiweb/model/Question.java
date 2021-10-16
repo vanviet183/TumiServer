@@ -1,8 +1,10 @@
 package com.example.tumiweb.model;
 
+import com.example.tumiweb.dto.ImageDTO;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,8 +13,8 @@ import java.util.Set;
 @Data
 public class Question extends BaseEntity {
 
+    @NotBlank
     private String title;
-    private String image;
 
     //link to table Chapter
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -20,17 +22,9 @@ public class Question extends BaseEntity {
 
 
     //link to table Image
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
-    private Set<Image> images = new HashSet<>();
-
-    public void addRelationImage(Image image) {
-        images.add(image);
-        image.setQuestion(this);
-    }
-    public void deleteRelationImage(Image image) {
-        images.remove(image);
-        image.setQuestion(null);
-    }
+    @OneToOne()
+    @JoinColumn(name = "image_id")
+    private Image image;
 
 
     //link to table Answer

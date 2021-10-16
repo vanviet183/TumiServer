@@ -1,8 +1,10 @@
 package com.example.tumiweb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +13,7 @@ import java.util.Set;
 @Data
 public class Course extends BaseEntity{
 
+    @NotBlank
     private String name;
     private Long price;
     private String description;
@@ -20,6 +23,7 @@ public class Course extends BaseEntity{
 
     //link to table user
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "courses")
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
 

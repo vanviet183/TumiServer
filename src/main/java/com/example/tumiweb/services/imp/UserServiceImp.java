@@ -5,10 +5,13 @@ import com.cloudinary.utils.ObjectUtils;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
+import com.example.tumiweb.model.Course;
 import com.example.tumiweb.model.User;
+import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.utils.ConvertObject;
+import com.example.tumiweb.utils.UploadImage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,7 @@ public class UserServiceImp implements IUserService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private Cloudinary cloudinary;
+    private CourseRepository courseRepository;
 
     private User findUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -121,19 +124,55 @@ public class UserServiceImp implements IUserService {
             throw new NotFoundException("Can not find user by id: " + id);
         }
 
-        try {
-            Map<?, ?> map = cloudinary.uploader().upload(avatar, ObjectUtils.emptyMap());
-
-            //Xóa avtar cũ
-            if(user.getAvatar() != null) {
-                cloudinary.uploader().destroy(user.getAvatar(), ObjectUtils.emptyMap());
-            }
-
-            user.setAvatar(map.get("secure_url").toString());
-        }catch (Exception e) {
-            return "Change failed";
+        //Xóa avtar cũ
+        if(user.getAvatar() != null) {
+            UploadImage.removeImageFromUrl(user.getAvatar());
         }
 
+        user.setAvatar(UploadImage.getUrlFromFile(avatar));
+
         return "Change successfully";
+    }
+
+    @Override
+    public String registerCourseByUserIdAndCourseId(Long userId, Long courseId) {
+        //mặc định user and course có cho nhanh nhé :v
+        Course course = courseRepository.getById(courseId);
+        User user = userRepository.getById(userId);
+
+        Set<Course> newCourse = user.getCourses();
+        newCourse.add(course);
+
+        Set<User> newUsers = course.getUsers();
+        newUsers.add(user);
+
+        course.setUsers(newUsers);
+        user.setCourses(newCourse);
+
+        userRepository.save(user);
+        courseRepository.save(course);
+
+        return "Register successfully";
+    }
+
+    @Override
+    public String cancelCourseByUserIdAndCourseId(Long userId, Long courseId) {
+        //mặc định user and course có cho nhanh nhé :v
+        Course course = courseRepository.getById(courseId);
+        User user = userRepository.getById(userId);
+
+        Set<Course> newCourse = user.getCourses();
+        newCourse.remove(course);
+
+        Set<User> newUsers = course.getUsers();
+        newUsers.remove(user);
+
+        course.setUsers(newUsers);
+        user.setCourses(newCourse);
+
+        userRepository.save(user);
+        courseRepository.save(course);
+
+        return "Unregister successfully";
     }
 }
