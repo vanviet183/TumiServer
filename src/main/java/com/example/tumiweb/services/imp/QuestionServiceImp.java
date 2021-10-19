@@ -1,7 +1,6 @@
 package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.dto.AnswerDTO;
-import com.example.tumiweb.dto.ImageDTO;
 import com.example.tumiweb.dto.QuestionDTO;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Answer;
@@ -12,7 +11,7 @@ import com.example.tumiweb.repository.ChapterRepository;
 import com.example.tumiweb.repository.ImageRepository;
 import com.example.tumiweb.repository.QuestionRepository;
 import com.example.tumiweb.services.IQuestionService;
-import com.example.tumiweb.utils.UploadImage;
+import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
+//Phần này chưa sửa repository của các bảng liên quan thành service :v
 @Service
 public class QuestionServiceImp implements IQuestionService {
 
@@ -38,6 +38,9 @@ public class QuestionServiceImp implements IQuestionService {
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private UploadFile uploadFile;
 
     @Override
     public Set<Question> findAllQuestion(Long page, int size) {
@@ -63,7 +66,7 @@ public class QuestionServiceImp implements IQuestionService {
 
         if(!multipartFile.isEmpty()) {
             Image image = new Image();
-            image.setPath(UploadImage.getUrlFromFile(multipartFile));
+            image.setPath(uploadFile.getUrlFromFile(multipartFile));
             image.setTitle(multipartFile.getName());
             question.setImage(imageRepository.save(image));
         }

@@ -12,6 +12,6 @@ public interface GiftRepository extends JpaRepository<Gift, Long> {
     Gift findByName(String title);
     Set<Gift> findAllByStatus(boolean status);
     //test 1 trong 2
-    Set<Gift> findAllByUsersIn(Set<User> users);
+//    Set<Gift> findAllByUsersIn(Set<User> users);
 
 }

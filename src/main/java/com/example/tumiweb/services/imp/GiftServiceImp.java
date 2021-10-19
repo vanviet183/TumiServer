@@ -4,17 +4,15 @@ import com.example.tumiweb.dto.GiftDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Gift;
-import com.example.tumiweb.model.User;
 import com.example.tumiweb.repository.GiftRepository;
 import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.IGiftService;
-import com.example.tumiweb.utils.UploadImage;
+import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -30,7 +28,7 @@ public class GiftServiceImp implements IGiftService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private UserRepository userRepository;
+    private UploadFile uploadFile;
 
     @Override
     public Set<Gift> getAllGift(Long page, int size, boolean active) {
@@ -68,7 +66,7 @@ public class GiftServiceImp implements IGiftService {
             throw new DuplicateException("Duplicate gift with title: " + giftDTO.getName());
         }
         if(avatar != null) {
-            giftDTO.setAvatar(UploadImage.getUrlFromFile(avatar));
+            giftDTO.setAvatar(uploadFile.getUrlFromFile(avatar));
         }
         return giftRepository.save(modelMapper.map(giftDTO, Gift.class));
     }
@@ -80,7 +78,7 @@ public class GiftServiceImp implements IGiftService {
             throw new NotFoundException("Can not find gift by id: " + id);
         }
         if(avatar != null) {
-            giftDTO.setAvatar(UploadImage.getUrlFromFile(avatar));
+            giftDTO.setAvatar(uploadFile.getUrlFromFile(avatar));
         }
         return giftRepository.save(modelMapper.map(giftDTO, Gift.class));
     }
@@ -105,27 +103,27 @@ public class GiftServiceImp implements IGiftService {
         return gift;
     }
 
-    @Override
-    public Set<Gift> findAllGiftByUserId(Long userId, boolean active, boolean both) {
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()) {
-            throw new NotFoundException("Can not find user by id: " + userId);
-        }
-        Set<Gift> gifts = new HashSet<>();
-        if(both) {
-            gifts = new HashSet<>(giftRepository.findAll());
-        }else if(active) {
-            gifts = giftRepository.findAllByStatus(true);
-        }else {
-            gifts = giftRepository.findAllByStatus(false);
-        }
-
-        if(!gifts.isEmpty()) {
-            gifts = gifts.stream().filter((item) -> {
-                return item.getUsers().contains(user.get());
-            }).collect(Collectors.toSet());
-        }
-
-        return gifts;
-    }
+//    @Override
+//    public Set<Gift> findAllGiftByUserId(Long userId, boolean active, boolean both) {
+//        Optional<User> user = userRepository.findById(userId);
+//        if(user.isEmpty()) {
+//            throw new NotFoundException("Can not find user by id: " + userId);
+//        }
+//        Set<Gift> gifts = new HashSet<>();
+//        if(both) {
+//            gifts = new HashSet<>(giftRepository.findAll());
+//        }else if(active) {
+//            gifts = giftRepository.findAllByStatus(true);
+//        }else {
+//            gifts = giftRepository.findAllByStatus(false);
+//        }
+//
+//        if(!gifts.isEmpty()) {
+//            gifts = gifts.stream().filter((item) -> {
+//                return item.getUsers().contains(user.get());
+//            }).collect(Collectors.toSet());
+//        }
+//
+//        return gifts;
+//    }
 }

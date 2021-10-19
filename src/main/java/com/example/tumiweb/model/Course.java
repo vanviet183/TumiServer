@@ -1,7 +1,8 @@
 package com.example.tumiweb.model;
 
+import com.example.tumiweb.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,8 +11,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "course")
-@Data
-public class Course extends BaseEntity{
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class Course extends BaseEntity {
 
     @NotBlank
     private String name;

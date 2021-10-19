@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface IGiftOrderService {
     Set<GiftOrder> getAllGiftOrder(Long page, int size, boolean active);
-    GiftOrder createNewGiftOrder(GiftOrderDTO giftOrderDTO, Set<Gift> gifts);
+    GiftOrder createNewGiftOrder(GiftOrderDTO giftOrderDTO, Gift gifts);
     GiftOrder changeStatusById(Long id);
     GiftOrder deleteGiftOrderById(Long id);
     GiftOrder findGiftOrderById(Long id);

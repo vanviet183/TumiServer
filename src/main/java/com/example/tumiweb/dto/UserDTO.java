@@ -1,13 +1,15 @@
 package com.example.tumiweb.dto;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class UserDTO {
     private String username;
     private String password;
     private String email;
     private String phone;
-    private String avatar;
 }

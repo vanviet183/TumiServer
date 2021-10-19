@@ -15,5 +15,5 @@ public interface IGiftService {
     Gift deleteGiftById(Long id);
 
     //chưa paging
-    Set<Gift> findAllGiftByUserId(Long userId, boolean active, boolean both);
+//    Set<Gift> findAllGiftByUserId(Long userId, boolean active, boolean both);
 }

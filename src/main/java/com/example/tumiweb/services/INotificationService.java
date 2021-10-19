@@ -7,7 +7,7 @@ import java.util.Set;
 
 public interface INotificationService {
     Notification findNotificationById(Long id);
-    Set<Notification> getAllNotification(Long page, int size, boolean active);
+    Set<Notification> getAllNotification(Long page, int size, boolean status);
     Notification getNotificationById(Long id);
     Notification createNotification(NotificationDTO notificationDTO);
     Notification editNotificationById(Long id, NotificationDTO notificationDTO);

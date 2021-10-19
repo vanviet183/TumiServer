@@ -32,7 +32,7 @@ public class NotificationServiceImp implements INotificationService {
     }
 
     @Override
-    public Set<Notification> getAllNotification(Long page, int size, boolean active) {
+    public Set<Notification> getAllNotification(Long page, int size, boolean status) {
         List<Notification> notifications;
         if(page != null) {
             Page<Notification> notificationPage = notificationRepository.findAll(PageRequest.of(page.intValue(), size));
@@ -41,7 +41,7 @@ public class NotificationServiceImp implements INotificationService {
             notifications = notificationRepository.findAll();
         }
 
-        if(active) {
+        if(status) {
             if(page != null) {
                 int length = notifications.size();
                 int totalPage = (length % page != 0) ? length/size + 1 : length/size;

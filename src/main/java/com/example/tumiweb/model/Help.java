@@ -1,6 +1,8 @@
 package com.example.tumiweb.model;
 
-import lombok.Data;
+import com.example.tumiweb.base.BaseEntity;
+import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -10,9 +12,14 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "help")
-@Data
-public class Help extends BaseEntity{
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class Help extends BaseEntity {
     @NotBlank
+//    @Nationalized
     private String title;
 
     //link to table Users

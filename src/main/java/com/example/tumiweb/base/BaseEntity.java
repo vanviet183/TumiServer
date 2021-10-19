@@ -1,6 +1,6 @@
-package com.example.tumiweb.model;
+package com.example.tumiweb.base;
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -8,12 +8,16 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @MappedSuperclass
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "status", nullable = true)
     private Boolean status = Boolean.TRUE;

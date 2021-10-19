@@ -1,10 +1,11 @@
 package com.example.tumiweb.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class ImageDTO {
     private String title;
 }

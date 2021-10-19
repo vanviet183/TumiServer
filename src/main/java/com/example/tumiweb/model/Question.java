@@ -1,7 +1,7 @@
 package com.example.tumiweb.model;
 
-import com.example.tumiweb.dto.ImageDTO;
-import lombok.Data;
+import com.example.tumiweb.base.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,7 +10,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "question")
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Question extends BaseEntity {
 
     @NotBlank

@@ -49,12 +49,8 @@ public class GiftOrderServiceImp implements IGiftOrderService {
     }
 
     @Override
-    public GiftOrder createNewGiftOrder(GiftOrderDTO giftOrderDTO, Set<Gift> gifts) {
-        if(gifts.isEmpty()) {
-            throw new NotFoundException("Gift list is empty, can not create gift order");
-        }
-        giftOrderDTO.setGifts(gifts);
-        return giftOrderRepository.save(modelMapper.map(giftOrderDTO, GiftOrder.class));
+    public GiftOrder createNewGiftOrder(GiftOrderDTO giftOrderDTO, Gift gifts) {
+        return new GiftOrder();
     }
 
     @Override

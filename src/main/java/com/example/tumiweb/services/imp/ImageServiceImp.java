@@ -7,7 +7,7 @@ import com.example.tumiweb.exception.UploadImageException;
 import com.example.tumiweb.model.Image;
 import com.example.tumiweb.repository.ImageRepository;
 import com.example.tumiweb.services.IImageService;
-import com.example.tumiweb.utils.UploadImage;
+import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +26,9 @@ public class ImageServiceImp implements IImageService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private UploadFile uploadFile;
 
     @Override
     public Set<Image> findAllImage(Long page, int size) {
@@ -53,7 +56,7 @@ public class ImageServiceImp implements IImageService {
             throw new DuplicateException("Duplicate image by title: " + imageDTO.getTitle());
         }
         Image image = modelMapper.map(imageDTO, Image.class);
-        image.setPath(UploadImage.getUrlFromFile(multipartFile));
+        image.setPath(uploadFile.getUrlFromFile(multipartFile));
         return imageRepository.save(image);
     }
 
@@ -65,7 +68,7 @@ public class ImageServiceImp implements IImageService {
         }
         image.setTitle(imageDTO.getTitle());
         if(!multipartFile.isEmpty()) {
-            image.setPath(UploadImage.getUrlFromFile(multipartFile));
+            image.setPath(uploadFile.getUrlFromFile(multipartFile));
         }
         return imageRepository.save(image);
     }
@@ -76,7 +79,7 @@ public class ImageServiceImp implements IImageService {
         if(image == null) {
             throw new NotFoundException("Can not find image by id: " + id);
         }
-        UploadImage.removeImageFromUrl(image.getPath());
+        uploadFile.removeImageFromUrl(image.getPath());
         imageRepository.delete(image);
         return image;
     }

@@ -1,6 +1,7 @@
 package com.example.tumiweb.model;
 
-import lombok.Data;
+import com.example.tumiweb.base.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -9,8 +10,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "role")
-@Data
-public class Role extends BaseEntity{
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class Role extends BaseEntity {
 
     @NotBlank
     private String name;

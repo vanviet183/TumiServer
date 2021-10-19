@@ -1,14 +1,19 @@
 package com.example.tumiweb.model;
 
-import lombok.Data;
+import com.example.tumiweb.base.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "notification")
-@Data
-public class Notification extends BaseEntity{
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class Notification extends BaseEntity {
 
     @NotBlank
     private String title;

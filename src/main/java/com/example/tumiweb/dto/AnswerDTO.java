@@ -1,9 +1,11 @@
 package com.example.tumiweb.dto;
 
-import com.example.tumiweb.model.Question;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class AnswerDTO {
     private String title;
     private Boolean isTrue = Boolean.FALSE;

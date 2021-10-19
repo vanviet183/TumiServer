@@ -1,8 +1,11 @@
 package com.example.tumiweb.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class HelpDTO {
     private String title;
 }

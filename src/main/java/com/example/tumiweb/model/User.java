@@ -1,6 +1,8 @@
 package com.example.tumiweb.model;
 
-import lombok.Data;
+import com.example.tumiweb.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -10,7 +12,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class User extends BaseEntity {
 
     @NotBlank
@@ -22,9 +28,12 @@ public class User extends BaseEntity {
     private String phone;
     private String avatar;
 
+    private Long mark = 0L;
+
     //link to table Notification
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<Notification> notifications;
+    @JsonIgnore
+    private Set<Notification> notifications = new HashSet<>();
 
     public void addRelationNotification(Notification notification) {
         notifications.add(notification);
@@ -38,7 +47,8 @@ public class User extends BaseEntity {
 
     //link to table Help
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<Help> helps;
+    @JsonIgnore
+    private Set<Help> helps = new HashSet<>();
 
     public void addRelationHelp(Help help) {
         helps.add(help);
@@ -56,16 +66,18 @@ public class User extends BaseEntity {
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
 
     //link to table Gift
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_gift",
+    @JoinTable(name = "user_order_gift",
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "gift_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "gift_order_id", referencedColumnName = "id")
     )
-    private Set<Gift> gifts = new HashSet<>();
+    @JsonIgnore
+    private Set<GiftOrder> giftOrders = new HashSet<>();
 
 
     //link to table Course
@@ -74,7 +86,9 @@ public class User extends BaseEntity {
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
     )
+    @JsonIgnore
     private Set<Course> courses = new HashSet<>();
+
 
 
 }

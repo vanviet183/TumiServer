@@ -1,7 +1,5 @@
 package com.example.tumiweb.services.imp;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
@@ -11,14 +9,14 @@ import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.utils.ConvertObject;
-import com.example.tumiweb.utils.UploadImage;
+import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -33,6 +31,9 @@ public class UserServiceImp implements IUserService {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private UploadFile uploadFile;
+
     private User findUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()) {
@@ -42,22 +43,34 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
-    public Set<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        if(users.size() == 0) {
-            throw new NotFoundException("User list is empty");
+    public Set<User> getAllUsers(Long page, int size, boolean status, boolean both) {
+        Set<User> users = new HashSet<>();
+        //lấy cả 2 true and false
+        if(both) {
+            if(page == null) {
+                users = new HashSet<>(userRepository.findAll());
+            }else {
+                users = new HashSet<>(userRepository.findAll(PageRequest.of(page.intValue(), size)).getContent());
+            }
+        }else if(status) { //lấy 1 kiểu active
+            if(page == null) {
+                //true and no paging
+                users = userRepository.findAllByStatus(true);
+            }else {
+                //true and paging
+                users = userRepository.findAllByStatus(true);
+                int length = users.size();
+                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
+                if(totalPage > page.intValue()) {
+                    return new HashSet<>();
+                }
+                users = new HashSet<>(new ArrayList<>(users).subList(page.intValue()*size, page.intValue()*size + size));
+            }
+        }else {
+            users = new HashSet<>(userRepository.findAll());
         }
-        return new HashSet<>(users);
-    }
-
-    @Override
-    public Set<User> getAllUsersWithPage(Long page, int size) {
-        Page<User> usersOfPage = userRepository.findAll(PageRequest.of(page.intValue(), size));
-        List<User> users = usersOfPage.getContent();
-        if(users.isEmpty()) {
-            throw new NotFoundException("User list is empty");
-        }
-        return new HashSet<>(users);
+        return users;
+//        return new HashSet<>(userRepository.findAll());
     }
 
     @Override
@@ -118,7 +131,7 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
-    public String changeAvatarById(Long id, MultipartFile avatar) {
+    public String changeAvatarById(Long id, MultipartFile avatar) throws IOException {
         User user = findUserById(id);
         if(user == null) {
             throw new NotFoundException("Can not find user by id: " + id);
@@ -126,10 +139,10 @@ public class UserServiceImp implements IUserService {
 
         //Xóa avtar cũ
         if(user.getAvatar() != null) {
-            UploadImage.removeImageFromUrl(user.getAvatar());
+            uploadFile.removeImageFromUrl(user.getAvatar());
         }
-
-        user.setAvatar(UploadImage.getUrlFromFile(avatar));
+        user.setAvatar(uploadFile.getUrlFromFile(avatar));
+        userRepository.save(user);
 
         return "Change successfully";
     }
@@ -137,41 +150,49 @@ public class UserServiceImp implements IUserService {
     @Override
     public String registerCourseByUserIdAndCourseId(Long userId, Long courseId) {
         //mặc định user and course có cho nhanh nhé :v
-        Course course = courseRepository.getById(courseId);
-        User user = userRepository.getById(userId);
+        try{
+            Course course = courseRepository.getById(courseId);
+            User user = userRepository.getById(userId);
 
-        Set<Course> newCourse = user.getCourses();
-        newCourse.add(course);
+            Set<Course> newCourse = user.getCourses();
+            newCourse.add(course);
 
-        Set<User> newUsers = course.getUsers();
-        newUsers.add(user);
+            Set<User> newUsers = course.getUsers();
+            newUsers.add(user);
 
-        course.setUsers(newUsers);
-        user.setCourses(newCourse);
+            course.setUsers(newUsers);
+            user.setCourses(newCourse);
 
-        userRepository.save(user);
-        courseRepository.save(course);
+            userRepository.save(user);
+            courseRepository.save(course);
+        }catch (Exception e) {
+            return "Register failed";
+        }
 
         return "Register successfully";
     }
 
     @Override
     public String cancelCourseByUserIdAndCourseId(Long userId, Long courseId) {
-        //mặc định user and course có cho nhanh nhé :v
-        Course course = courseRepository.getById(courseId);
-        User user = userRepository.getById(userId);
+        try {
+            //mặc định user and course có cho nhanh nhé :v
+            Course course = courseRepository.getById(courseId);
+            User user = userRepository.getById(userId);
 
-        Set<Course> newCourse = user.getCourses();
-        newCourse.remove(course);
+            Set<Course> newCourse = user.getCourses();
+            newCourse.remove(course);
 
-        Set<User> newUsers = course.getUsers();
-        newUsers.remove(user);
+            Set<User> newUsers = course.getUsers();
+            newUsers.remove(user);
 
-        course.setUsers(newUsers);
-        user.setCourses(newCourse);
+            course.setUsers(newUsers);
+            user.setCourses(newCourse);
 
-        userRepository.save(user);
-        courseRepository.save(course);
+            userRepository.save(user);
+            courseRepository.save(course);
+        }catch (Exception e) {
+            return "Unregister failed";
+        }
 
         return "Unregister successfully";
     }

@@ -1,6 +1,7 @@
 package com.example.tumiweb.model;
 
-import lombok.Data;
+import com.example.tumiweb.base.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -11,7 +12,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "gift")
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Gift extends BaseEntity {
 
     @NotBlank
@@ -21,9 +26,6 @@ public class Gift extends BaseEntity {
     private Long mark;
     private String avatar;
 
-    //link to table User
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "gifts")
-    private Set<User> users = new HashSet<>();
 
     //link to table gift_order
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
