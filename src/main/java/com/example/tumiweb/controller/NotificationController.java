@@ -31,9 +31,11 @@ public class NotificationController extends BaseController<Notification> {
         return this.resSetSuccess(notificationService.getAllNotification(page, Constants.SIZE_OFF_PAGE, status));
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> createNewNotification(@RequestBody NotificationDTO notificationDTO) {
-        return this.resSuccess(notificationService.createNotification(notificationDTO));
+    @PostMapping("/{userId}")
+    public ResponseEntity<?> createNewNotification(
+            @PathVariable("userId") Long userId,
+            @RequestBody NotificationDTO notificationDTO) {
+        return this.resSuccess(notificationService.createNotification(userId, notificationDTO));
     }
 
     @PatchMapping("/{id}")
@@ -49,7 +51,7 @@ public class NotificationController extends BaseController<Notification> {
         return this.resSuccess(notificationService.deleteNotificationById(id));
     }
 
-    @PatchMapping("/{id}/status")
+    @PostMapping("/{id}/status")
     public ResponseEntity<?> changeStatusById(@PathVariable("id") Long id) {
         return this.resSuccess(notificationService.changeStatusNotificationById(id));
     }

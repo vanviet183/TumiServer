@@ -1,5 +1,6 @@
 package com.example.tumiweb.services.imp;
 
+import com.example.tumiweb.base.BaseEntity;
 import com.example.tumiweb.dto.GiftDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
@@ -7,6 +8,7 @@ import com.example.tumiweb.model.Gift;
 import com.example.tumiweb.repository.GiftRepository;
 import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.IGiftService;
+import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,7 @@ public class GiftServiceImp implements IGiftService {
         }
 
         if(active) {
-            gifts = gifts.stream().filter(item -> item.getStatus()).collect(Collectors.toList());
+            gifts = gifts.stream().filter(BaseEntity::getStatus).collect(Collectors.toList());
         }
 
         return new HashSet<>(gifts);
@@ -61,12 +63,9 @@ public class GiftServiceImp implements IGiftService {
     }
 
     @Override
-    public Gift createNewGift(GiftDTO giftDTO, MultipartFile avatar) {
+    public Gift createNewGift(GiftDTO giftDTO) {
         if(giftRepository.findByName(giftDTO.getName()) != null) {
             throw new DuplicateException("Duplicate gift with title: " + giftDTO.getName());
-        }
-        if(avatar != null) {
-            giftDTO.setAvatar(uploadFile.getUrlFromFile(avatar));
         }
         return giftRepository.save(modelMapper.map(giftDTO, Gift.class));
     }
@@ -80,7 +79,8 @@ public class GiftServiceImp implements IGiftService {
         if(avatar != null) {
             giftDTO.setAvatar(uploadFile.getUrlFromFile(avatar));
         }
-        return giftRepository.save(modelMapper.map(giftDTO, Gift.class));
+
+        return giftRepository.save(ConvertObject.convertGiftDTOToGift(gift, giftDTO));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class GiftServiceImp implements IGiftService {
             throw new NotFoundException("Can not find gift by id: " + id);
         }
         gift.setStatus(!gift.getStatus());
-        return gift;
+        return giftRepository.save(gift);
     }
 
     @Override
@@ -101,6 +101,19 @@ public class GiftServiceImp implements IGiftService {
         }
         giftRepository.delete(gift);
         return gift;
+    }
+
+    @Override
+    public Gift changeImageGiftById(Long id, MultipartFile multipartFile) {
+        Gift gift = findGiftById(id);
+        if(gift == null) {
+            throw new NotFoundException("Can not gift by id: " + id);
+        }
+        if(gift.getAvatar() != null) {
+            uploadFile.removeImageFromUrl(gift.getAvatar());
+        }
+        gift.setAvatar(uploadFile.getUrlFromFile(multipartFile));
+        return giftRepository.save(gift);
     }
 
 //    @Override

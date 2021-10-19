@@ -9,7 +9,7 @@ public interface INotificationService {
     Notification findNotificationById(Long id);
     Set<Notification> getAllNotification(Long page, int size, boolean status);
     Notification getNotificationById(Long id);
-    Notification createNotification(NotificationDTO notificationDTO);
+    Notification createNotification(Long userId, NotificationDTO notificationDTO);
     Notification editNotificationById(Long id, NotificationDTO notificationDTO);
     Notification deleteNotificationById(Long id);
     Notification changeStatusNotificationById(Long id);

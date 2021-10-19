@@ -42,7 +42,7 @@ public class BaseController<T> {
 
     public ResponseEntity<?> resFailed() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(), ResponseMessageEnum.ERROR, null)
+                new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(), ResponseMessageEnum.ERROR, "Failed")
         );
     }
 }

@@ -148,6 +148,21 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
+    public Boolean changeMarkById(Long id, Long mark) {
+        User user = getUserById(id);
+        if(user == null) {
+            throw new NotFoundException("Can not find user by id: " + id);
+        }
+        Long newMark = user.getMark() + mark;
+        if(newMark < 0) {
+            return false;
+        }
+        user.setMark(newMark);
+        userRepository.save(user);
+        return true;
+    }
+
+    @Override
     public String registerCourseByUserIdAndCourseId(Long userId, Long courseId) {
         //mặc định user and course có cho nhanh nhé :v
         try{

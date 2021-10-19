@@ -3,8 +3,10 @@ package com.example.tumiweb.services.imp;
 import com.example.tumiweb.dto.NotificationDTO;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Notification;
+import com.example.tumiweb.model.User;
 import com.example.tumiweb.repository.NotificationRepository;
 import com.example.tumiweb.services.INotificationService;
+import com.example.tumiweb.services.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,9 @@ public class NotificationServiceImp implements INotificationService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private IUserService userService;
 
     @Override
     public Notification findNotificationById(Long id) {
@@ -70,8 +75,15 @@ public class NotificationServiceImp implements INotificationService {
     }
 
     @Override
-    public Notification createNotification(NotificationDTO notificationDTO) {
-        return notificationRepository.save(modelMapper.map(notificationDTO, Notification.class));
+    public Notification createNotification(Long userId, NotificationDTO notificationDTO) {
+        User user = userService.getUserById(userId);
+        if(user == null) {
+            throw new NotFoundException("Can not find user by id: " + userId);
+        }
+        Notification notification = modelMapper.map(notificationDTO, Notification.class);
+        notification.setUser(user);
+
+        return notificationRepository.save(notification);
     }
 
     @Override

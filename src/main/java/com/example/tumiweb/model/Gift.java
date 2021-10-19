@@ -1,6 +1,7 @@
 package com.example.tumiweb.model;
 
 import com.example.tumiweb.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class Gift extends BaseEntity {
             joinColumns = @JoinColumn(name = "gift_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "gift_order_id", referencedColumnName = "id")
     )
+    @JsonIgnore
     private Set<GiftOrder> giftOrders = new HashSet<>();
 
 }
