@@ -1,6 +1,5 @@
 package com.example.tumiweb.services.imp;
 
-import com.example.tumiweb.dto.GiftOrderDTO;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Gift;
 import com.example.tumiweb.model.GiftOrder;
@@ -9,7 +8,6 @@ import com.example.tumiweb.repository.GiftOrderRepository;
 import com.example.tumiweb.services.IGiftOrderService;
 import com.example.tumiweb.services.IGiftService;
 import com.example.tumiweb.services.IUserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +20,6 @@ public class GiftOrderServiceImp implements IGiftOrderService {
 
     @Autowired
     private GiftOrderRepository giftOrderRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private IUserService userService;

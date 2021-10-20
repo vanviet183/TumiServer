@@ -8,6 +8,7 @@ import com.example.tumiweb.model.Course;
 import com.example.tumiweb.model.Image;
 import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.services.ICourseService;
+import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,8 @@ public class CourseServiceImp implements ICourseService {
     @Autowired
     private ImageServiceImp imageService;
 
-
+    @Autowired
+    private UploadFile uploadFile;
 
 
     @Override
@@ -71,7 +73,24 @@ public class CourseServiceImp implements ICourseService {
     }
 
     @Override
-    public Course editCourseById(Long id, MultipartFile multipartFile) {
+    public Course changeAvatarCourseById(Long id, MultipartFile multipartFile) {
+        Course course = findCourseById(id);
+        if(course == null) {
+            throw new NotFoundException("Can not find course by id: " + id);
+        }
+        if(course.getAvatar() != null) {
+            uploadFile.removeImageFromUrl(course.getAvatar());
+        }
+
+        if(!multipartFile.isEmpty()) {
+            course.setAvatar(uploadFile.getUrlFromFile(multipartFile));
+        }
+
+        return courseRepository.save(course);
+    }
+
+    @Override
+    public Course editCourseById(Long id, CourseDTO courseDTO, MultipartFile multipartFile) {
         return null;
     }
 
@@ -86,5 +105,17 @@ public class CourseServiceImp implements ICourseService {
             chapterService.deleteChapterById(Long.parseLong(item.getId().toString()));
         });
         return null;
+    }
+
+    @Override
+    public Course changeStatusById(Long id) {
+        Course course = findCourseById(id);
+
+        if(course == null) {
+            throw new NotFoundException("Can not find course by id: " + id);
+        }
+        course.setStatus(!course.getStatus());
+
+        return courseRepository.save(course);
     }
 }

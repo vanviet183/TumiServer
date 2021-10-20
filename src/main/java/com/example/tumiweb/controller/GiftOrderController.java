@@ -4,8 +4,6 @@ import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.model.GiftOrder;
 import com.example.tumiweb.services.IGiftOrderService;
-import com.example.tumiweb.services.IGiftService;
-import com.example.tumiweb.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
