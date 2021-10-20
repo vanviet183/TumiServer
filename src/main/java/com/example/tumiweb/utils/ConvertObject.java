@@ -1,11 +1,7 @@
 package com.example.tumiweb.utils;
 
-import com.example.tumiweb.dto.CourseDTO;
-import com.example.tumiweb.dto.GiftDTO;
-import com.example.tumiweb.dto.UserDTO;
-import com.example.tumiweb.model.Course;
-import com.example.tumiweb.model.Gift;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dto.*;
+import com.example.tumiweb.model.*;
 
 public class ConvertObject {
     public static User convertUserDTOToUser(User user, UserDTO userDTO) {
@@ -29,5 +25,19 @@ public class ConvertObject {
         course.setProcess(courseDTO.getProcess());
         course.setDescription(courseDTO.getDescription());
         return course;
+    }
+
+    public static Question convertQuestionDTOToQuestion(Question question, QuestionDTO questionDTO) {
+        question.setTitle(questionDTO.getTitle());
+        question.setSeo(questionDTO.getSeo());
+        question.setAvatar(question.getAvatar());
+        return question;
+    }
+
+    public static Answer convertAnswerDTOToAnswer(Answer answer, AnswerDTO answerDTO) {
+        answer.setTitle(answer.getTitle());
+        answer.setImage(answer.getImage());
+        answer.setIsTrue(answer.getIsTrue());
+        return answer;
     }
 }

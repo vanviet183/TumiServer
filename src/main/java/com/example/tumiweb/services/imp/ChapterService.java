@@ -134,4 +134,9 @@ public class ChapterService implements IChapterService {
         chapterRepository.delete(chapter);
         return chapter;
     }
+
+    @Override
+    public Chapter save(Chapter chapter) {
+        return chapterRepository.save(chapter);
+    }
 }

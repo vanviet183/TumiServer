@@ -4,16 +4,22 @@ import com.example.tumiweb.dto.AnswerDTO;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Answer;
 import com.example.tumiweb.model.GiftOrder;
+import com.example.tumiweb.model.Question;
 import com.example.tumiweb.repository.AnswerRepository;
 import com.example.tumiweb.repository.QuestionRepository;
 import com.example.tumiweb.services.IAnswerService;
+import com.example.tumiweb.services.IQuestionService;
+import com.example.tumiweb.utils.ConvertObject;
+import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AnswerServiceImp implements IAnswerService {
@@ -22,36 +28,13 @@ public class AnswerServiceImp implements IAnswerService {
     private AnswerRepository answerRepository;
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private IQuestionService questionService;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    @Override
-    public Set<Answer> findAllAnswer(Long page, int size, boolean active) {
-        List<Answer> answers;
-        if(page != null) {
-            Page<Answer> answerPage = answerRepository.findAll(PageRequest.of(page.intValue(), size));
-            answers = answerPage.getContent();
-        }else {
-            answers = answerRepository.findAll();
-        }
-
-        if(active) {
-            answers = new ArrayList<>(answerRepository.findAllByStatus(true));
-            if(page != null) {
-                int length = answers.size();
-                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
-                if(totalPage > page.intValue()) {
-                    return new HashSet<>();
-                }
-                answers = answers.subList(page.intValue()*size, page.intValue()*size + size);
-            }else {
-                answers = new ArrayList<>(answerRepository.findAllByStatus(true));
-            }
-        }
-        return new HashSet<>(answers);
-    }
+    @Autowired
+    private UploadFile uploadFile;
 
     @Override
     public Set<Answer> findAllAnswerByQuestionId(Long questionId) {
@@ -72,19 +55,49 @@ public class AnswerServiceImp implements IAnswerService {
     }
 
     @Override
-    public Answer createNewAnswer(AnswerDTO answerDTO, Long questionId) {
+    public Answer createNewAnswer(AnswerDTO answerDTO, Long questionId, MultipartFile multipartFile) {
         Answer answer = modelMapper.map(answerDTO, Answer.class);
-        answer.setQuestion(questionRepository.getById(questionId));
+        if(multipartFile != null) {
+            answer.setImage(uploadFile.getUrlFromFile(multipartFile));
+        }
+        answer.setQuestion(questionService.findQuestionById(questionId));
         return answerRepository.save(answer);
     }
 
     @Override
-    public Answer editAnswerById(Long id, AnswerDTO answerDTO) {
+    public Set<Answer> createNewAnswers(Long questionId, List<AnswerDTO> answerDTOS, MultipartFile[] multipartFiles) {
+        Question question = questionService.findQuestionById(questionId);
+        if(question == null) {
+            throw new NotFoundException("Can not find question by id: " + questionId);
+        }
+
+        Set<Answer> answers = new HashSet<>();
+
+        for(int i=0; i<answerDTOS.size(); i++) {
+            if(multipartFiles[i] != null) {
+                answerDTOS.get(i).setImage(uploadFile.getUrlFromFile(multipartFiles[i]));
+            }
+            answers.add(answerRepository.save(modelMapper.map(answerDTOS.get(i), Answer.class)));
+        }
+
+        return answers;
+    }
+
+    @Override
+    public Answer editAnswerById(Long id, AnswerDTO answerDTO, MultipartFile multipartFile) {
         Answer answer = findAnswerById(id);
         if(answer == null) {
             throw new NotFoundException("Can not find Answer by id: " + id);
         }
-        return answerRepository.save(modelMapper.map(answerDTO, Answer.class));
+
+        if(multipartFile != null) {
+            if(answer.getImage() != null) {
+                uploadFile.removeImageFromUrl(answer.getImage());
+            }
+            answerDTO.setImage(uploadFile.getUrlFromFile(multipartFile));
+        }
+
+        return answerRepository.save(ConvertObject.convertAnswerDTOToAnswer(answer, answerDTO));
     }
 
     @Override

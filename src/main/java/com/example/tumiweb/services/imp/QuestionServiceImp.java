@@ -4,13 +4,16 @@ import com.example.tumiweb.dto.AnswerDTO;
 import com.example.tumiweb.dto.QuestionDTO;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Answer;
+import com.example.tumiweb.model.Chapter;
 import com.example.tumiweb.model.Image;
 import com.example.tumiweb.model.Question;
 import com.example.tumiweb.repository.AnswerRepository;
 import com.example.tumiweb.repository.ChapterRepository;
 import com.example.tumiweb.repository.ImageRepository;
 import com.example.tumiweb.repository.QuestionRepository;
+import com.example.tumiweb.services.IChapterService;
 import com.example.tumiweb.services.IQuestionService;
+import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //Phần này chưa sửa repository của các bảng liên quan thành service :v
 @Service
@@ -32,13 +36,10 @@ public class QuestionServiceImp implements IQuestionService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private ChapterRepository chapterRepository;
+    private IChapterService chapterService;
 
     @Autowired
     private AnswerRepository answerRepository;
-
-    @Autowired
-    private ImageRepository imageRepository;
 
     @Autowired
     private UploadFile uploadFile;
@@ -47,11 +48,21 @@ public class QuestionServiceImp implements IQuestionService {
     private Slugify slugify;
 
     @Override
-    public Set<Question> findAllQuestion(Long page, int size) {
-        if(page != null) {
-            return new HashSet<>(questionRepository.findAll(PageRequest.of(page.intValue(), size)).getContent());
+    public Set<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size) {
+        Chapter chapter = chapterService.findChapterById(chapterId);
+        if(chapter == null) {
+            throw new NotFoundException("Can not find chapter by id: " + chapterId);
         }
-        return new HashSet<>(questionRepository.findAll());
+        List<Question> questions;
+        if(page != null) {
+            questions = questionRepository.findAll(PageRequest.of(page.intValue(), size)).getContent();
+        }else {
+            questions = questionRepository.findAll();
+        }
+
+        return questions.stream().filter(item -> {
+            return item.getChapter().equals(chapter);
+        }).collect(Collectors.toSet());
     }
 
     @Override
@@ -64,29 +75,53 @@ public class QuestionServiceImp implements IQuestionService {
     }
 
     @Override
-    public Question createNewQuestion(QuestionDTO questionDTO, Long chapterId, Set<AnswerDTO> answerDTOS, MultipartFile multipartFile) {
+    public Question createNewQuestion(QuestionDTO questionDTO, Long chapterId, MultipartFile multipartFile) {
+        Chapter chapter = chapterService.findChapterById(chapterId);
+        if(chapter == null) {
+            throw new NotFoundException("Can not find chapter by id: " + chapterId);
+        }
         questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
         Question question = modelMapper.map(questionDTO, Question.class);
-        question.setChapter(chapterRepository.getById(chapterId));
+        question.setChapter(chapter);
 
-        if(!multipartFile.isEmpty()) {
-            Image image = new Image();
-            image.setPath(uploadFile.getUrlFromFile(multipartFile));
-            image.setTitle(multipartFile.getName());
-            question.setImage(imageRepository.save(image));
+        if(multipartFile != null) {
+            question.setAvatar(uploadFile.getUrlFromFile(multipartFile));
         }
-        Set<Answer> answers = new HashSet<>();
-        answerDTOS.forEach(item -> {
-            answers.add(answerRepository.save(modelMapper.map(item, Answer.class)));
-        });
-        question.setAnswers(answers);
+
+        question = questionRepository.save(question);
+        chapter.addRelationQuestion(question);
+
+        chapterService.save(chapter);
 
         return questionRepository.save(question);
     }
 
     @Override
-    public Question editQuestionById(QuestionDTO questionDTO, Long chapterId, Set<AnswerDTO> answerDTOS, MultipartFile multipartFile) {
-        return null;
+    public Question editQuestionById(Long questionId, QuestionDTO questionDTO, MultipartFile multipartFile) {
+        Question question = findQuestionById(questionId);
+        if(question == null) {
+            throw new NotFoundException("Can not find question by id: " + questionId);
+        }
+
+        Chapter chapter = chapterService.findChapterById(question.getChapter().getId());
+        if(chapter == null) {
+            throw new NotFoundException("Can not find chapter by id: " + question.getChapter().getId());
+        }
+
+        if(multipartFile != null) {
+            if(question.getAvatar() != null) {
+                uploadFile.removeImageFromUrl(question.getAvatar());
+            }
+            questionDTO.setAvatar(uploadFile.getUrlFromFile(multipartFile));
+        }
+
+        questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
+
+        question = questionRepository.save(ConvertObject.convertQuestionDTOToQuestion(question, questionDTO));
+        chapter.addRelationQuestion(question);
+
+        chapterService.save(chapter);
+        return questionRepository.save(question);
     }
 
     @Override

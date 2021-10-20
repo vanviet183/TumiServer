@@ -12,4 +12,6 @@ public interface IChapterService {
     Chapter createNewChapter(ChapterDTO chapterDTO, Long courseId);
     Chapter editChapterById(Long id, ChapterDTO chapterDTO);
     Chapter deleteChapterById(Long id);
+
+    Chapter save(Chapter chapter);
 }

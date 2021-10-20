@@ -10,11 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Set;
 
 public interface IQuestionService {
-    Set<Question> findAllQuestion(Long page, int size);
+    Set<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size);
     Question findQuestionById(Long id);
-    Question createNewQuestion(QuestionDTO questionDTO, Long chapterId, Set<AnswerDTO> answerDTOS, MultipartFile multipartFile);
+    Question createNewQuestion(QuestionDTO questionDTO, Long chapterId, MultipartFile multipartFile);
+    Question editQuestionById(Long questionId, QuestionDTO questionDTO, MultipartFile multipartFile);
 
-    //Chưa làm edit
-    Question editQuestionById(QuestionDTO questionDTO, Long chapterId, Set<AnswerDTO> answerDTOS, MultipartFile multipartFile);
+    //không cho delete nữa :v, lười r
     Question deleteQuestionById(Long id);
 }

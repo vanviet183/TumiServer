@@ -9,4 +9,5 @@ import lombok.*;
 public class AnswerDTO {
     private String title;
     private Boolean isTrue = Boolean.FALSE;
+    private String image;
 }

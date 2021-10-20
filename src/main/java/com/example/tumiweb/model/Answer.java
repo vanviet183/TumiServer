@@ -20,13 +20,10 @@ public class Answer extends BaseEntity {
     @NotBlank
     private Boolean isTrue = Boolean.FALSE;
 
+    private String image;
+
     //link to table Question
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Question question;
 
-
-    //link to table image
-    @OneToOne()
-    @JoinColumn(name = "image_id")
-    private Image image;
 }

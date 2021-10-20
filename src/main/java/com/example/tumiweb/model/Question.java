@@ -1,6 +1,7 @@
 package com.example.tumiweb.model;
 
 import com.example.tumiweb.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,20 +21,17 @@ public class Question extends BaseEntity {
     @NotBlank
     private String title;
     private String seo;
+    private String avatar;
 
     //link to table Chapter
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Chapter chapter;
 
 
-    //link to table Image
-    @OneToOne()
-    @JoinColumn(name = "image_id")
-    private Image image;
-
 
     //link to table Answer
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "question")
+    @JsonIgnore
     private Set<Answer> answers = new HashSet<>();
 
     public void addRelationAnswer(Answer answer) {
