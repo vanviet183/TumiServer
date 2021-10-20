@@ -8,6 +8,7 @@ import com.example.tumiweb.repository.ChapterRepository;
 import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.services.IChapterService;
 import com.example.tumiweb.services.ICourseService;
+import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,9 @@ public class ChapterService implements IChapterService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private Slugify slugify;
+
     @Override
     public Set<Chapter> findAllChapter(Long page, int size) {
         if(page != null) {
@@ -56,6 +60,9 @@ public class ChapterService implements IChapterService {
     public Chapter createNewChapter(ChapterDTO chapterDTO, Long courseId) {
         Course course = courseRepository.getById(courseId);
         Chapter chapter = modelMapper.map(chapterDTO, Chapter.class);
+
+        chapter.setSeo(slugify.slugify(chapter.getName()));
+
         chapter.setCourse(course);
         return chapterRepository.save(chapter);
     }
@@ -66,6 +73,8 @@ public class ChapterService implements IChapterService {
         if(chapter == null) {
             throw new NotFoundException("Can not find Chapter by id: " + id);
         }
+
+        chapter.setSeo(slugify.slugify(chapterDTO.getName()));
         chapter.setName(chapterDTO.getName());
         return chapterRepository.save(chapter);
     }

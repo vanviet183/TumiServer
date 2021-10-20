@@ -61,4 +61,12 @@ public class CourseController extends BaseController<Course> {
         return this.resSuccess(courseService.changeStatusById(id));
     }
 
+    @PostMapping("/{courseId}/{categoryId}/category")
+    public ResponseEntity<?> changeCategory(
+            @PathVariable("courseId") Long courseId,
+            @PathVariable("categoryId") Long categoryId
+    ) {
+        return this.resSuccess(courseService.editCategoryById(courseId, categoryId));
+    }
+
 }

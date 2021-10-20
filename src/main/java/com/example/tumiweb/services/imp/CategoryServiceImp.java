@@ -6,6 +6,7 @@ import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Category;
 import com.example.tumiweb.repository.CategoryRepository;
 import com.example.tumiweb.services.ICategoryService;
+import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ public class CategoryServiceImp implements ICategoryService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private Slugify slugify;
 
     @Override
     public Set<Category> findAllCategory(Long page, int size, boolean status, boolean both) {
@@ -70,7 +74,10 @@ public class CategoryServiceImp implements ICategoryService {
         if(category != null) {
             throw new DuplicateException("Duplicate Category by name: " + categoryDTO.getName());
         }
-        return categoryRepository.save(modelMapper.map(categoryDTO, Category.class));
+
+        Category newCategory = modelMapper.map(categoryDTO, Category.class);
+        newCategory.setSeo(slugify.slugify(newCategory.getName()));
+        return categoryRepository.save(newCategory);
     }
 
     @Override
@@ -79,7 +86,10 @@ public class CategoryServiceImp implements ICategoryService {
         if(category == null) {
             throw new NotFoundException("Can not find Category by id: " + id);
         }
-        return categoryRepository.save(modelMapper.map(categoryDTO, Category.class));
+        
+        Category newCategory = modelMapper.map(categoryDTO, Category.class);
+        newCategory.setSeo(slugify.slugify(newCategory.getName()));
+        return categoryRepository.save(newCategory);
     }
 
     @Override
@@ -99,6 +109,11 @@ public class CategoryServiceImp implements ICategoryService {
             throw new NotFoundException("Can not find Category by id: " + id);
         }
         category.setStatus(!category.getStatus());
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public Category save(Category category) {
         return categoryRepository.save(category);
     }
 

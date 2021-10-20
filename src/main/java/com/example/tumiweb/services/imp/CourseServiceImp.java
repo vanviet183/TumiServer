@@ -10,7 +10,9 @@ import com.example.tumiweb.model.Image;
 import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.services.ICategoryService;
 import com.example.tumiweb.services.ICourseService;
+import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
+import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,8 @@ public class CourseServiceImp implements ICourseService {
     @Autowired
     private ICategoryService categoryService;
 
+    @Autowired
+    private Slugify slugify;
 
     @Override
     public Set<Course> findAllCourse(Long page, int size, boolean status, boolean both) {
@@ -68,6 +72,8 @@ public class CourseServiceImp implements ICourseService {
             throw new NotFoundException("Can not find category by id: " + categoryId);
         }
         course.setCategory(category);
+
+        course.setSeo(slugify.slugify(course.getName()));
 
         return courseRepository.save(course);
     }
@@ -100,7 +106,20 @@ public class CourseServiceImp implements ICourseService {
 
     @Override
     public Course editCourseById(Long id, CourseDTO courseDTO, MultipartFile multipartFile) {
-        return null;
+        Course course = findCourseById(id);
+        if(course == null) {
+            throw new NotFoundException("Can not find course by id: " + id);
+        }
+        courseDTO.setSeo(slugify.slugify(courseDTO.getName()));
+
+        if(multipartFile != null) {
+            if(course.getAvatar() != null) {
+                uploadFile.removeImageFromUrl(course.getAvatar());
+            }
+            course.setAvatar(uploadFile.getUrlFromFile(multipartFile));
+        }
+
+        return courseRepository.save(ConvertObject.convertCourseDTOToCourse(course, courseDTO));
     }
 
     @Override
@@ -130,7 +149,29 @@ public class CourseServiceImp implements ICourseService {
 
     @Override
     public Course editCategoryById(Long courseId, Long categoryId) {
-        //tý làm tiếp
-        return null;
+        Course course = findCourseById(courseId);
+        if(course == null) {
+            throw new NotFoundException("Can not find course by id: " + courseId);
+        }
+
+        Category category = categoryService.findCategoryById(categoryId);
+        if(category == null) {
+            throw new NotFoundException("Can not find category by id: " + categoryId);
+        }
+
+        //xóa category cũ
+        if(course.getCategory() != null) {
+            Category oldCategory = categoryService.findCategoryById(course.getCategory().getId());
+            if(oldCategory != null) {
+                oldCategory.deleteRelationCourse(course);
+                categoryService.save(oldCategory);
+            }
+        }
+
+        category.addRelationCourse(course);
+        category = categoryService.save(category);
+
+        course.setCategory(category);
+        return courseRepository.save(course);
     }
 }

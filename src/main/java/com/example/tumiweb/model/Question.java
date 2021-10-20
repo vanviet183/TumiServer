@@ -19,6 +19,7 @@ public class Question extends BaseEntity {
 
     @NotBlank
     private String title;
+    private String seo;
 
     //link to table Chapter
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

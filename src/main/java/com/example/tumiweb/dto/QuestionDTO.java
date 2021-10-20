@@ -11,5 +11,6 @@ import java.util.Set;
 @Setter
 public class QuestionDTO {
     private String title;
+    private String seo;
     private Set<AnswerDTO> answers = new HashSet<>();
 }

@@ -29,4 +29,14 @@ public class Category extends BaseEntity {
     @JsonIgnore
     private Set<Course> courses = new HashSet<>();
 
+    public void addRelationCourse(Course course) {
+        courses.add(course);
+        course.setCategory(this);
+    }
+
+    public void deleteRelationCourse(Course course) {
+        courses.remove(course);
+        course.setCategory(null);
+    }
+
 }

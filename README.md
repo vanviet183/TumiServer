@@ -7,3 +7,5 @@
 - Lombok
 - Send mail
 - Swagger
+- Slugify: https://github.com/slugify/slugify
+

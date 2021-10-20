@@ -12,6 +12,7 @@ import com.example.tumiweb.repository.ImageRepository;
 import com.example.tumiweb.repository.QuestionRepository;
 import com.example.tumiweb.services.IQuestionService;
 import com.example.tumiweb.utils.UploadFile;
+import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,9 @@ public class QuestionServiceImp implements IQuestionService {
     @Autowired
     private UploadFile uploadFile;
 
+    @Autowired
+    private Slugify slugify;
+
     @Override
     public Set<Question> findAllQuestion(Long page, int size) {
         if(page != null) {
@@ -61,6 +65,7 @@ public class QuestionServiceImp implements IQuestionService {
 
     @Override
     public Question createNewQuestion(QuestionDTO questionDTO, Long chapterId, Set<AnswerDTO> answerDTOS, MultipartFile multipartFile) {
+        questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
         Question question = modelMapper.map(questionDTO, Question.class);
         question.setChapter(chapterRepository.getById(chapterId));
 
