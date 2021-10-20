@@ -1,6 +1,7 @@
 package com.example.tumiweb.model;
 
 import com.example.tumiweb.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,6 +28,7 @@ public class Chapter extends BaseEntity {
 
     //link to table Question
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "chapter")
+    @JsonIgnore
     private Set<Question> questions = new HashSet<>();
 
     public void addRelationQuestion(Question question) {

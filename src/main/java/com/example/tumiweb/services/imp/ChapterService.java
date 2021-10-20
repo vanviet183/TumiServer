@@ -14,18 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ChapterService implements IChapterService {
 
     @Autowired
     private ChapterRepository chapterRepository;
-
-    @Autowired
-    private CourseRepository courseRepository;
 
     @Autowired
     private CourseServiceImp courseService;
@@ -48,6 +47,46 @@ public class ChapterService implements IChapterService {
     }
 
     @Override
+    public Set<Chapter> findAllChapterByCourseId(Long courseId, Long page, int size, boolean status, boolean both) {
+        Course course = courseService.findCourseById(courseId);
+        if(course == null) {
+            throw new NotFoundException("Can not find course by id: " + courseId);
+        }
+
+        //Đang đau đầu quá, copy cho nhanh khi nào rảnh thì vào sửa
+        Set<Chapter> chapters;
+        //paging
+        if(page != null) {
+            //có paging
+            if(both) {
+                chapters = new HashSet<>(chapterRepository.findAll(PageRequest.of(page.intValue(), size)).getContent());
+            }else if(status) {
+                chapters = chapterRepository.findAllByStatus(true);
+                int length = chapters.size();
+                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
+                if(totalPage > page.intValue()) {
+                    return new HashSet<>();
+                }
+                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()*size + size));
+            }else {
+                chapters = chapterRepository.findAllByStatus(false);
+                int length = chapters.size();
+                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
+                if(totalPage > page.intValue()) {
+                    return new HashSet<>();
+                }
+                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()*size + size));
+            }
+        }else {
+            chapters = new HashSet<>(chapterRepository.findAll());
+        }
+
+        return chapters.stream().filter(item -> {
+            return item.getCourse().equals(course);
+        }).collect(Collectors.toSet());
+    }
+
+    @Override
     public Chapter findChapterById(Long id) {
         Optional<Chapter> chapter = chapterRepository.findById(id);
         if(chapter.isEmpty()) {
@@ -58,7 +97,10 @@ public class ChapterService implements IChapterService {
 
     @Override
     public Chapter createNewChapter(ChapterDTO chapterDTO, Long courseId) {
-        Course course = courseRepository.getById(courseId);
+        Course course = courseService.findCourseById(courseId);
+        if(course == null) {
+            throw new NotFoundException("Can not find course by id: " + courseId);
+        }
         Chapter chapter = modelMapper.map(chapterDTO, Chapter.class);
 
         chapter.setSeo(slugify.slugify(chapter.getName()));
