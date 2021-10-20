@@ -61,7 +61,7 @@ public class User extends BaseEntity {
 
 
     //link to table Role
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -70,18 +70,23 @@ public class User extends BaseEntity {
     private Set<Role> roles = new HashSet<>();
 
 
-    //link to table Gift
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_order_gift",
-            joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "gift_order_id", referencedColumnName = "id")
-    )
+    //link to table Gift-Order
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonIgnore
     private Set<GiftOrder> giftOrders = new HashSet<>();
+    public void addRelationGiftOrder(GiftOrder giftOrder) {
+        giftOrders.add(giftOrder);
+        giftOrder.setUser(this);
+    }
+    public void deleteRelationGiftOrder(GiftOrder giftOrder) {
+        giftOrders.remove(giftOrder);
+        giftOrder.setUser(null);
+    }
+
 
 
     //link to table Course
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "user_course",
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")

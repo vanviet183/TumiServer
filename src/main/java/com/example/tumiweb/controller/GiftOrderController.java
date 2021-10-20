@@ -6,6 +6,8 @@ import com.example.tumiweb.dto.GiftOrderDTO;
 import com.example.tumiweb.model.Gift;
 import com.example.tumiweb.model.GiftOrder;
 import com.example.tumiweb.model.User;
+import com.example.tumiweb.repository.GiftOrderRepository;
+import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.IGiftOrderService;
 import com.example.tumiweb.services.IGiftService;
 import com.example.tumiweb.services.IUserService;
@@ -13,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/gift-order")
@@ -46,27 +45,18 @@ public class GiftOrderController extends BaseController<GiftOrder> {
     @PostMapping("/{userId}/{giftId}")
     public ResponseEntity<?> createNewGiftOrder(
             @PathVariable("userId") Long userId,
-            @PathVariable("giftId") Long giftId,
-            @RequestBody GiftOrderDTO giftOrderDTO
+            @PathVariable("giftId") Long giftId
             ) {
-        Gift gift = giftService.findGiftById(giftId);
-        if(userService.changeMarkById(userId, gift.getMark())) {
-            //điểm đã bị trừ ở trên if kia :v, đang lú nên note lại
-            User user = userService.getUserById(userId);
+        return this.resSuccess(giftOrderService.createNewGiftOrder(userId, giftId));
+    }
 
-            giftOrderDTO.setEmail(user.getEmail());
-            giftOrderDTO.setQuality(1L);
+    @PostMapping("/{id}")
+    public ResponseEntity<?> disableStatusOrderGift(@PathVariable("id") Long id) {
+        return this.resSuccess(giftOrderService.changeStatusById(id));
+    }
 
-            GiftOrder giftOrder = giftOrderService.createNewGiftOrder(giftOrderDTO, gift);
-
-            Set<GiftOrder> giftOrders = user.getGiftOrders();
-            giftOrders.add(giftOrder);
-
-            Set<User> users =
-
-
-            return this.resSuccess();
-        }
-        return this.resFailed();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGiftOrder(@PathVariable("id") Long id) {
+        return this.resSuccess(giftOrderService.deleteGiftOrderById(id));
     }
 }

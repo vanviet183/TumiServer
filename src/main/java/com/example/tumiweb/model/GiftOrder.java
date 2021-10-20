@@ -1,6 +1,7 @@
 package com.example.tumiweb.model;
 
 import com.example.tumiweb.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,12 +24,13 @@ public class GiftOrder extends BaseEntity {
 
 
     //link to table User
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "giftOrders")
-    private Set<User> users = new HashSet<>();
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private User user;
 
 
     //link to table gift
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "giftOrders")
+    @JsonIgnore
     private Set<Gift> gifts = new HashSet<>();
 
 }

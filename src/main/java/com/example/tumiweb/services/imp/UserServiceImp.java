@@ -163,6 +163,11 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public String registerCourseByUserIdAndCourseId(Long userId, Long courseId) {
         //mặc định user and course có cho nhanh nhé :v
         try{

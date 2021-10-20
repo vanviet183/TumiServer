@@ -12,5 +12,4 @@ import java.util.Set;
 public class GiftOrderDTO {
     private Long quality;
     private String email;
-    private Set<Gift> gifts = null;
 }

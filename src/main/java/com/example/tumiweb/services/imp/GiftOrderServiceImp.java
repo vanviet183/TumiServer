@@ -4,8 +4,11 @@ import com.example.tumiweb.dto.GiftOrderDTO;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.model.Gift;
 import com.example.tumiweb.model.GiftOrder;
+import com.example.tumiweb.model.User;
 import com.example.tumiweb.repository.GiftOrderRepository;
 import com.example.tumiweb.services.IGiftOrderService;
+import com.example.tumiweb.services.IGiftService;
+import com.example.tumiweb.services.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,12 @@ public class GiftOrderServiceImp implements IGiftOrderService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private IUserService userService;
+
+    @Autowired
+    private IGiftService giftService;
 
     @Override
     public Set<GiftOrder> getAllGiftOrder(Long page, int size, boolean active) {
@@ -49,8 +58,21 @@ public class GiftOrderServiceImp implements IGiftOrderService {
     }
 
     @Override
-    public GiftOrder createNewGiftOrder(GiftOrderDTO giftOrderDTO, Gift gifts) {
-        return new GiftOrder();
+    public GiftOrder createNewGiftOrder(Long userId, Long giftId) {
+        Gift gift = giftService.findGiftById(giftId);
+        if(userService.changeMarkById(userId, -gift.getMark())) {
+            User user = userService.getUserById(userId);
+            GiftOrder giftOrder = new GiftOrder();
+            giftOrder.setEmail(user.getEmail());
+            giftOrder.setQuality(1L);
+
+            giftOrder = giftOrderRepository.save(giftOrder);
+            user.addRelationGiftOrder(giftOrder);
+            userService.save(user);
+
+            return giftOrderRepository.save(giftOrder);
+        }
+        throw new NotFoundException("Can not create gift order");
     }
 
     @Override
@@ -59,7 +81,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
         if(giftOrder == null) {
             throw new NotFoundException("Can not find GiftOrder by id: " + id);
         }
-        giftOrder.setStatus(!giftOrder.getStatus());
+        giftOrder.setStatus(false);
         return giftOrderRepository.save(giftOrder);
     }
 
@@ -80,5 +102,10 @@ public class GiftOrderServiceImp implements IGiftOrderService {
             return null;
         }
         return giftOrder.get();
+    }
+
+    @Override
+    public GiftOrder save(GiftOrder giftOrder) {
+        return giftOrderRepository.save(giftOrder);
     }
 }

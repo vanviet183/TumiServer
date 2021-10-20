@@ -19,6 +19,8 @@ public interface IUserService {
     String changeAvatarById(Long id, MultipartFile avatar) throws IOException;
     Boolean changeMarkById(Long id, Long mark);
 
+    User save(User user);
+
     //
     String registerCourseByUserIdAndCourseId(Long userId, Long courseId);
     String cancelCourseByUserIdAndCourseId(Long userId, Long courseId);
