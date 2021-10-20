@@ -32,11 +32,12 @@ public class CourseController extends BaseController<Course> {
         return this.resSuccess(courseService.findCourseById(id));
     }
 
-    @PostMapping("")
+    @PostMapping("/{categoryId}")
     public ResponseEntity<?> createNewCourse(
             @RequestBody CourseDTO courseDTO,
-            @RequestParam(name = "image", required = false) MultipartFile image) {
-        return this.resSuccess(courseService.createNewCourse(courseDTO, image));
+            @RequestParam(name = "image", required = false) MultipartFile image,
+            @PathVariable("categoryId") Long categoryId) {
+        return this.resSuccess(courseService.createNewCourse(courseDTO, image, categoryId));
     }
 
     @PatchMapping("/{id}")

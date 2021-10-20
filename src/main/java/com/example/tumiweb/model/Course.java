@@ -39,6 +39,7 @@ public class Course extends BaseEntity {
 
     //link to table image
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
+    @JsonIgnore
     private Set<Image> images = new HashSet<>();
 
     public void addRelationImage(Image image) {
@@ -53,6 +54,7 @@ public class Course extends BaseEntity {
 
     //link to table Chapter
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
+    @JsonIgnore
     private Set<Chapter> chapters = new HashSet<>();
 
     public void addRelationChapter(Chapter chapter) {

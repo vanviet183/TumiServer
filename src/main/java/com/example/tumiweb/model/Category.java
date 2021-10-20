@@ -2,6 +2,7 @@ package com.example.tumiweb.model;
 
 
 import com.example.tumiweb.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class Category extends BaseEntity {
 
     //link to table Course
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "category")
+    @JsonIgnore
     private Set<Course> courses = new HashSet<>();
 
 }

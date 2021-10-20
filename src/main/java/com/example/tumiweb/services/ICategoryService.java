@@ -11,5 +11,6 @@ public interface ICategoryService {
     Category createNewCategory(CategoryDTO categoryDTO);
     Category editCategoryById(Long id, CategoryDTO categoryDTO);
     Category deleteCategoryById(Long id);
-    Category changeStatusById(Long id, boolean status);
+    Category changeStatusById(Long id);
+
 }

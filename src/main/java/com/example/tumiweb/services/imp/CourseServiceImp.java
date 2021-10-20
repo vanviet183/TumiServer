@@ -4,9 +4,11 @@ import com.example.tumiweb.dto.CourseDTO;
 import com.example.tumiweb.dto.ImageDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
+import com.example.tumiweb.model.Category;
 import com.example.tumiweb.model.Course;
 import com.example.tumiweb.model.Image;
 import com.example.tumiweb.repository.CourseRepository;
+import com.example.tumiweb.services.ICategoryService;
 import com.example.tumiweb.services.ICourseService;
 import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
@@ -36,6 +38,9 @@ public class CourseServiceImp implements ICourseService {
     @Autowired
     private UploadFile uploadFile;
 
+    @Autowired
+    private ICategoryService categoryService;
+
 
     @Override
     public Set<Course> findAllCourse(Long page, int size, boolean status, boolean both) {
@@ -48,17 +53,21 @@ public class CourseServiceImp implements ICourseService {
     }
 
     @Override
-    public Course createNewCourse(CourseDTO courseDTO, MultipartFile multipartFile) {
+    public Course createNewCourse(CourseDTO courseDTO, MultipartFile multipartFile, Long categoryId) {
         if(courseRepository.findByName(courseDTO.getName()) != null) {
             throw new DuplicateException("This name off course is contain");
         }
         Course course = modelMapper.map(courseDTO, Course.class);
-        if(!multipartFile.isEmpty()) {
+        if(multipartFile != null) {
             Image image = imageService.createNewImage(new ImageDTO(multipartFile.getName()), multipartFile);
-            Set<Image> images = new HashSet<>();
-            images.add(image);
-            course.setImages(images);
+            course.addRelationImage(image);
         }
+
+        Category category = categoryService.findCategoryById(categoryId);
+        if(category == null) {
+            throw new NotFoundException("Can not find category by id: " + categoryId);
+        }
+        course.setCategory(category);
 
         return courseRepository.save(course);
     }
@@ -117,5 +126,11 @@ public class CourseServiceImp implements ICourseService {
         course.setStatus(!course.getStatus());
 
         return courseRepository.save(course);
+    }
+
+    @Override
+    public Course editCategoryById(Long courseId, Long categoryId) {
+        //tý làm tiếp
+        return null;
     }
 }
