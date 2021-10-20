@@ -1,7 +1,5 @@
 package com.example.tumiweb.services;
 
-import com.example.tumiweb.dto.GiftOrderDTO;
-import com.example.tumiweb.model.Gift;
 import com.example.tumiweb.model.GiftOrder;
 
 import java.util.Set;

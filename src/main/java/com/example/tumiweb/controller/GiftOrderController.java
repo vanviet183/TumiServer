@@ -2,12 +2,7 @@ package com.example.tumiweb.controller;
 
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.constants.Constants;
-import com.example.tumiweb.dto.GiftOrderDTO;
-import com.example.tumiweb.model.Gift;
 import com.example.tumiweb.model.GiftOrder;
-import com.example.tumiweb.model.User;
-import com.example.tumiweb.repository.GiftOrderRepository;
-import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.IGiftOrderService;
 import com.example.tumiweb.services.IGiftService;
 import com.example.tumiweb.services.IUserService;
@@ -22,12 +17,6 @@ public class GiftOrderController extends BaseController<GiftOrder> {
 
     @Autowired
     private IGiftOrderService giftOrderService;
-
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private IGiftService giftService;
 
     @GetMapping("")
     public ResponseEntity<?> getAllGiftOder(
