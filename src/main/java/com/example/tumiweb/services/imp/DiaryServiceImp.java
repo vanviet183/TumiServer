@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class DiaryServiceImp implements IDiaryService {
@@ -46,7 +47,9 @@ public class DiaryServiceImp implements IDiaryService {
             throw new NotFoundException("Can not find user by id: " + userId);
         }
 
-        return diaryRepository.findByStart(day);
+        return diaryRepository.findAllByUser_Id(userId).stream().filter(item -> {
+            return item.getStart().split(" ")[0].replaceAll("/", "-").equals(day);
+        }).collect(Collectors.toSet());
     }
 
     @Override

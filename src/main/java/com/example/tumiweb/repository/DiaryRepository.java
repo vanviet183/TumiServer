@@ -8,7 +8,6 @@ import java.util.Set;
 
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
-    Set<Diary> findAllByStart(String start);
     Set<Diary> findAllByUser_Id(Long userId);
-    Set<Diary> findByStart(String start);
+//    Set<Diary> findByStart(String start);
 }

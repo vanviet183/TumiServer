@@ -19,6 +19,14 @@ public class DiaryController extends BaseController<Diary> {
         return this.resSetSuccess(diaryService.findAllByUserId(id));
     }
 
+    @GetMapping("/{userId}/{day}")
+    public ResponseEntity<?> findAllDiaryByUserIdOneDay(
+            @PathVariable("userId") Long userId,
+            @PathVariable("day") String day
+    ) {
+        return this.resSetSuccess(diaryService.findAllByUserIdAndOnDay(userId, day));
+    }
+
     @GetMapping("/{id}/detail")
     public ResponseEntity<?> findById(@PathVariable("id") Long id) {
         return this.resSuccess(diaryService.findDiaryById(id));
