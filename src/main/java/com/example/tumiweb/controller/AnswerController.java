@@ -54,4 +54,9 @@ public class AnswerController extends BaseController<Answer> {
         return this.resSuccess(answerService.editAnswerById(id, answerDTO, image));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteQuestionById(@PathVariable("id") Long id) {
+        return this.resSuccess(answerService.deleteAnswerById(id));
+    }
+
 }

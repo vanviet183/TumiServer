@@ -30,14 +30,14 @@ public class ConvertObject {
     public static Question convertQuestionDTOToQuestion(Question question, QuestionDTO questionDTO) {
         question.setTitle(questionDTO.getTitle());
         question.setSeo(questionDTO.getSeo());
-        question.setAvatar(question.getAvatar());
+        question.setAvatar(questionDTO.getAvatar());
         return question;
     }
 
     public static Answer convertAnswerDTOToAnswer(Answer answer, AnswerDTO answerDTO) {
-        answer.setTitle(answer.getTitle());
-        answer.setImage(answer.getImage());
-        answer.setIsTrue(answer.getIsTrue());
+        answer.setTitle(answerDTO.getTitle());
+        answer.setImage(answerDTO.getImage());
+        answer.setIsTrue(answerDTO.getIsTrue());
         return answer;
     }
 }

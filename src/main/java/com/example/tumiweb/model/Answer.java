@@ -17,8 +17,8 @@ public class Answer extends BaseEntity {
 
     @NotBlank
     private String title;
-    @NotBlank
-    private Boolean isTrue = Boolean.FALSE;
+
+    private Boolean isTrue;
 
     private String image;
 

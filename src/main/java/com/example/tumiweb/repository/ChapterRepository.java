@@ -9,4 +9,5 @@ import java.util.Set;
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
     Set<Chapter> findAllByStatus(boolean status);
+    Set<Chapter> findAllByCourse_Id(Long courseId);
 }

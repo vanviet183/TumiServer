@@ -56,19 +56,33 @@ public class AnswerServiceImp implements IAnswerService {
 
     @Override
     public Answer createNewAnswer(AnswerDTO answerDTO, Long questionId, MultipartFile multipartFile) {
+        Question question = questionService.findQuestionById(questionId);
+        if(question == null) {
+            throw new NotFoundException("Can not find question by id: " + questionId);
+        }
+
+        if(question.getAnswers().size() >= 4) {
+            throw new NotFoundException("This question is full answer");
+        }
         Answer answer = modelMapper.map(answerDTO, Answer.class);
         if(multipartFile != null) {
             answer.setImage(uploadFile.getUrlFromFile(multipartFile));
         }
-        answer.setQuestion(questionService.findQuestionById(questionId));
+        answer.setQuestion(question);
         return answerRepository.save(answer);
     }
 
     @Override
     public Set<Answer> createNewAnswers(Long questionId, List<AnswerDTO> answerDTOS, MultipartFile[] multipartFiles) {
         Question question = questionService.findQuestionById(questionId);
+
         if(question == null) {
             throw new NotFoundException("Can not find question by id: " + questionId);
+        }
+
+        System.out.println("Hihi: " + question.getAnswers().size());
+        if(question.getAnswers().size() >= 4) {
+            throw new NotFoundException("This question is full answer");
         }
 
         Set<Answer> answers = new HashSet<>();
@@ -106,6 +120,11 @@ public class AnswerServiceImp implements IAnswerService {
         if(answer == null) {
             throw new NotFoundException("Can not find Answer by id: " + id);
         }
+
+        Question question = answer.getQuestion();
+        question.deleteRelation(answer);
+        questionService.save(question);
+
         answerRepository.delete(answer);
         return answer;
     }

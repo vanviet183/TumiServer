@@ -53,37 +53,35 @@ public class ChapterService implements IChapterService {
             throw new NotFoundException("Can not find course by id: " + courseId);
         }
 
-        //Đang đau đầu quá, copy cho nhanh khi nào rảnh thì vào sửa
-        Set<Chapter> chapters;
-        //paging
-        if(page != null) {
-            //có paging
-            if(both) {
-                chapters = new HashSet<>(chapterRepository.findAll(PageRequest.of(page.intValue(), size)).getContent());
-            }else if(status) {
-                chapters = chapterRepository.findAllByStatus(true);
-                int length = chapters.size();
-                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
-                if(totalPage > page.intValue()) {
-                    return new HashSet<>();
-                }
-                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()*size + size));
-            }else {
-                chapters = chapterRepository.findAllByStatus(false);
-                int length = chapters.size();
-                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
-                if(totalPage > page.intValue()) {
-                    return new HashSet<>();
-                }
-                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()*size + size));
-            }
-        }else {
-            chapters = new HashSet<>(chapterRepository.findAll());
-        }
+//        //Đang đau đầu quá, copy cho nhanh khi nào rảnh thì vào sửa
+//        Set<Chapter> chapters = new HashSet<>();
+//        //paging
+//        if(page != null) {
+//            //có paging
+//            if(both) {
+//                chapters = new HashSet<>(chapterRepository.findAll(PageRequest.of(page.intValue(), size)).getContent());
+//            }else if(status) {
+//                chapters = chapterRepository.findAllByStatus(true);
+//                int length = chapters.size();
+//                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
+//                if(totalPage > page.intValue()) {
+//                    return new HashSet<>();
+//                }
+//                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()*size + size));
+//            }else {
+//                chapters = chapterRepository.findAllByStatus(false);
+//                int length = chapters.size();
+//                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
+//                if(totalPage > page.intValue()) {
+//                    return new HashSet<>();
+//                }
+//                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()*size + size));
+//            }
+//        }else {
+//            chapters = new HashSet<>(chapterRepository.findAll());
+//        }
 
-        return chapters.stream().filter(item -> {
-            return item.getCourse().equals(course);
-        }).collect(Collectors.toSet());
+        return chapterRepository.findAllByCourse_Id(courseId);
     }
 
     @Override

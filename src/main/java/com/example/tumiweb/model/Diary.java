@@ -1,5 +1,6 @@
 package com.example.tumiweb.model;
 
+
 import com.example.tumiweb.base.BaseEntity;
 import lombok.*;
 
@@ -7,22 +8,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "notification")
+@Table(name = "diary")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Notification extends BaseEntity {
-
+public class Diary extends BaseEntity {
     @NotBlank
-    private String title;
-    private String path;
+    private String start;
+    private String end;
 
 
-    //link to table User
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //link to table Users
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "users_id")
     private User user;
-
 }

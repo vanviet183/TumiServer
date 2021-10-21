@@ -125,6 +125,11 @@ public class QuestionServiceImp implements IQuestionService {
     }
 
     @Override
+    public Question save(Question question) {
+        return questionRepository.save(question);
+    }
+
+    @Override
     public Question deleteQuestionById(Long id) {
         Question question = findQuestionById(id);
         if(question == null) {

@@ -45,6 +45,7 @@ public class User extends BaseEntity {
     }
 
 
+
     //link to table Help
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonIgnore
@@ -68,6 +69,7 @@ public class User extends BaseEntity {
     )
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
+
 
 
     //link to table Gift-Order
@@ -95,5 +97,19 @@ public class User extends BaseEntity {
     private Set<Course> courses = new HashSet<>();
 
 
+
+    //link to table diary
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonIgnore
+    private Set<Diary> diaries = new HashSet<>();
+
+    public void addRelationDiary(Diary diary) {
+        diaries.add(diary);
+        diary.setUser(this);
+    }
+    public void deleteRelationDiary(Diary diary) {
+        diaries.remove(diary);
+        diary.setUser(null);
+    }
 
 }

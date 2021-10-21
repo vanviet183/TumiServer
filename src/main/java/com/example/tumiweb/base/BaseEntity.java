@@ -19,7 +19,7 @@ public abstract class BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "status", nullable = true)
+    @Column(name = "status")
     private Boolean status = Boolean.TRUE;
 
     @CreationTimestamp
