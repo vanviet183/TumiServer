@@ -5,10 +5,10 @@
 - Spring security
 - ModelMapper: convert object
 - Lombok
-- Send mail
+- Send mail: đăng ký
 - Swagger
 - Slugify: https://github.com/slugify/slugify
-
+- Schedule: Nếu 1 ngày 1 đăng nhập web thì sẽ check vào 21h và gửi mail nhắc vào học
 
 
 

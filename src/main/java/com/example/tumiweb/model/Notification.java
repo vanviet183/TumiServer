@@ -4,6 +4,7 @@ import com.example.tumiweb.base.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Transactional
 public class Notification extends BaseEntity {
 
     @NotBlank

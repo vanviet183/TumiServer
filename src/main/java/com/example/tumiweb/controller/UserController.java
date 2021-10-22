@@ -3,6 +3,7 @@ package com.example.tumiweb.controller;
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.model.User;
+import com.example.tumiweb.services.ISendMailService;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.constants.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,6 @@ import java.io.IOException;
 public class UserController extends BaseController<User> {
     @Autowired
     private IUserService userService;
-
-
 
     @GetMapping("")
     public ResponseEntity<?> getAllUser(

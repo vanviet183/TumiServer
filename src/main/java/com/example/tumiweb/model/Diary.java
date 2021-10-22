@@ -18,7 +18,7 @@ public class Diary extends BaseEntity {
     @NotBlank
     private String start;
     private String end;
-
+    private String day;
 
     //link to table Users
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

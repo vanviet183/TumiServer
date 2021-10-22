@@ -1,5 +1,6 @@
 package com.example.tumiweb.services.imp;
 
+import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
@@ -7,6 +8,7 @@ import com.example.tumiweb.model.Course;
 import com.example.tumiweb.model.User;
 import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.repository.UserRepository;
+import com.example.tumiweb.services.ISendMailService;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
@@ -33,6 +35,9 @@ public class UserServiceImp implements IUserService {
 
     @Autowired
     private UploadFile uploadFile;
+
+    @Autowired
+    private ISendMailService sendMailService;
 
     private User findUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -91,6 +96,13 @@ public class UserServiceImp implements IUserService {
         if(userRepository.findByEmail(user.getEmail()) != null) {
             throw new DuplicateException("Duplicate email: " + user.getEmail());
         }
+
+        //send mail tạo tài khoản thành công
+        String contentMail = "Đây là tài khoản của bạn, không được chia sẻ cho bất cứ ai.\nUsername: "
+                + user.getUsername() + "\nPassword: " + user.getPassword()
+                + "\n\nCảm ơn bạn đã đăng ký học tại Tumi !";
+        sendMailService.sendMailWithText(Constants.SUBJECT_REGISTER, contentMail, user.getEmail());
+        //
 
         return userRepository.save(user);
     }

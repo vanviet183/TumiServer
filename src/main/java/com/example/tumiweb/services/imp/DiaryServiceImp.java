@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -95,5 +96,24 @@ public class DiaryServiceImp implements IDiaryService {
         }
         diaryRepository.delete(diary);
         return diary;
+    }
+
+    //lấy những ai k đăng nhập
+    @Override
+    public Set<User> findAllUserByDay(String day) {
+        Set<Diary> diaries = diaryRepository.findAllByDay(day);
+
+        Set<User> userSet = diaries.stream().map(Diary::getUser).collect(Collectors.toSet());
+
+        Set<User> users = userService.getAllUsers(null, 0, false, false);
+
+        Set<User> userDiary = new HashSet<>();
+        for(User user : users) {
+            if(!userSet.contains(user)) {
+                userDiary.add(user);
+            }
+        }
+
+        return userDiary;
     }
 }
