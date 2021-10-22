@@ -3,7 +3,7 @@ package com.example.tumiweb.controller;
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dto.GiftDTO;
-import com.example.tumiweb.model.Gift;
+import com.example.tumiweb.dao.Gift;
 import com.example.tumiweb.services.IGiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

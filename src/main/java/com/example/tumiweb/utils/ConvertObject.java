@@ -1,7 +1,7 @@
 package com.example.tumiweb.utils;
 
 import com.example.tumiweb.dto.*;
-import com.example.tumiweb.model.*;
+import com.example.tumiweb.dao.*;
 
 public class ConvertObject {
     public static User convertUserDTOToUser(User user, UserDTO userDTO) {

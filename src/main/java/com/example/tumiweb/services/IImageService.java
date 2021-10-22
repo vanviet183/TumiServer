@@ -1,7 +1,7 @@
 package com.example.tumiweb.services;
 
 import com.example.tumiweb.dto.ImageDTO;
-import com.example.tumiweb.model.Image;
+import com.example.tumiweb.dao.Image;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;

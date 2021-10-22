@@ -4,8 +4,8 @@ import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Course;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.Course;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.ISendMailService;
@@ -75,7 +75,6 @@ public class UserServiceImp implements IUserService {
             users = new HashSet<>(userRepository.findAll());
         }
         return users;
-//        return new HashSet<>(userRepository.findAll());
     }
 
     @Override
@@ -85,6 +84,11 @@ public class UserServiceImp implements IUserService {
             throw new NotFoundException("Can not find user by id: " + id);
         }
         return user;
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override

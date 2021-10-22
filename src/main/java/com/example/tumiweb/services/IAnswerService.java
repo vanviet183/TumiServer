@@ -1,7 +1,7 @@
 package com.example.tumiweb.services;
 
 import com.example.tumiweb.dto.AnswerDTO;
-import com.example.tumiweb.model.Answer;
+import com.example.tumiweb.dao.Answer;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

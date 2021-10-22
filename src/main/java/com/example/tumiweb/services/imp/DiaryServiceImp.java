@@ -1,8 +1,8 @@
 package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Diary;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.Diary;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.repository.DiaryRepository;
 import com.example.tumiweb.services.IDiaryService;
 import com.example.tumiweb.services.IUserService;

@@ -2,8 +2,8 @@ package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.dto.HelpDTO;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Help;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.Help;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.repository.HelpRepository;
 import com.example.tumiweb.services.IHelpService;
 import com.example.tumiweb.services.IUserService;

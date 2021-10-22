@@ -3,7 +3,7 @@ package com.example.tumiweb.services.imp;
 import com.example.tumiweb.dto.RoleDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Role;
+import com.example.tumiweb.dao.Role;
 import com.example.tumiweb.repository.RoleRepository;
 import com.example.tumiweb.services.IRoleService;
 import org.modelmapper.ModelMapper;
@@ -51,6 +51,15 @@ public class RoleServiceImp implements IRoleService {
     }
 
     @Override
+    public Role getRoleByName(String name) {
+        Role role = roleRepository.findByName(name);
+        if(role == null) {
+            throw new NotFoundException("Can not find role");
+        }
+        return role;
+    }
+
+    @Override
     public Role createRole(RoleDTO roleDTO) {
         if(roleRepository.findByName(roleDTO.getName()) != null) {
             throw new DuplicateException("This role is contain");
@@ -75,5 +84,10 @@ public class RoleServiceImp implements IRoleService {
         }
         roleRepository.delete(role);
         return role;
+    }
+
+    @Override
+    public Role save(Role role) {
+        return roleRepository.save(role);
     }
 }

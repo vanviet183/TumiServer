@@ -3,7 +3,7 @@ package com.example.tumiweb.controller;
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dto.CategoryDTO;
-import com.example.tumiweb.model.Category;
+import com.example.tumiweb.dao.Category;
 import com.example.tumiweb.services.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

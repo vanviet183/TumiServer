@@ -1,7 +1,7 @@
 package com.example.tumiweb.services;
 
 import com.example.tumiweb.dto.NotificationDTO;
-import com.example.tumiweb.model.Notification;
+import com.example.tumiweb.dao.Notification;
 
 import java.util.Set;
 

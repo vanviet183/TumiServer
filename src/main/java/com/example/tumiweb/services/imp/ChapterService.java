@@ -2,23 +2,19 @@ package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.dto.ChapterDTO;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Chapter;
-import com.example.tumiweb.model.Course;
+import com.example.tumiweb.dao.Chapter;
+import com.example.tumiweb.dao.Course;
 import com.example.tumiweb.repository.ChapterRepository;
-import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.services.IChapterService;
-import com.example.tumiweb.services.ICourseService;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ChapterService implements IChapterService {

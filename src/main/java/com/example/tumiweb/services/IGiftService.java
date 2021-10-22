@@ -1,7 +1,7 @@
 package com.example.tumiweb.services;
 
 import com.example.tumiweb.dto.GiftDTO;
-import com.example.tumiweb.model.Gift;
+import com.example.tumiweb.dao.Gift;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;

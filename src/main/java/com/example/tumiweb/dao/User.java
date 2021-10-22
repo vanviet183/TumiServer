@@ -1,4 +1,4 @@
-package com.example.tumiweb.model;
+package com.example.tumiweb.dao;
 
 import com.example.tumiweb.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,6 +25,7 @@ public class User extends BaseEntity {
     @NotBlank
     private String password;
     @Email
+    @NotBlank
     private String email;
     private String phone;
     private String avatar;

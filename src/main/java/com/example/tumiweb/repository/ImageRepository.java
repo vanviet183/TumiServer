@@ -1,6 +1,6 @@
 package com.example.tumiweb.repository;
 
-import com.example.tumiweb.model.Image;
+import com.example.tumiweb.dao.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.example.tumiweb.repository;
 
-import com.example.tumiweb.model.Diary;
+import com.example.tumiweb.dao.Diary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

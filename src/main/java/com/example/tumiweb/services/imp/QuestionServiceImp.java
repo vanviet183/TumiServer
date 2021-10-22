@@ -1,15 +1,10 @@
 package com.example.tumiweb.services.imp;
 
-import com.example.tumiweb.dto.AnswerDTO;
 import com.example.tumiweb.dto.QuestionDTO;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Answer;
-import com.example.tumiweb.model.Chapter;
-import com.example.tumiweb.model.Image;
-import com.example.tumiweb.model.Question;
+import com.example.tumiweb.dao.Chapter;
+import com.example.tumiweb.dao.Question;
 import com.example.tumiweb.repository.AnswerRepository;
-import com.example.tumiweb.repository.ChapterRepository;
-import com.example.tumiweb.repository.ImageRepository;
 import com.example.tumiweb.repository.QuestionRepository;
 import com.example.tumiweb.services.IChapterService;
 import com.example.tumiweb.services.IQuestionService;

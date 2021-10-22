@@ -1,8 +1,9 @@
-package com.example.tumiweb.model;
+package com.example.tumiweb.dao;
 
 import com.example.tumiweb.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -21,6 +22,7 @@ import java.util.Set;
 public class Gift extends BaseEntity {
 
     @NotBlank
+    @Nationalized
     private String name;
     @Min(0)
     @Max(100)

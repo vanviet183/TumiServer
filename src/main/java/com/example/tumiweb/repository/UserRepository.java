@@ -1,6 +1,6 @@
 package com.example.tumiweb.repository;
 
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,9 @@
 package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Gift;
-import com.example.tumiweb.model.GiftOrder;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.Gift;
+import com.example.tumiweb.dao.GiftOrder;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.repository.GiftOrderRepository;
 import com.example.tumiweb.services.IGiftOrderService;
 import com.example.tumiweb.services.IGiftService;

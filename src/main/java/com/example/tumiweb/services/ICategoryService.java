@@ -1,7 +1,7 @@
 package com.example.tumiweb.services;
 
 import com.example.tumiweb.dto.CategoryDTO;
-import com.example.tumiweb.model.Category;
+import com.example.tumiweb.dao.Category;
 
 import java.util.Set;
 

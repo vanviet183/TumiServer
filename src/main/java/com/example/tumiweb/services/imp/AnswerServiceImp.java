@@ -2,24 +2,19 @@ package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.dto.AnswerDTO;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Answer;
-import com.example.tumiweb.model.GiftOrder;
-import com.example.tumiweb.model.Question;
+import com.example.tumiweb.dao.Answer;
+import com.example.tumiweb.dao.Question;
 import com.example.tumiweb.repository.AnswerRepository;
-import com.example.tumiweb.repository.QuestionRepository;
 import com.example.tumiweb.services.IAnswerService;
 import com.example.tumiweb.services.IQuestionService;
 import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class AnswerServiceImp implements IAnswerService {

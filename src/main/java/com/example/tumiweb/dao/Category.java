@@ -1,9 +1,10 @@
-package com.example.tumiweb.model;
+package com.example.tumiweb.dao;
 
 
 import com.example.tumiweb.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -20,7 +21,9 @@ import java.util.Set;
 public class Category extends BaseEntity {
 
     @NotBlank
+    @Nationalized
     private String name;
+    @Nationalized
     private String description;
     private String seo;
 

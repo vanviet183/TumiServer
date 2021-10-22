@@ -29,6 +29,16 @@ public class CustomExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_GATEWAY.value(), ex.getMessage());
     }
 
+    @ExceptionHandler(LoginException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleLoginException(LoginException ex, WebRequest req) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
 
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbiddenException(ForbiddenException ex, WebRequest req) {
+        return new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage());
+    }
 
 }

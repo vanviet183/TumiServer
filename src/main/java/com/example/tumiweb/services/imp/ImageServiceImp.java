@@ -4,7 +4,7 @@ import com.example.tumiweb.dto.ImageDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
 import com.example.tumiweb.exception.UploadImageException;
-import com.example.tumiweb.model.Image;
+import com.example.tumiweb.dao.Image;
 import com.example.tumiweb.repository.ImageRepository;
 import com.example.tumiweb.services.IImageService;
 import com.example.tumiweb.utils.UploadFile;

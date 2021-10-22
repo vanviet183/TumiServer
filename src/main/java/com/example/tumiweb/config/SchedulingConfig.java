@@ -1,7 +1,7 @@
 package com.example.tumiweb.config;
 
 import com.example.tumiweb.constants.Constants;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.services.IDiaryService;
 import com.example.tumiweb.services.ISendMailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,6 @@ public class SchedulingConfig {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-
     @Async
     @Scheduled(cron = "0 0 21 ? * MON-SAT")
 //    @Scheduled(cron = "0 * * ? * *")
@@ -42,7 +41,6 @@ public class SchedulingConfig {
             System.out.println(user.getEmail());
             sendMailService.sendMailWithText(Constants.SUBJECT_CALL_LEARN, Constants.CONTENT_CALL_LEARN, user.getEmail());
         });
-
     }
 
 

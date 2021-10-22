@@ -1,4 +1,4 @@
-package com.example.tumiweb.model;
+package com.example.tumiweb.dao;
 
 import com.example.tumiweb.base.BaseEntity;
 import lombok.*;
@@ -19,7 +19,7 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class Help extends BaseEntity {
     @NotBlank
-//    @Nationalized
+    @Nationalized
     private String title;
 
     //link to table Users

@@ -3,7 +3,7 @@ package com.example.tumiweb.services.imp;
 import com.example.tumiweb.dto.CategoryDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Category;
+import com.example.tumiweb.dao.Category;
 import com.example.tumiweb.repository.CategoryRepository;
 import com.example.tumiweb.services.ICategoryService;
 import com.github.slugify.Slugify;

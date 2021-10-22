@@ -2,7 +2,7 @@ package com.example.tumiweb.controller;
 
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.dto.AnswerDTO;
-import com.example.tumiweb.model.Answer;
+import com.example.tumiweb.dao.Answer;
 import com.example.tumiweb.services.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

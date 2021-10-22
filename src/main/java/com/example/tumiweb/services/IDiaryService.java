@@ -1,7 +1,7 @@
 package com.example.tumiweb.services;
 
-import com.example.tumiweb.model.Diary;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.Diary;
+import com.example.tumiweb.dao.User;
 
 import java.util.Set;
 

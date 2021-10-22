@@ -1,9 +1,6 @@
 package com.example.tumiweb.dto;
 
-import com.example.tumiweb.model.Gift;
 import lombok.*;
-
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor

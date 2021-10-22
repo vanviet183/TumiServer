@@ -1,7 +1,8 @@
-package com.example.tumiweb.model;
+package com.example.tumiweb.dao;
 
 import com.example.tumiweb.base.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @ToString
 public class Image extends BaseEntity {
-
+    @Nationalized
     private String title;
     @NotBlank
     private String path;

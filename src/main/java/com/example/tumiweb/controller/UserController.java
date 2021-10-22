@@ -2,8 +2,7 @@ package com.example.tumiweb.controller;
 
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.dto.UserDTO;
-import com.example.tumiweb.model.User;
-import com.example.tumiweb.services.ISendMailService;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.constants.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +32,10 @@ public class UserController extends BaseController<User> {
         return this.resSuccess(userService.getUserById(id));
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> createNewUser(@RequestBody UserDTO userDTO) {
-        return this.resSuccess(userService.createNewUser(userDTO));
-    }
+//    @PostMapping("")
+//    public ResponseEntity<?> createNewUser(@RequestBody UserDTO userDTO) {
+//        return this.resSuccess(userService.createNewUser(userDTO));
+//    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> editUserById(

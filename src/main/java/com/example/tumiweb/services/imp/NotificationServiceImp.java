@@ -2,8 +2,8 @@ package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.dto.NotificationDTO;
 import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.model.Notification;
-import com.example.tumiweb.model.User;
+import com.example.tumiweb.dao.Notification;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.repository.NotificationRepository;
 import com.example.tumiweb.services.INotificationService;
 import com.example.tumiweb.services.IUserService;
