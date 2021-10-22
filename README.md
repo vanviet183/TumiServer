@@ -15,4 +15,5 @@
 ## Note đang làm:
 
 - Thêm chức năng vào diary: tính thời gian online 1 ngày, tỉnh tổng 1 tuần, tổng 1 tháng.
-
+- Online 1 ngày có mức giờ và nhận quà theo giờ online.
+- Thêm chức năng nhận quà mỗi ngày như game VLCM :v
