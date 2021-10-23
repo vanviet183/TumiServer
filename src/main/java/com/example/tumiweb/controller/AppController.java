@@ -12,6 +12,6 @@ public class AppController {
 
     @GetMapping("/author")
     public String getAuthor() {
-        return "Nguyễn Đình Huân - chúc em một đời bình an <3";
+        return "Nguyễn Đình Huân - chúc em một đời bình an <3 (H)";
     }
 }
