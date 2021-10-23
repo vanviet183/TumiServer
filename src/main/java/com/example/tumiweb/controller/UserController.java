@@ -7,9 +7,11 @@ import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.constants.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 
 @RestController
@@ -19,6 +21,7 @@ public class UserController extends BaseController<User> {
     private IUserService userService;
 
     @GetMapping("")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> getAllUser(
             @RequestParam(name = "page", required = false) Long page,
             @RequestParam(name = "status", required = false) boolean status,
@@ -28,6 +31,7 @@ public class UserController extends BaseController<User> {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> getUserById(@PathVariable("id") Long id) {
         return this.resSuccess(userService.getUserById(id));
     }
@@ -38,6 +42,7 @@ public class UserController extends BaseController<User> {
 //    }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> editUserById(
             @PathVariable("id") Long id,
             @RequestBody UserDTO userDTO
@@ -46,11 +51,13 @@ public class UserController extends BaseController<User> {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUserById(@PathVariable("id") Long id) {
         return this.resSuccess(userService.deleteUserById(id));
     }
 
     @PostMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> changeStatusById(@PathVariable("id") Long id) {
         return this.resSuccess(userService.changeStatusById(id));
     }

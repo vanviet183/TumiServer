@@ -33,7 +33,7 @@ public class SchedulingConfig {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Async
-    @Scheduled(cron = "0 0 21 ? * MON-SAT")
+    @Scheduled(cron = "0 30 20 ? * MON-SAT")
 //    @Scheduled(cron = "0 * * ? * *")
     void sendMailToUser() {
         Set<User> users = diaryService.findAllUserByDay(simpleDateFormat.format(new Date()));

@@ -6,6 +6,7 @@ import com.example.tumiweb.dao.Answer;
 import com.example.tumiweb.services.IAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +39,7 @@ public class AnswerController extends BaseController<Answer> {
     }
 
     @PostMapping("/{questionId}/all")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> createAnswers(
             @PathVariable("questionId") Long questionId,
             @RequestBody List<AnswerDTO> answerDTOS,
@@ -47,6 +49,7 @@ public class AnswerController extends BaseController<Answer> {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> editAnswerById(
             @PathVariable("id") Long id,
             @RequestBody AnswerDTO answerDTO,
@@ -55,6 +58,7 @@ public class AnswerController extends BaseController<Answer> {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> deleteQuestionById(@PathVariable("id") Long id) {
         return this.resSuccess(answerService.deleteAnswerById(id));
     }

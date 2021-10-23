@@ -8,6 +8,7 @@ import com.example.tumiweb.dao.Course;
 import com.example.tumiweb.services.ICourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ public class CourseController extends BaseController<Course> {
     }
 
     @PostMapping("/{categoryId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> createNewCourse(
             @RequestBody CourseDTO courseDTO,
             @RequestParam(name = "image", required = false) MultipartFile image,
@@ -41,6 +43,7 @@ public class CourseController extends BaseController<Course> {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> editCourseById(
             @PathVariable("id") Long id,
             @RequestBody CourseDTO courseDTO,
@@ -49,6 +52,7 @@ public class CourseController extends BaseController<Course> {
     }
 
     @PostMapping("/{id}/image")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> changeAvatarById(
             @PathVariable("id") Long id,
             @RequestParam(value = "image") MultipartFile image
@@ -57,11 +61,13 @@ public class CourseController extends BaseController<Course> {
     }
 
     @PostMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> changeStatusCourseById(@PathVariable("id") Long id) {
         return this.resSuccess(courseService.changeStatusById(id));
     }
 
     @PostMapping("/{courseId}/{categoryId}/category")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> changeCategory(
             @PathVariable("courseId") Long courseId,
             @PathVariable("categoryId") Long categoryId

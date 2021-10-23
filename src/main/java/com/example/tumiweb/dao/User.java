@@ -64,7 +64,7 @@ public class User extends BaseEntity {
 
 
     //link to table Role
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)//phải để EAGER k thì sẽ lỗi "could not initialize proxy – no Session"
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")

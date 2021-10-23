@@ -7,6 +7,7 @@ import com.example.tumiweb.dao.Question;
 import com.example.tumiweb.services.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +32,7 @@ public class QuestionController extends BaseController<Question> {
     }
 
     @PostMapping("/{chapterId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> createNewQuestion(
             @PathVariable("chapterId") Long id,
             @RequestBody QuestionDTO questionDTO,
@@ -39,6 +41,7 @@ public class QuestionController extends BaseController<Question> {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> editQuestionById(
             @PathVariable Long id,
             @RequestBody QuestionDTO questionDTO,

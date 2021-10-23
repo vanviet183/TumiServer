@@ -8,6 +8,7 @@ import com.example.tumiweb.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -28,6 +29,7 @@ public class UserRoleController extends BaseController<String> {
     }
 
     @PostMapping("/{userId}/{roleId}/add")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'ADMIN', this)")
     public ResponseEntity<?> addRoleToUser(
             @PathVariable("userId") Long userId,
             @PathVariable("roleId") Long roleId
@@ -55,6 +57,7 @@ public class UserRoleController extends BaseController<String> {
     }
 
     @PostMapping("/{userId}/{roleId}/remove")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'ADMIN', this)")
     public ResponseEntity<?> removeRoleToUser(
             @PathVariable("userId") Long userId,
             @PathVariable("roleId") Long roleId

@@ -6,6 +6,7 @@ import com.example.tumiweb.dto.RoleDTO;
 import com.example.tumiweb.services.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +27,7 @@ public class RoleController extends BaseController<Role> {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createRole(@RequestBody RoleDTO roleDTO) {
         return this.resSuccess(roleService.createRole(roleDTO));
     }

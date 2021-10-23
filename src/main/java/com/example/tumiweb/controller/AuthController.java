@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -73,6 +75,15 @@ public class AuthController {
         if(roleSet.size() > 0) {
             roleSet.forEach(item -> roles.add(item.getName()));
         }
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//                userDetails, null, userDetails.getAuthorities());
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        UserDetails principal = myUserDetailsService.loadUserByUsername(user.getUsername());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+
         return ResponseEntity.ok(new AuthenticationResponse(jwt, user.getId(), user.getUsername(), roles));
     }
 
@@ -124,5 +135,7 @@ public class AuthController {
             throw new InvalidObjectException(e.getMessage());
         }
     }
+
+
 
 }

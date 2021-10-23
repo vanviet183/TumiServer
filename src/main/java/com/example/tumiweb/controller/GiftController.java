@@ -7,6 +7,7 @@ import com.example.tumiweb.dao.Gift;
 import com.example.tumiweb.services.IGiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,7 @@ public class GiftController extends BaseController<Gift> {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> createNewGift(
             @RequestParam(name = "image", required = false) MultipartFile image,
             @RequestBody GiftDTO giftDTO) {
@@ -39,6 +41,7 @@ public class GiftController extends BaseController<Gift> {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> editGiftById(
             @PathVariable("id") Long id,
             @RequestParam(name = "image", required = false) MultipartFile image,
@@ -48,16 +51,19 @@ public class GiftController extends BaseController<Gift> {
     }
 
     @PostMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> changeStatus(@PathVariable("id") Long id) {
         return this.resSuccess(giftService.changeStatusById(id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> deleteGiftById(@PathVariable("id") Long id) {
         return this.resSuccess(giftService.deleteGiftById(id));
     }
 
     @PostMapping("/{id}/image")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> changeImageById(
             @PathVariable("id") Long id,
             @RequestParam(name = "image", required = false) MultipartFile multipartFile

@@ -6,6 +6,7 @@ import com.example.tumiweb.dao.GiftOrder;
 import com.example.tumiweb.services.IGiftOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -38,11 +39,13 @@ public class GiftOrderController extends BaseController<GiftOrder> {
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> disableStatusOrderGift(@PathVariable("id") Long id) {
         return this.resSuccess(giftOrderService.changeStatusById(id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> deleteGiftOrder(@PathVariable("id") Long id) {
         return this.resSuccess(giftOrderService.deleteGiftOrderById(id));
     }

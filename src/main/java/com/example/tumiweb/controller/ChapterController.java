@@ -7,6 +7,7 @@ import com.example.tumiweb.dao.Chapter;
 import com.example.tumiweb.services.IChapterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,6 +33,7 @@ public class ChapterController extends BaseController<Chapter> {
     }
 
     @PostMapping("/{courseId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> createNewChapter(
             @PathVariable("courseId") Long id,
             @RequestBody ChapterDTO chapterDTO) {
@@ -39,6 +41,7 @@ public class ChapterController extends BaseController<Chapter> {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> editCourseById(
             @PathVariable("id") Long id,
             @RequestBody ChapterDTO chapterDTO

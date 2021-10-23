@@ -7,6 +7,7 @@ import com.example.tumiweb.dao.Help;
 import com.example.tumiweb.services.IHelpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +36,7 @@ public class HelpController extends BaseController<Help> {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> deleteHelpById(@PathVariable("id") Long id) {
         return this.resSuccess(helpService.deleteHelpById(id));
     }

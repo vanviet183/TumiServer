@@ -7,6 +7,7 @@ import com.example.tumiweb.dao.Category;
 import com.example.tumiweb.services.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,11 +27,13 @@ public class CategoryController extends BaseController<Category> {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createNewCategory(@RequestBody CategoryDTO categoryDTO) {
         return this.resSuccess(categoryService.createNewCategory(categoryDTO));
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> editCategoryById(
             @PathVariable("id") Long id,
             @RequestBody CategoryDTO categoryDTO
@@ -44,11 +47,13 @@ public class CategoryController extends BaseController<Category> {
     }
 
     @PostMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> changeStatusById(@PathVariable("id") Long id) {
         return this.resSuccess(categoryService.changeStatusById(id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> deleteCategoryById(@PathVariable("id") Long id) {
         return this.resSuccess(categoryService.deleteCategoryById(id));
     }

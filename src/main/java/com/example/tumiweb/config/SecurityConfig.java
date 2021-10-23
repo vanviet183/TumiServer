@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,6 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -50,8 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/helps/**").authenticated()
                 .antMatchers("/api/v1/notifications/**").permitAll()
                 .antMatchers("/api/v1/questions/**").permitAll()
-                .antMatchers("/api/v1/diaries/**").authenticated()
-                .antMatchers("/api/v1/users/**").permitAll()
+                .antMatchers("/api/v1/diaries/**").permitAll()
+                .antMatchers("/api/v1/users/**").authenticated()
 //                .antMatchers("/api/v1/users/**").authenticated()
                 .antMatchers("/api/v1/user-course/**").authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
