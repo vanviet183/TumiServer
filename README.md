@@ -6,7 +6,7 @@
 - ModelMapper: convert object
 - Lombok
 - Send mail: đăng ký
-- Swagger
+- Swagger: http://localhost:8080/swagger-ui.html
 - Slugify: https://github.com/slugify/slugify
 - Schedule: Nếu 1 ngày 1 đăng nhập web thì sẽ check vào 21h và gửi mail nhắc vào học
 
