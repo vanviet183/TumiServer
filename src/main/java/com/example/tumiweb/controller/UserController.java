@@ -31,7 +31,7 @@ public class UserController extends BaseController<User> {
             @ApiResponse(code = 404, message = "Không tìm thấy")
     })
     @GetMapping("")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     public ResponseEntity<?> getAllUser(
             @RequestParam(name = "page", required = false) Long page,
             @RequestParam(name = "status", required = false) boolean status,
@@ -41,7 +41,7 @@ public class UserController extends BaseController<User> {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @ApiOperation(value = "Tìm một user với ID")
     public ResponseEntity<?> getUserById(
             @ApiParam(value = "Id của user cần tìm", required = true)
@@ -56,7 +56,7 @@ public class UserController extends BaseController<User> {
 //    }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @ApiOperation(value = "Edit thông tin của một user")
     public ResponseEntity<?> editUserById(
             @ApiParam(value = "Id cuả user cần sửa thông tin", required = true)
@@ -68,7 +68,7 @@ public class UserController extends BaseController<User> {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Delete user với id")
     public ResponseEntity<?> deleteUserById(
             @ApiParam(value = "Id của user cần xóa", required = true)
@@ -78,7 +78,7 @@ public class UserController extends BaseController<User> {
     }
 
     @PostMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @ApiOperation(value = "Thay đổi trạng thái của user với id")
     public ResponseEntity<?> changeStatusById(
             @ApiParam(value = "Id của user cần thay đổi trạng thái", required = true)

@@ -14,4 +14,7 @@ public class Constants {
 
     public static String SUBJECT_CALL_LEARN = "Tumi";
     public static String CONTENT_CALL_LEARN = "Vào học đi nào, lười thế !!!";
+
+    public static String SUBJECT_FORGOT_PASS = "Quên mật khẩu Tumi web";
+
 }

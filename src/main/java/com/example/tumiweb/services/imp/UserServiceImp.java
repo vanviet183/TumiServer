@@ -92,6 +92,11 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public User createNewUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         if(userRepository.findByUsername(user.getUsername()) != null) {
@@ -176,6 +181,11 @@ public class UserServiceImp implements IUserService {
         user.setMark(newMark);
         userRepository.save(user);
         return true;
+    }
+
+    @Override
+    public User getUserByTokenResetPass(String token) {
+        return userRepository.findByTokenResetPass(token);
     }
 
     @Override

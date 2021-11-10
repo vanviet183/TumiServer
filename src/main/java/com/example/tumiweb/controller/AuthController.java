@@ -100,7 +100,7 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         //gán role member cho user mới lập
-        Role role = roleService.getRoleByName("MEMBER");
+        Role role = roleService.getRoleByName("ROLE_MEMBER");
         user.setRoles(Set.of(role));
         User newUser = userService.save(user);
 

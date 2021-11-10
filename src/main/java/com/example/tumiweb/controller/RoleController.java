@@ -27,7 +27,7 @@ public class RoleController extends BaseController<Role> {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+//    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createRole(@RequestBody RoleDTO roleDTO) {
         return this.resSuccess(roleService.createRole(roleDTO));
     }

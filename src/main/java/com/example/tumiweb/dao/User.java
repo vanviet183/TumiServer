@@ -32,6 +32,10 @@ public class User extends BaseEntity {
 
     private Long mark = 0L;
 
+    @Column(name = "token_reset_password")
+    @JsonIgnore
+    private String tokenResetPass;
+
     //link to table Notification
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonIgnore

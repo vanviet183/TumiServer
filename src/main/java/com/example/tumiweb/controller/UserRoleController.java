@@ -29,7 +29,7 @@ public class UserRoleController extends BaseController<String> {
     }
 
     @PostMapping("/{userId}/{roleId}/add")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'ADMIN', this)")
+//    @PreAuthorize("@appAuthorizer.authorize(authentication, 'ADMIN', this)")
     public ResponseEntity<?> addRoleToUser(
             @PathVariable("userId") Long userId,
             @PathVariable("roleId") Long roleId

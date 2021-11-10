@@ -8,6 +8,7 @@ public class ConvertObject {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
+        user.setMark(userDTO.getMark());
         return user;
     }
 

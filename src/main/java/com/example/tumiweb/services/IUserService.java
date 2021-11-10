@@ -11,6 +11,7 @@ public interface IUserService {
     Set<User> getAllUsers(Long page, int size, boolean status, boolean both);
     User getUserById(Long id);
     User getUserByUsername(String username);
+    User getByEmail(String email);
     User createNewUser(UserDTO userDTO);
     //change password chờ security làm 1 thể
     User forgotPasswordById(Long id, String password);
@@ -19,6 +20,7 @@ public interface IUserService {
     User changeStatusById(Long id);
     String changeAvatarById(Long id, MultipartFile avatar) throws IOException;
     Boolean changeMarkById(Long id, Long mark);
+    User getUserByTokenResetPass(String token);
 
     User save(User user);
 
