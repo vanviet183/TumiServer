@@ -24,7 +24,7 @@ public class DiaryController extends BaseController<Diary> {
             @PathVariable("userId") Long userId,
             @PathVariable("day") String day
     ) {
-        return this.resSetSuccess(diaryService.findAllByUserIdAndOnDay(userId, day));
+        return this.resListSuccess(diaryService.findAllByUserIdAndOnDay(userId, day));
     }
 
     @GetMapping("/{id}/detail")

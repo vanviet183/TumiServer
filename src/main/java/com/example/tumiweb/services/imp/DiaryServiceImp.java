@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +27,7 @@ public class DiaryServiceImp implements IDiaryService {
     private ModelMapper modelMapper;
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     public Set<Diary> findAllByUserId(Long userId) {
@@ -42,15 +40,16 @@ public class DiaryServiceImp implements IDiaryService {
     }
 
     @Override
-    public Set<Diary> findAllByUserIdAndOnDay(Long userId, String day) {
+    public List<Diary> findAllByUserIdAndOnDay(Long userId, String day) {
         User user = userService.getUserById(userId);
         if(user == null) {
             throw new NotFoundException("Can not find user by id: " + userId);
         }
 
-        return diaryRepository.findAllByUser_Id(userId).stream().filter(item -> {
-            return item.getStart().split(" ")[0].replaceAll("/", "-").equals(day);
-        }).collect(Collectors.toSet());
+//        return diaryRepository.findAllByUser_Id(userId).stream().filter(item -> {
+//            return item.getStart().split(" ")[0].replaceAll("/", "-").equals(day);
+//        }).collect(Collectors.toSet());
+        return diaryRepository.findAllByUser_IdAndDay(userId, day);
     }
 
     @Override
@@ -70,6 +69,7 @@ public class DiaryServiceImp implements IDiaryService {
         }
         Diary diary = new Diary();
         diary.setStart(simpleDateFormat.format(new Date()));
+        diary.setDay(simpleDateFormatDay.format(new Date()));
 
         Diary newDiary = diaryRepository.save(diary);
         user.addRelationDiary(newDiary);
@@ -101,7 +101,7 @@ public class DiaryServiceImp implements IDiaryService {
     //lấy những ai k đăng nhập
     @Override
     public Set<User> findAllUserByDay(String day) {
-        Set<Diary> diaries = diaryRepository.findAllByDay(day);
+        List<Diary> diaries = diaryRepository.findAllByDay(day);
 
         Set<User> userSet = diaries.stream().map(Diary::getUser).collect(Collectors.toSet());
 

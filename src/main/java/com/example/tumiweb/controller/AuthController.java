@@ -1,5 +1,6 @@
 package com.example.tumiweb.controller;
 
+import com.example.tumiweb.dao.Diary;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.models.AuthenticationRequest;
@@ -7,6 +8,7 @@ import com.example.tumiweb.models.AuthenticationResponse;
 import com.example.tumiweb.exception.LoginException;
 import com.example.tumiweb.dao.Role;
 import com.example.tumiweb.dao.User;
+import com.example.tumiweb.services.IDiaryService;
 import com.example.tumiweb.services.IRoleService;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.services.MyUserDetailsService;
@@ -22,12 +24,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.InvalidObjectException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,6 +56,9 @@ public class AuthController {
     @Autowired
     private IRoleService roleService;
 
+    @Autowired
+    private IDiaryService diaryService;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest) {
         try {
@@ -83,6 +86,9 @@ public class AuthController {
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
+
+        //lưu lại lịch sử
+        diaryService.createNewDiary(user.getId());
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt, user.getId(), user.getUsername(), roles));
     }
@@ -136,6 +142,17 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout/{id}")
+    public ResponseEntity<?> logoutHandler(@PathVariable("id") Long id) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        List<Diary> diaries = new ArrayList<>(diaryService.findAllByUserIdAndOnDay(id, simpleDateFormat.format(new Date())));
+        System.out.println(diaries.size());
+        Diary diary = diaries.get(diaries.size() - 1);
+
+        diaryService.editDiaryById(diary.getId());
+
+        return ResponseEntity.status(200).body("Logout successfully");
+    }
 
 
 }

@@ -3,8 +3,6 @@ package com.example.tumiweb.controller;
 import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dao.User;
 import com.example.tumiweb.exception.InvalidException;
-import com.example.tumiweb.exception.NotFoundException;
-import com.example.tumiweb.repository.UserRepository;
 import com.example.tumiweb.services.ISendMailService;
 import com.example.tumiweb.services.IUserService;
 import io.github.bucket4j.Bandwidth;
@@ -14,7 +12,6 @@ import io.github.bucket4j.Refill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +21,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 @RestController
+@RequestMapping("/api/v1")
 public class ForgotPasswordController {
     private final Bucket bucket;
 
@@ -56,7 +54,7 @@ public class ForgotPasswordController {
 
                     String mess = "Quên mật khẩu Tumi\nĐây mã bí mật đổi mật khẩu của bạn: " + tokenResetPass;
 
-                    sendMailService.sendMailWithText(Constants.SUBJECT_FORGOT_PASS, mess, user.getEmail());
+                    System.out.println(sendMailService.sendMailWithText(Constants.SUBJECT_FORGOT_PASS, mess, user.getEmail()));
 
                     return ResponseEntity.status(HttpStatus.OK)
                             .body("Đường link đổi mật khẩu đã được gửi vào email của bạn");
@@ -88,12 +86,14 @@ public class ForgotPasswordController {
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<?> forgetPassword(@RequestParam String token, @RequestBody HashMap<String, String> password) {
+    public ResponseEntity<?> forgetPassword(
+            @RequestParam(name = "token") String token,
+            @RequestParam(name = "password") String password) {
         if (bucket.tryConsume(1)) {
             User user = userService.getUserByTokenResetPass(token);
 
             if (user != null) {
-                user.setPassword(passwordEncoder.encode(password.get("password")));
+                user.setPassword(passwordEncoder.encode(password));
                 user.setTokenResetPass("");
                 userService.save(user);
                 return ResponseEntity.status(HttpStatus.OK).body("Đổi mật khẩu thành công");

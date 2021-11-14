@@ -117,11 +117,6 @@ public class UserServiceImp implements IUserService {
     }
 
     @Override
-    public User forgotPasswordById(Long id, String password) {
-        return null;
-    }
-
-    @Override
     public User editUserById(Long id, UserDTO userDTO) {
         User user = findUserById(id);
         if(user == null) {
@@ -174,7 +169,7 @@ public class UserServiceImp implements IUserService {
         if(user == null) {
             throw new NotFoundException("Can not find user by id: " + id);
         }
-        Long newMark = user.getMark() + mark;
+        long newMark = user.getMark() + mark;
         if(newMark < 0) {
             return false;
         }

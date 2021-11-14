@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 public class Constants {
     public static int SIZE_OFF_PAGE = 10;
 
-    @Value("${email.username}")
-    public static String MY_EMAIL;
-    @Value("${email.password}")
-    public static String MY_PASSWORD;
+//    @Value("${email.username}")
+    public static String MY_EMAIL = "bucuthangban12@gmail.com";
+//    @Value("${email.password}")
+    public static String MY_PASSWORD = "eswevrssoinmcljl";
 
     public static String SUBJECT_REGISTER = "Đăng ký tài khoản tại Tumi";
 

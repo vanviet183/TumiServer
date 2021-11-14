@@ -13,8 +13,6 @@ public interface IUserService {
     User getUserByUsername(String username);
     User getByEmail(String email);
     User createNewUser(UserDTO userDTO);
-    //change password chờ security làm 1 thể
-    User forgotPasswordById(Long id, String password);
     User editUserById(Long id, UserDTO userDTO);
     User deleteUserById(Long id);
     User changeStatusById(Long id);
