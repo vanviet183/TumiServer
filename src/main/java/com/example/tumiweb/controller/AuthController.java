@@ -146,10 +146,8 @@ public class AuthController {
     public ResponseEntity<?> logoutHandler(@PathVariable("id") Long id) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         List<Diary> diaries = new ArrayList<>(diaryService.findAllByUserIdAndOnDay(id, simpleDateFormat.format(new Date())));
-        System.out.println(diaries.size());
-        Diary diary = diaries.get(diaries.size() - 1);
 
-        diaryService.editDiaryById(diary.getId());
+        diaryService.editDiaryById(diaries.get(diaries.size() - 1).getId());
 
         return ResponseEntity.status(200).body("Logout successfully");
     }
