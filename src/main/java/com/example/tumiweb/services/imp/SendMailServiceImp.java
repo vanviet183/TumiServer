@@ -1,6 +1,9 @@
 package com.example.tumiweb.services.imp;
 
+import com.example.tumiweb.constants.Constants;
+import com.example.tumiweb.dao.User;
 import com.example.tumiweb.services.ISendMailService;
+import com.example.tumiweb.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,12 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 
 @Service
 public class SendMailServiceImp implements ISendMailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    @Autowired private JavaMailSender javaMailSender;
+    @Autowired private IUserService userService;
 
     @Override
     public String sendMailWithText(String sub, String content, String to) {
@@ -55,5 +59,11 @@ public class SendMailServiceImp implements ISendMailService {
             return "Send failed";
         }
         return "Send successfully";
+    }
+
+    @Override
+    public void sendMailToAdmin() {
+        List<User> admins = userService.getAllUserAdmin();
+        admins.forEach(admin -> sendMailWithText(Constants.SUBJECT_ERROR_BACKUP_DATA, Constants.CONTENT_ERROR_BACKUP_DATA, admin.getEmail()));
     }
 }

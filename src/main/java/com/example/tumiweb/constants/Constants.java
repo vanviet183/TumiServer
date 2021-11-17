@@ -17,4 +17,7 @@ public class Constants {
 
     public static String SUBJECT_FORGOT_PASS = "Quên mật khẩu Tumi web";
 
+    public static String SUBJECT_ERROR_BACKUP_DATA = "Lỗi backup data";
+    public static String CONTENT_ERROR_BACKUP_DATA = "Backup data lỗi, yêu cầu bảo trì hệ thống!!!";
+
 }

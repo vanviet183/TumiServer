@@ -13,14 +13,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @EnableAsync
 @Configuration
@@ -58,11 +57,8 @@ public class SchedulingConfig {
     @Scheduled(cron = "0 0 0 15 * ?")
     void backupData() throws IOException {
         //backup user
-        if(!backupService.backupUser(new Response())) {
-            //this is failed
-            //Send notification to admin
-            System.out.println("failed");
-        }
+        boolean isSuccessUser = backupService.backupUser(new Response());
+        AtomicBoolean isSuccessQuestion = new AtomicBoolean(true);
 
         //backup question
         //find all course
@@ -76,19 +72,19 @@ public class SchedulingConfig {
                 try {
                     backupService.backupQuestionByChapterId(new Response(), chapter.getId());
                 } catch (IOException e) {
-                    //Send notification to admin
-                    e.printStackTrace();
+                    isSuccessQuestion.set(false);
                 }
             });
         });
 
         //This is code backup answers
-        if(!backupService.backupAnswer(new Response())) {
-            //this is failed
-            //Send notification to admin
-            System.out.println("failed");
-        }
+        boolean isSuccessAnswer = backupService.backupAnswer(new Response());
 
+
+        //checking
+        if(!isSuccessUser || !isSuccessQuestion.get() || !isSuccessAnswer) {
+            sendMailService.sendMailToAdmin();
+        }
     }
 
 

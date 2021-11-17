@@ -1,6 +1,7 @@
 package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.constants.Constants;
+import com.example.tumiweb.dao.Role;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.exception.DuplicateException;
 import com.example.tumiweb.exception.NotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImp implements IUserService {
@@ -186,6 +188,19 @@ public class UserServiceImp implements IUserService {
     @Override
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getAllUserAdmin() {
+        return userRepository.findAll().stream().filter(user -> {
+            List<Role> roles = new ArrayList<>(user.getRoles());
+            for (Role role : roles) {
+                if (role.getName().compareTo("ROLE_ADMIN") == 0) {
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
     }
 
     @Override
