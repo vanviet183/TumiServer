@@ -2,12 +2,10 @@ package com.example.tumiweb.controller;
 
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.constants.Constants;
-import com.example.tumiweb.dao.User;
 import com.example.tumiweb.dto.QuestionDTO;
 import com.example.tumiweb.dao.Question;
+import com.example.tumiweb.services.BackupService;
 import com.example.tumiweb.excel.ReadExcelFile;
-import com.example.tumiweb.excel.WriteExcelFileQuestion;
-import com.example.tumiweb.excel.WriteExcelFileUser;
 import com.example.tumiweb.services.IQuestionService;
 import com.example.tumiweb.utils.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,6 +24,9 @@ public class QuestionController extends BaseController<Question> {
 
     @Autowired
     private IQuestionService questionService;
+
+    @Autowired
+    private BackupService backupService;
 
     @GetMapping("/{chapterId}")
     public ResponseEntity<?> getAllQuestionByChapterId(
@@ -63,17 +63,11 @@ public class QuestionController extends BaseController<Question> {
     // Excel file
     @GetMapping("/export/{chapterId}")
     public ResponseEntity<?> exportToExcel(HttpServletResponse res, @PathVariable("chapterId") Long chapterId) throws IOException {
-        res.setContentType("application/octet-stream");
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachement; filename=questions" + "-IDChapter" + chapterId + ".xlsx";
+        if(!backupService.backupQuestionByChapterId(res, chapterId)) {
+            //send notification to admin
 
-        res.setHeader(headerKey, headerValue);
-
-        //data
-        List<Question> questions = new ArrayList<>(questionService.findAllQuestionByChapterId(chapterId, null, 0));
-
-        WriteExcelFileQuestion writeExcelFileQuestion = new WriteExcelFileQuestion(questions);
-        writeExcelFileQuestion.export(res);
+            return ResponseEntity.ok("Export failed");
+        }
 
         return ResponseEntity.ok("Export success");
     }
@@ -84,7 +78,7 @@ public class QuestionController extends BaseController<Question> {
     ) throws IOException {
         List<Question> questions = ReadExcelFile.readFileQuestion(UploadFile.convertMultipartToFile(file));
 
-        //Do something with users
+        //Do something with question
 
         return ResponseEntity.status(200).body(questions);
     }

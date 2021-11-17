@@ -3,8 +3,8 @@ package com.example.tumiweb.controller;
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.dao.User;
+import com.example.tumiweb.services.BackupService;
 import com.example.tumiweb.excel.ReadExcelFile;
-import com.example.tumiweb.excel.WriteExcelFileUser;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.utils.UploadFile;
@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +25,9 @@ import java.util.Set;
 public class UserController extends BaseController<User> {
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private BackupService backupService;
 
 
     @ApiOperation(value = "Xem danh sách user", response = Set.class)
@@ -107,18 +109,11 @@ public class UserController extends BaseController<User> {
     // Excel file
     @GetMapping("/export")
     public ResponseEntity<?> exportToExcel(HttpServletResponse res) throws IOException {
-        res.setContentType("application/octet-stream");
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachement; filename=users.xlsx";
+        if(!backupService.backupUser(res)) {
+            //send notification to admin
 
-        res.setHeader(headerKey, headerValue);
-
-        //data
-        List<User> users = new ArrayList<>(userService.getAllUsers(null, 0, false, false));
-
-        WriteExcelFileUser userExcelService = new WriteExcelFileUser(users);
-        userExcelService.export(res);
-
+            return ResponseEntity.ok("Export failed");
+        }
         return ResponseEntity.ok("Export success");
     }
 

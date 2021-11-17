@@ -28,4 +28,10 @@ public class Answer extends BaseEntity {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Question question;
 
+    public Answer(Long id, String title, Boolean isTrue, String image) {
+        this.setId(id);
+        this.title = title;
+        this.isTrue = isTrue;
+        this.image = image;
+    }
 }

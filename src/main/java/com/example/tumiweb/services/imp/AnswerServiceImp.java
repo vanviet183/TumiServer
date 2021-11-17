@@ -123,4 +123,9 @@ public class AnswerServiceImp implements IAnswerService {
         answerRepository.delete(answer);
         return answer;
     }
+
+    @Override
+    public List<Answer> findAllAnswer() {
+        return answerRepository.findAll();
+    }
 }

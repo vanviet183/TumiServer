@@ -14,4 +14,5 @@ public interface IAnswerService {
     Set<Answer> createNewAnswers(Long questionId, List<AnswerDTO> answerDTOS, MultipartFile[] multipartFiles);
     Answer editAnswerById(Long id, AnswerDTO answerDTO, MultipartFile multipartFile);
     Answer deleteAnswerById(Long id);
+    List<Answer> findAllAnswer();
 }
