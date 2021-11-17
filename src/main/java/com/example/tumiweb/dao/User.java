@@ -8,8 +8,7 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -31,6 +30,17 @@ public class User extends BaseEntity {
     private String avatar;
 
     private Long mark = 0L;
+
+    public User(Long id, String username, String password, String email, String phone, String avatar, Long mark, boolean status) {
+        this.setId(id);
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.avatar = avatar;
+        this.mark = mark;
+        this.setStatus(status);
+    }
 
     @Column(name = "token_reset_password")
     @JsonIgnore

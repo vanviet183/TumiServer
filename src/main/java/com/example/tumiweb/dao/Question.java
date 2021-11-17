@@ -25,6 +25,14 @@ public class Question extends BaseEntity {
     private String seo;
     private String avatar;
 
+    public Question(Long id, String title, String seo, String avatar, boolean status) {
+        this.setId(id);
+        this.title = title;
+        this.seo = seo;
+        this.avatar = avatar;
+        this.setStatus(status);
+    }
+
     //link to table Chapter
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Chapter chapter;

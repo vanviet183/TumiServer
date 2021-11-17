@@ -3,16 +3,21 @@ package com.example.tumiweb.controller;
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.dao.User;
+import com.example.tumiweb.excel.ReadExcelFile;
+import com.example.tumiweb.excel.WriteExcelFileUser;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.constants.Constants;
+import com.example.tumiweb.utils.UploadFile;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -98,6 +103,35 @@ public class UserController extends BaseController<User> {
         return userService.changeAvatarById(id, avt);
     }
 
+
+    // Excel file
+    @GetMapping("/export")
+    public ResponseEntity<?> exportToExcel(HttpServletResponse res) throws IOException {
+        res.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachement; filename=users.xlsx";
+
+        res.setHeader(headerKey, headerValue);
+
+        //data
+        List<User> users = new ArrayList<>(userService.getAllUsers(null, 0, false, false));
+
+        WriteExcelFileUser userExcelService = new WriteExcelFileUser(users);
+        userExcelService.export(res);
+
+        return ResponseEntity.ok("Export success");
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<?> importExcelFile(
+            @RequestParam(name = "file") MultipartFile file
+    ) throws IOException {
+        List<User> users = ReadExcelFile.readFileUser(UploadFile.convertMultipartToFile(file));
+
+        //Do something with users
+
+        return ResponseEntity.status(200).body(users);
+    }
 
 
 }
