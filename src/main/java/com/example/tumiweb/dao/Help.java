@@ -22,6 +22,12 @@ public class Help extends BaseEntity {
     @Nationalized
     private String title;
 
+    public Help(Long id, String title, boolean status) {
+        this.setId(id);
+        this.title = title;
+        this.setStatus(status);
+    }
+
     //link to table Users
     @ManyToOne
     @JoinColumn(name = "users_id")

@@ -24,6 +24,12 @@ public class Chapter extends BaseEntity {
     private String name;
     private String seo;
 
+    public Chapter(Long id, String name, Boolean status) {
+        this.setId(id);
+        this.name = name;
+        this.setStatus(status);
+    }
+
     //link to table course
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Course course;

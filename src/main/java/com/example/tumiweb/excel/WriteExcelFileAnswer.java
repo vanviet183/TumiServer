@@ -1,7 +1,6 @@
 package com.example.tumiweb.excel;
 
 import com.example.tumiweb.dao.Answer;
-import com.example.tumiweb.dao.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,7 +39,7 @@ public class WriteExcelFileAnswer implements IExcelFile{
         font.setFontHeight(16);
         style.setFont(font);
 
-        List<String> headersAnswer = new ArrayList<>(Arrays.asList("Answer ID", "Title", "IsTrue", "Image"));
+        List<String> headersAnswer = new ArrayList<>(Arrays.asList("Answer ID", "Title", "IsTrue", "Image", "Question ID"));
 
         for(int i=0; i<headersAnswer.size(); i++) {
             XSSFCell cell = row.createCell(i);
@@ -65,6 +64,8 @@ public class WriteExcelFileAnswer implements IExcelFile{
             cell.setCellValue(answer.getIsTrue().toString());
             cell = row.createCell(3);
             cell.setCellValue(answer.getImage());
+            cell = row.createCell(4);
+            cell.setCellValue(answer.getQuestion().getId().toString());
 
             cnt++;
         }

@@ -13,12 +13,18 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Diary extends BaseEntity {
     @NotBlank
     private String start;
     private String end;
     private String day;
+
+    public Diary(Long id, String start, String end, String day) {
+        this.setId(id);
+        this.start = start;
+        this.end = end;
+        this.day = day;
+    }
 
     //link to table Users
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

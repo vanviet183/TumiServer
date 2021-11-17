@@ -27,6 +27,14 @@ public class Category extends BaseEntity {
     private String description;
     private String seo;
 
+    public Category(Long id, String name, String description, boolean status) {
+        this.setId(id);
+        this.name = name;
+        this.description = description;
+        this.setStatus(status);
+    }
+
+
     //link to table Course
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "category")
     @JsonIgnore

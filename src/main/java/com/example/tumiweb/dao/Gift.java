@@ -29,6 +29,13 @@ public class Gift extends BaseEntity {
     private Long mark;
     private String avatar;
 
+    public Gift(Long id, String name, Long mark, String avatar, boolean status) {
+        this.setId(id);
+        this.name = name;
+        this.mark = mark;
+        this.avatar = avatar;
+        this.setStatus(status);
+    }
 
     //link to table gift_order
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

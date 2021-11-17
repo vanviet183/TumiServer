@@ -14,6 +14,8 @@ public interface IDiaryService {
     Diary editDiaryById(Long id);
     Diary deleteDiaryById(Long id);
 
+    List<Diary> findAll();
+
     //send mail sau 1 ngày không học
     Set<User> findAllUserByDay(String day);
 }

@@ -40,7 +40,7 @@ public class WriteExcelFileQuestion implements IExcelFile {
         font.setFontHeight(16);
         style.setFont(font);
 
-        List<String> headersQuestion = new ArrayList<>(Arrays.asList("Question ID", "Title", "Seo", "Avatar", "Status"));
+        List<String> headersQuestion = new ArrayList<>(Arrays.asList("Question ID", "Title", "Seo", "Avatar", "Status", "Chapter ID"));
 
         for(int i=0; i<headersQuestion.size(); i++) {
             XSSFCell cell = row.createCell(i);
@@ -67,6 +67,8 @@ public class WriteExcelFileQuestion implements IExcelFile {
             cell.setCellValue(question.getAvatar());
             cell = row.createCell(4);
             cell.setCellValue(question.getStatus().toString());
+            cell = row.createCell(5);
+            cell.setCellValue(question.getChapter().getId().toString());
 
             cnt++;
         }

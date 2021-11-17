@@ -18,6 +18,7 @@
 
 - Thêm chức năng: tính thời gian online 1 ngày, tổng 1 tháng. (xong)
 - Tính tổng thời gian 1 tuần: Chưa làm
-- Auto backup answer, question (xong)
+- Auto backup data (xong)
 - Online 1 ngày có mức giờ và nhận quà theo giờ online.
 - Thêm chức năng nhận quà mỗi ngày như game VLCM :v
+A

@@ -15,7 +15,6 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class GiftOrder extends BaseEntity {
 
     private Long quality;

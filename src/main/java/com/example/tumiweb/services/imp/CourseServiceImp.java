@@ -174,4 +174,9 @@ public class CourseServiceImp implements ICourseService {
         course.setCategory(category);
         return courseRepository.save(course);
     }
+
+    @Override
+    public Category findCategoryByCourseId(Long courseId) {
+        return findCourseById(courseId).getCategory();
+    }
 }

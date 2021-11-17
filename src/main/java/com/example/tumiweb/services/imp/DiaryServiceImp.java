@@ -98,6 +98,11 @@ public class DiaryServiceImp implements IDiaryService {
         return diary;
     }
 
+    @Override
+    public List<Diary> findAll() {
+        return diaryRepository.findAll();
+    }
+
     //lấy những ai k đăng nhập
     @Override
     public Set<User> findAllUserByDay(String day) {

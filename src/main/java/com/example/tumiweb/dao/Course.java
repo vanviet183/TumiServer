@@ -29,6 +29,16 @@ public class Course extends BaseEntity {
     private Long process;
     private String seo;
 
+    public Course(Long id, String name, Long price, String description, String avatar, Long process, Boolean status) {
+        this.setId(id);
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.avatar = avatar;
+        this.process = process;
+        this.setStatus(status);
+    }
+
     //link to table user
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "courses")
     @JsonIgnore

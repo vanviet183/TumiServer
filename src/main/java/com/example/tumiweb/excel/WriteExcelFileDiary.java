@@ -1,6 +1,6 @@
 package com.example.tumiweb.excel;
 
-import com.example.tumiweb.dao.User;
+import com.example.tumiweb.dao.Diary;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import org.apache.poi.xssf.usermodel.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,34 +18,33 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class WriteExcelFileUser implements IExcelFile{
+public class WriteExcelFileDiary implements IExcelFile {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
 
-    private List<User> users;
+    private List<Diary> diaries;
 
-    public WriteExcelFileUser(List<User> users) {
-        this.users = users;
+    public WriteExcelFileDiary(List<Diary> diaries) {
+        this.diaries = diaries;
         workbook = new XSSFWorkbook();
-        sheet = workbook.createSheet("users");
+        sheet = workbook.createSheet("diaries");
     }
 
     @Override
     public void writeHeader() {
         XSSFRow row = sheet.createRow(0);
-
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setBold(true);
         font.setFontHeight(16);
         style.setFont(font);
 
-        List<String> headersUser = new ArrayList<>(Arrays.asList("User ID", "Username", "Password", "Email", "Phone", "Avatar", "Mark", "Status"));
+        List<String> headers = new ArrayList<>(Arrays.asList("Diary ID", "Start", "End", "Day", "User ID"));
 
-        for(int i=0; i<headersUser.size(); i++) {
+        for(int i=0; i<headers.size(); i++) {
             XSSFCell cell = row.createCell(i);
             cell.setCellType(CellType.STRING);
-            cell.setCellValue(headersUser.get(i));
+            cell.setCellValue(headers.get(i));
             cell.setCellStyle(style);
             sheet.autoSizeColumn(0);
         }
@@ -54,25 +53,19 @@ public class WriteExcelFileUser implements IExcelFile{
     @Override
     public void writeData() {
         int cnt = 1;
-        for(User user : users) {
+        for(Diary diary : diaries) {
             XSSFRow row = sheet.createRow(cnt);
 
             XSSFCell cell = row.createCell(0);
-            cell.setCellValue(user.getId().toString());
+            cell.setCellValue(diary.getId().toString());
             cell = row.createCell(1);
-            cell.setCellValue(user.getUsername());
+            cell.setCellValue(diary.getStart());
             cell = row.createCell(2);
-            cell.setCellValue(user.getPassword());
+            cell.setCellValue(diary.getEnd());
             cell = row.createCell(3);
-            cell.setCellValue(user.getEmail());
+            cell.setCellValue(diary.getDay());
             cell = row.createCell(4);
-            cell.setCellValue(user.getPhone());
-            cell = row.createCell(5);
-            cell.setCellValue(user.getAvatar());
-            cell = row.createCell(6);
-            cell.setCellValue(user.getMark() == null ? "0" : user.getMark().toString());
-            cell = row.createCell(7);
-            cell.setCellValue(user.getStatus().toString());
+            cell.setCellValue(diary.getUser().getId().toString());
 
             cnt++;
         }
@@ -88,5 +81,4 @@ public class WriteExcelFileUser implements IExcelFile{
         workbook.close();
         outputStream.close();
     }
-
 }

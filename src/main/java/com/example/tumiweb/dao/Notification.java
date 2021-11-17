@@ -23,6 +23,12 @@ public class Notification extends BaseEntity {
     private String title;
     private String path;
 
+    public Notification(Long id, String title, String path, boolean status) {
+        this.setId(id);
+        this.title = title;
+        this.path = path;
+        this.setStatus(status);
+    }
 
     //link to table User
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

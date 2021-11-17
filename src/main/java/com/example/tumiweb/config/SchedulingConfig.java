@@ -58,6 +58,18 @@ public class SchedulingConfig {
     void backupData() throws IOException {
         //backup user
         boolean isSuccessUser = backupService.backupUser(new Response());
+        //This is code backup helps
+        boolean isSuccessHelp = backupService.backupHelp(new Response());
+        //This is code backup notification
+        boolean isSuccessNotification = backupService.backupNotification(new Response());
+        //This is code backup gift
+        boolean isSuccessGift = backupService.backupGift(new Response());
+        //This is code backup course
+        boolean isSuccessCourse = backupService.backupCourse(new Response());
+        //This is code backup chapter
+        boolean isSuccessChapter = backupService.backupChapter(new Response());
+        //This is code backup answers
+        boolean isSuccessAnswer = backupService.backupAnswer(new Response());
         AtomicBoolean isSuccessQuestion = new AtomicBoolean(true);
 
         //backup question
@@ -77,12 +89,17 @@ public class SchedulingConfig {
             });
         });
 
-        //This is code backup answers
-        boolean isSuccessAnswer = backupService.backupAnswer(new Response());
-
 
         //checking
-        if(!isSuccessUser || !isSuccessQuestion.get() || !isSuccessAnswer) {
+        if(     !isSuccessUser ||
+                !isSuccessQuestion.get() ||
+                !isSuccessAnswer ||
+                !isSuccessCourse ||
+                !isSuccessChapter ||
+                !isSuccessHelp ||
+                !isSuccessGift ||
+                !isSuccessNotification
+        ) {
             sendMailService.sendMailToAdmin();
         }
     }

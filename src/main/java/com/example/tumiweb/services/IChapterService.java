@@ -1,5 +1,6 @@
 package com.example.tumiweb.services;
 
+import com.example.tumiweb.dao.Course;
 import com.example.tumiweb.dto.ChapterDTO;
 import com.example.tumiweb.dao.Chapter;
 
@@ -14,4 +15,6 @@ public interface IChapterService {
     Chapter deleteChapterById(Long id);
 
     Chapter save(Chapter chapter);
+
+    Course findCourseByChapterId(Long chapterId);
 }

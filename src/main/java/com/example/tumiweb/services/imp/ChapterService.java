@@ -133,4 +133,9 @@ public class ChapterService implements IChapterService {
     public Chapter save(Chapter chapter) {
         return chapterRepository.save(chapter);
     }
+
+    @Override
+    public Course findCourseByChapterId(Long chapterId) {
+        return findChapterById(chapterId).getCourse();
+    }
 }
