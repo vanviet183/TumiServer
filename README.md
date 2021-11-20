@@ -12,7 +12,8 @@
 - Giới hạn request forgot password 2 lần / 1p xử dụng: bucket4j-core.
 - Export / Import excel file.
 - Tự động backup data vào 00:00 ngày 15 mỗi tháng(0 0 0 15 * ?), nếu lỗi thì thông báo cho admin.
-
+- Upload file vào Database hoặc project
+- Download file từ Database hoặc project
 
 ## Note đang làm:
 

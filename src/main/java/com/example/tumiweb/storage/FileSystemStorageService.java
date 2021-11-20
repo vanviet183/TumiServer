@@ -2,6 +2,7 @@ package com.example.tumiweb.storage;
 
 import com.example.tumiweb.exception.StorageException;
 import com.example.tumiweb.exception.StorageFileNotFoundException;
+import com.example.tumiweb.repository.DBFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -21,6 +22,8 @@ import java.util.Objects;
 public class FileSystemStorageService implements IStorageService {
     private final Path rootLocation;
 
+    @Autowired private DBFileRepository fileStorageRepository;
+
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
@@ -38,6 +41,7 @@ public class FileSystemStorageService implements IStorageService {
     @Override
     public void store(MultipartFile file) {
         try {
+            //Save to project
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
             }
@@ -53,6 +57,9 @@ public class FileSystemStorageService implements IStorageService {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
             }
+
+            //Save to A
+
         } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
@@ -78,5 +85,6 @@ public class FileSystemStorageService implements IStorageService {
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);
         }
     }
+
 
 }
