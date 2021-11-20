@@ -24,13 +24,15 @@ public class BackupService {
     @Autowired private INotificationService notificationService;
     @Autowired private ICourseService courseService;
 
-    public boolean backupUser(HttpServletResponse res) throws IOException {
+    public boolean backupUser(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=users.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=users.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             //data
             List<User> users = new ArrayList<>(userService.getAllUsers(null, 0, false, false));
@@ -47,11 +49,13 @@ public class BackupService {
 
     public boolean backupAnswer(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=answers.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=answers.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             //data
             List<Answer> answers = new ArrayList<>(answerService.findAllAnswer());
@@ -67,11 +71,13 @@ public class BackupService {
 
     public boolean backupQuestionByChapterId(HttpServletResponse res, Long chapterId) throws IOException {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=questions" + "-IDChapter" + chapterId + ".xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=data-backup/questions" + "-IDChapter" + chapterId + ".xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             //data
             List<Question> questions = new ArrayList<>(questionService.findAllQuestionByChapterId(chapterId, null, 0));
@@ -87,11 +93,13 @@ public class BackupService {
 
     public boolean backupCategory(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=category.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=category.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             List<Category> categories = new ArrayList<>(categoryService.findAllCategory(null, 0, true, true));
 
@@ -106,11 +114,13 @@ public class BackupService {
 
     public boolean backupChapter(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=chapter.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=chapter.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             List<Category> categories = new ArrayList<>(categoryService.findAllCategory(null, 0, true, true));
 
@@ -125,11 +135,13 @@ public class BackupService {
 
     public boolean backupDiary(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=diary.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=diary.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             List<Diary> diaries = diaryService.findAll();
 
@@ -144,11 +156,13 @@ public class BackupService {
 
     public boolean backupGift(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=gift.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=gift.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             List<Gift> gifts = new ArrayList<>(giftService.getAllGift(null, 0, true));
 
@@ -163,11 +177,13 @@ public class BackupService {
 
     public boolean backupHelp(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=help.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=help.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             List<Help> helps = new ArrayList<>(helpService.getAllHelp(null, 0));
 
@@ -182,11 +198,13 @@ public class BackupService {
 
     public boolean backupNotification(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=notification.xlsx";
+            if(res != null) {
+                res.setContentType("application/octet-stream");
+                String headerKey = "Content-Disposition";
+                String headerValue = "attachement; filename=notification.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+                res.setHeader(headerKey, headerValue);
+            }
 
             List<Notification> notifications = new ArrayList<>(notificationService.getAllNotification(null, 0, true));
 
@@ -201,11 +219,13 @@ public class BackupService {
 
     public boolean backupCourse(HttpServletResponse res) {
         try {
-            res.setContentType("application/octet-stream");
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachement; filename=course.xlsx";
+           if(res != null) {
+               res.setContentType("application/octet-stream");
+               String headerKey = "Content-Disposition";
+               String headerValue = "attachement; filename=course.xlsx";
 
-            res.setHeader(headerKey, headerValue);
+               res.setHeader(headerKey, headerValue);
+           }
 
             List<Course> courses = new ArrayList<>(courseService.findAllCourse(null, 0, true, true));
 

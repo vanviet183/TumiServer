@@ -1,5 +1,6 @@
 package com.example.tumiweb.excel;
 
+import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dao.Chapter;
 import com.example.tumiweb.services.IChapterService;
 import lombok.Getter;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,14 +76,21 @@ public class WriteExcelFileChapter implements IExcelFile{
         }
     }
 
-    @Override
     public void export(HttpServletResponse res) throws IOException {
         writeHeader();
         writeData();
+        if(res != null) {
+            ServletOutputStream out = res.getOutputStream();
+            workbook.write(out);
+            workbook.close();
+            out.close();
+        }
+        else {
+            FileOutputStream out = new FileOutputStream(new File(Constants.PATH_CHAPTER_FILE));
+            workbook.write(out);
+            workbook.close();
+            out.close();
+        }
 
-        ServletOutputStream outputStream = res.getOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-        outputStream.close();
     }
 }

@@ -59,9 +59,6 @@ public class NotificationServiceImp implements INotificationService {
             }
         }
 
-        if(notifications.isEmpty()) {
-            throw new NotFoundException("Notification list is empty");
-        }
         return new HashSet<>(notifications);
     }
 

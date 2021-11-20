@@ -108,7 +108,7 @@ public class UserController extends BaseController<User> {
 
     // Excel file
     @GetMapping("/export")
-    public ResponseEntity<?> exportToExcel(HttpServletResponse res) throws IOException {
+    public ResponseEntity<?> exportToExcel(HttpServletResponse res) {
         if(!backupService.backupUser(res)) {
             //send notification to admin
 

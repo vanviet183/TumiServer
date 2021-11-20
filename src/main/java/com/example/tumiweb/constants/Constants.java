@@ -20,4 +20,15 @@ public class Constants {
     public static String SUBJECT_ERROR_BACKUP_DATA = "Lỗi backup data";
     public static String CONTENT_ERROR_BACKUP_DATA = "Backup data lỗi, yêu cầu bảo trì hệ thống!!!";
 
+    public static String PATH_USER_FILE = "data-backup/users.xlsx";
+    public static String PATH_HELP_FILE = "data-backup/helps.xlsx";
+    public static String PATH_GIFT_FILE = "data-backup/gifts.xlsx";
+    public static String PATH_NOTIFICATION_FILE = "data-backup/notifications.xlsx";
+    public static String PATH_DIARY_FILE = "data-backup/diaries.xlsx";
+    public static String PATH_COURSE_FILE = "data-backup/courses.xlsx";
+    public static String PATH_CHAPTER_FILE = "data-backup/chapters.xlsx";
+    public static String PATH_QUESTION_FILE = "data-backup/question.xlsx";
+    public static String PATH_ANSWER_FILE = "data-backup/answer.xlsx";
+    public static String PATH_CATEGORY_FILE = "data-backup/categories.xlsx";
+
 }

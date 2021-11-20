@@ -37,9 +37,6 @@ public class HelpServiceImp implements IHelpService {
             helps = helpRepository.findAll();
         }
 
-        if(helps.isEmpty()) {
-            throw new NotFoundException("Help list is empty");
-        }
         return new HashSet<>(helps);
     }
 

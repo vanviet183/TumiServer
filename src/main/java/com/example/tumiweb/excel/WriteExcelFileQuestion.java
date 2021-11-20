@@ -1,5 +1,6 @@
 package com.example.tumiweb.excel;
 
+import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dao.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import org.apache.poi.xssf.usermodel.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,10 +81,18 @@ public class WriteExcelFileQuestion implements IExcelFile {
     public void export(HttpServletResponse res) throws IOException {
         writeHeader();
         writeData();
+        if(res != null) {
+            ServletOutputStream out = res.getOutputStream();
+            workbook.write(out);
+            workbook.close();
+            out.close();
+        }
+        else {
+            FileOutputStream out = new FileOutputStream(new File(Constants.PATH_QUESTION_FILE));
+            workbook.write(out);
+            workbook.close();
+            out.close();
+        }
 
-        ServletOutputStream outputStream = res.getOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-        outputStream.close();
     }
 }

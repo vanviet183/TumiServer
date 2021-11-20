@@ -1,5 +1,6 @@
 package com.example.tumiweb.excel;
 
+import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dao.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,11 +83,19 @@ public class WriteExcelFileUser implements IExcelFile{
     public void export(HttpServletResponse res) throws IOException {
         writeHeader();
         writeData();
+        if(res != null) {
+            ServletOutputStream out = res.getOutputStream();
+            workbook.write(out);
+            workbook.close();
+            out.close();
+        }
+        else {
+            FileOutputStream out = new FileOutputStream(new File(Constants.PATH_USER_FILE));
+            workbook.write(out);
+            workbook.close();
+            out.close();
+        }
 
-        ServletOutputStream outputStream = res.getOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-        outputStream.close();
     }
 
 }

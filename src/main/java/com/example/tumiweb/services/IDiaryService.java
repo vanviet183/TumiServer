@@ -18,4 +18,5 @@ public interface IDiaryService {
 
     //send mail sau 1 ngày không học
     Set<User> findAllUserByDay(String day);
+
 }

@@ -1,18 +1,22 @@
 package com.example.tumiweb.config;
 
 import com.example.tumiweb.constants.Constants;
+import com.example.tumiweb.controller.UserController;
 import com.example.tumiweb.dao.*;
 import com.example.tumiweb.services.*;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +47,7 @@ public class SchedulingConfig {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Async
-    @Scheduled(cron = "0 30 20 ? * MON-SAT")
+    @Scheduled(cron = "0 47 0 ? * MON-SAT")
 //    @Scheduled(cron = "0 * * ? * *")
     void sendMailToUser() {
         Set<User> users = diaryService.findAllUserByDay(simpleDateFormat.format(new Date()));
@@ -53,23 +57,39 @@ public class SchedulingConfig {
         });
     }
 
+
+
     @Async
-    @Scheduled(cron = "0 0 0 15 * ?")
-    void backupData() throws IOException {
+    @Scheduled(cron = "0 18 15 20 * ?")
+//    @Scheduled(cron = "0 0 0 15 * ?")
+    void backupData() {
         //backup user
-        boolean isSuccessUser = backupService.backupUser(new Response());
+        boolean isSuccessUser = backupService.backupUser(null);
+        System.out.println("User: " + isSuccessUser);
         //This is code backup helps
-        boolean isSuccessHelp = backupService.backupHelp(new Response());
+        boolean isSuccessHelp = backupService.backupHelp(null);
+        System.out.println("Help: " + isSuccessHelp);
+        //This is code backup diary
+        boolean isSuccessDiary = backupService.backupDiary(null);
+        System.out.println("Diary: " + isSuccessDiary);
         //This is code backup notification
-        boolean isSuccessNotification = backupService.backupNotification(new Response());
+        boolean isSuccessNotification = backupService.backupNotification(null);
+        System.out.println("Notification: " + isSuccessNotification);
         //This is code backup gift
-        boolean isSuccessGift = backupService.backupGift(new Response());
+        boolean isSuccessGift = backupService.backupGift(null);
+        System.out.println("Gift: " + isSuccessGift);
         //This is code backup course
-        boolean isSuccessCourse = backupService.backupCourse(new Response());
+        boolean isSuccessCourse = backupService.backupCourse(null);
+        System.out.println("Course: " + isSuccessCourse);
         //This is code backup chapter
-        boolean isSuccessChapter = backupService.backupChapter(new Response());
+        boolean isSuccessChapter = backupService.backupChapter(null);
+        System.out.println("Chapter: " + isSuccessChapter);
+        //This is code backup category
+        boolean isSuccessCategory = backupService.backupCategory(null);
+        System.out.println("Category: " + isSuccessCategory);
         //This is code backup answers
-        boolean isSuccessAnswer = backupService.backupAnswer(new Response());
+        boolean isSuccessAnswer = backupService.backupAnswer(null);
+        System.out.println("Answer: " + isSuccessAnswer);
         AtomicBoolean isSuccessQuestion = new AtomicBoolean(true);
 
         //backup question
@@ -82,7 +102,8 @@ public class SchedulingConfig {
             chapters.forEach(chapter -> {
                 //This is code backup questions
                 try {
-                    backupService.backupQuestionByChapterId(new Response(), chapter.getId());
+                    backupService.backupQuestionByChapterId(null, chapter.getId());
+                    System.out.println("question");
                 } catch (IOException e) {
                     isSuccessQuestion.set(false);
                 }
@@ -98,9 +119,11 @@ public class SchedulingConfig {
                 !isSuccessChapter ||
                 !isSuccessHelp ||
                 !isSuccessGift ||
+                !isSuccessCategory ||
                 !isSuccessNotification
         ) {
             sendMailService.sendMailToAdmin();
+            System.out.println("Lỗi ");
         }
     }
 

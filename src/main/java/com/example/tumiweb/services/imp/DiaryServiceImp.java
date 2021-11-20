@@ -114,11 +114,19 @@ public class DiaryServiceImp implements IDiaryService {
 
         Set<User> userDiary = new HashSet<>();
         for(User user : users) {
-            if(!userSet.contains(user)) {
+            if(!isContainUser(userSet, user)) {
                 userDiary.add(user);
             }
         }
-
         return userDiary;
+    }
+
+    private boolean isContainUser(Set<User> users, User user) {
+        for(User u : users) {
+            if(u.getUsername().equals(user.getUsername())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

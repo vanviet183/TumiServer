@@ -1,14 +1,19 @@
 package com.example.tumiweb;
 
+import com.example.tumiweb.storage.StorageProperties;
+import com.example.tumiweb.storage.IStorageService;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableConfigurationProperties(StorageProperties.class)
 public class TumiWebApplication {
 
     @Bean
@@ -25,4 +30,10 @@ public class TumiWebApplication {
         SpringApplication.run(TumiWebApplication.class, args);
     }
 
+    @Bean
+    CommandLineRunner init(IStorageService storageService) {
+        return (args) -> {
+            storageService.init();
+        };
+    }
 }

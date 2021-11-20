@@ -41,10 +41,6 @@ public class GiftServiceImp implements IGiftService {
             gifts = giftRepository.findAll();
         }
 
-        if(gifts.isEmpty()) {
-            throw new NotFoundException("Gift list is empty");
-        }
-
         if(active) {
             gifts = gifts.stream().filter(BaseEntity::getStatus).collect(Collectors.toList());
         }
