@@ -5,12 +5,9 @@ import com.example.tumiweb.dto.ResponseDTO;
 import com.example.tumiweb.dto.pagination.PaginateDTO;
 import com.example.tumiweb.dto.pagination.PaginationDTO;
 import com.example.tumiweb.dto.pagination.PaginationResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -23,13 +20,13 @@ public class BaseController<T> {
 
     public ResponseEntity<?> resListSuccess(List<T> list) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseDTO<List<T>>(HttpStatus.OK.value(), ResponseMessageEnum.SUCCESS, list)
+                new ResponseDTO<>(HttpStatus.OK.value(), ResponseMessageEnum.SUCCESS, list)
         );
     }
 
     public ResponseEntity<?> resSetSuccess(Set<T> set) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseDTO<Set<T>>(HttpStatus.OK.value(), ResponseMessageEnum.SUCCESS, set)
+                new ResponseDTO<>(HttpStatus.OK.value(), ResponseMessageEnum.SUCCESS, set)
         );
     }
 

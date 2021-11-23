@@ -1,15 +1,19 @@
-package com.example.tumiweb.models;
+package com.example.tumiweb.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class AuthenticationRequest {
+public class AuthenticationResponse {
+    private String jwt;
+    private Long userId;
     private String username;
-    private String password;
+    private List<String> roles;
 }

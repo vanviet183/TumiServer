@@ -3,7 +3,7 @@ package com.example.tumiweb.controller;
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.dao.User;
-import com.example.tumiweb.services.BackupService;
+import com.example.tumiweb.services.imp.BackupServiceImp;
 import com.example.tumiweb.excel.ReadExcelFile;
 import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.constants.Constants;
@@ -27,7 +27,7 @@ public class UserController extends BaseController<User> {
     private IUserService userService;
 
     @Autowired
-    private BackupService backupService;
+    private BackupServiceImp backupService;
 
 
     @ApiOperation(value = "Xem danh sách user", response = Set.class)
@@ -105,6 +105,10 @@ public class UserController extends BaseController<User> {
         return userService.changeAvatarById(id, avt);
     }
 
+    @GetMapping("/search/{key}")
+    public ResponseEntity<?> searchUsersByKey(@PathVariable("key") String key) {
+        return this.resListSuccess(userService.searchUsersByKey(key));
+    }
 
     // Excel file
     @GetMapping("/export")

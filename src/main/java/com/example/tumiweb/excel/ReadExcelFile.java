@@ -32,8 +32,10 @@ public class ReadExcelFile {
                     curRow.getCell(3).getStringCellValue(),
                     curRow.getCell(4).getStringCellValue(),
                     curRow.getCell(5).getStringCellValue(),
-                    Long.parseLong(curRow.getCell(6).getStringCellValue()),
-                    Boolean.parseBoolean(curRow.getCell(7).getStringCellValue())
+                    curRow.getCell(6).getStringCellValue(),
+                    Long.parseLong(curRow.getCell(7).getStringCellValue()),
+                    curRow.getCell(8).getStringCellValue(),
+                    Boolean.parseBoolean(curRow.getCell(9).getStringCellValue())
             );
             users.add(user);
         }

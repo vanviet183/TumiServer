@@ -58,11 +58,14 @@ public class GiftServiceImp implements IGiftService {
     }
 
     @Override
-    public Gift createNewGift(GiftDTO giftDTO) {
+    public Gift createNewGift(GiftDTO giftDTO, MultipartFile file) {
         if(giftRepository.findByName(giftDTO.getName()) != null) {
             throw new DuplicateException("Duplicate gift with title: " + giftDTO.getName());
         }
-        return giftRepository.save(modelMapper.map(giftDTO, Gift.class));
+        Gift gift = modelMapper.map(giftDTO, Gift.class);
+        gift.setAvatar(uploadFile.getUrlFromFile(file));
+
+        return giftRepository.save(gift);
     }
 
     @Override
@@ -109,6 +112,16 @@ public class GiftServiceImp implements IGiftService {
         }
         gift.setAvatar(uploadFile.getUrlFromFile(multipartFile));
         return giftRepository.save(gift);
+    }
+
+    @Override
+    public List<Gift> getGiftsByKey(String key) {
+        try {
+            Long mark = Long.parseLong(key);
+            return giftRepository.findAllByNameContainingOrMarkContaining(key, mark);
+        }catch (Exception e) {
+            return giftRepository.findAllByNameContainingOrMarkContaining(key, 0L);
+        }
     }
 
 //    @Override

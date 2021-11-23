@@ -34,10 +34,10 @@ public class GiftController extends BaseController<Gift> {
 
     @PostMapping("")
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
-    public ResponseEntity<?> createNewGift(
+    public ResponseEntity<?> createNewGift (
             @RequestParam(name = "image", required = false) MultipartFile image,
             @RequestBody GiftDTO giftDTO) {
-        return this.resSuccess(giftService.createNewGift(giftDTO));
+        return this.resSuccess(giftService.createNewGift(giftDTO, image));
     }
 
     @PatchMapping("/{id}")
@@ -71,5 +71,9 @@ public class GiftController extends BaseController<Gift> {
         return this.resSuccess(giftService.changeImageGiftById(id, multipartFile));
     }
 
+    @GetMapping("/search/{key}")
+    public ResponseEntity<?> getGiftsByKey(@PathVariable("key") String key) {
+        return this.resListSuccess(giftService.getGiftsByKey(key));
+    }
 
 }

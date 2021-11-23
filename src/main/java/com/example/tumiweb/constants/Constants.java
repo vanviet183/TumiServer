@@ -15,6 +15,8 @@ public class Constants {
     public static String SUBJECT_CALL_LEARN = "Tumi";
     public static String CONTENT_CALL_LEARN = "Vào học đi nào, lười thế !!!";
 
+    public static String SUBJECT_BIRTHDAY = "Happy birthday from Tumi <3";
+
     public static String SUBJECT_FORGOT_PASS = "Quên mật khẩu Tumi web";
 
     public static String SUBJECT_ERROR_BACKUP_DATA = "Lỗi backup data";

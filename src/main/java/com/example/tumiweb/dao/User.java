@@ -26,19 +26,24 @@ public class User extends BaseEntity {
     @Email
     @NotBlank
     private String email;
+    @NotBlank
+    private String fullName;
     private String phone;
     private String avatar;
+    private String birthday;
 
     private Long mark = 0L;
 
-    public User(Long id, String username, String password, String email, String phone, String avatar, Long mark, boolean status) {
+    public User(Long id, String username, String password, String fullName, String email, String phone, String avatar, Long mark, String birthday, boolean status) {
         this.setId(id);
         this.username = username;
         this.password = password;
+        this.fullName = fullName;
         this.email = email;
         this.phone = phone;
         this.avatar = avatar;
         this.mark = mark;
+        this.birthday = birthday;
         this.setStatus(status);
     }
 

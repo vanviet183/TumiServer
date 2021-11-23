@@ -25,7 +25,6 @@ import java.util.List;
 @NoArgsConstructor
 public class WriteExcelFileCourse implements IExcelFile {
     //Course(Long id, String name, Long price, String description, String avatar, Long process, Boolean status)
-    @Autowired private ICourseService courseService;
 
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
@@ -79,7 +78,7 @@ public class WriteExcelFileCourse implements IExcelFile {
             cell = row.createCell(6);
             cell.setCellValue(course.getStatus().toString());
             cell = row.createCell(7);
-            cell.setCellValue(courseService.findCategoryByCourseId(course.getId()).getId().toString());
+            cell.setCellValue(course.getCategory().getId().toString());
 
             cnt++;
         }

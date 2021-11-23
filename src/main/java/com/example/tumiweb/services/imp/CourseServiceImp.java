@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -176,7 +177,8 @@ public class CourseServiceImp implements ICourseService {
     }
 
     @Override
-    public Category findCategoryByCourseId(Long courseId) {
-        return findCourseById(courseId).getCategory();
+    public List<Course> getCoursesByKey(String key) {
+        return courseRepository.findAllByNameContainingOrDescriptionContaining(key, key);
     }
+
 }

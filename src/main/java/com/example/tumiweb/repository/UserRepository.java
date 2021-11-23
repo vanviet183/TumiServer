@@ -13,4 +13,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
     Set<User> findAllByStatus(boolean status);
     User findByTokenResetPass(String tokenResetPass);
+
+    //Search user by username or email or phone contain key(String)
+    List<User> findAllByUsernameContainingOrEmailContainingOrPhoneContaining(String key, String key2, String key3);
+    //Find by birthday
+    List<User> findAllByBirthday(String birthday);
 }

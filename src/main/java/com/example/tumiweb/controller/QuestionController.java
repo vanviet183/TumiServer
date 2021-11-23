@@ -4,7 +4,7 @@ import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.constants.Constants;
 import com.example.tumiweb.dto.QuestionDTO;
 import com.example.tumiweb.dao.Question;
-import com.example.tumiweb.services.BackupService;
+import com.example.tumiweb.services.imp.BackupServiceImp;
 import com.example.tumiweb.excel.ReadExcelFile;
 import com.example.tumiweb.services.IQuestionService;
 import com.example.tumiweb.utils.UploadFile;
@@ -26,7 +26,7 @@ public class QuestionController extends BaseController<Question> {
     private IQuestionService questionService;
 
     @Autowired
-    private BackupService backupService;
+    private BackupServiceImp backupService;
 
     @GetMapping("/{chapterId}")
     public ResponseEntity<?> getAllQuestionByChapterId(

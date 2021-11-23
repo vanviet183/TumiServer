@@ -23,7 +23,8 @@ public interface IUserService {
 
     User save(User user);
     List<User> getAllUserAdmin();
-
+    List<User> searchUsersByKey(String key);
+    List<User> getAllUserByBirthday(String birthday);
     //
     String registerCourseByUserIdAndCourseId(Long userId, Long courseId);
     String cancelCourseByUserIdAndCourseId(Long userId, Long courseId);

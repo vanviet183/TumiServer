@@ -41,7 +41,7 @@ public class WriteExcelFileUser implements IExcelFile{
         font.setFontHeight(16);
         style.setFont(font);
 
-        List<String> headersUser = new ArrayList<>(Arrays.asList("User ID", "Username", "Password", "Email", "Phone", "Avatar", "Mark", "Status"));
+        List<String> headersUser = new ArrayList<>(Arrays.asList("User ID", "Username", "Password", "Email", "Phone", "Avatar", "Mark", "Birth day", "Status"));
 
         for(int i=0; i<headersUser.size(); i++) {
             XSSFCell cell = row.createCell(i);
@@ -67,12 +67,16 @@ public class WriteExcelFileUser implements IExcelFile{
             cell = row.createCell(3);
             cell.setCellValue(user.getEmail());
             cell = row.createCell(4);
-            cell.setCellValue(user.getPhone());
+            cell.setCellValue(user.getFullName());
             cell = row.createCell(5);
-            cell.setCellValue(user.getAvatar());
+            cell.setCellValue(user.getPhone());
             cell = row.createCell(6);
-            cell.setCellValue(user.getMark() == null ? "0" : user.getMark().toString());
+            cell.setCellValue(user.getAvatar());
             cell = row.createCell(7);
+            cell.setCellValue(user.getMark() == null ? "0" : user.getMark().toString());
+            cell = row.createCell(8);
+            cell.setCellValue(user.getBirthday());
+            cell = row.createCell(9);
             cell.setCellValue(user.getStatus().toString());
 
             cnt++;

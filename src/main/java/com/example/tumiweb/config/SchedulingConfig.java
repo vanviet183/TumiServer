@@ -1,28 +1,20 @@
 package com.example.tumiweb.config;
 
-import com.example.tumiweb.constants.Constants;
-import com.example.tumiweb.controller.UserController;
 import com.example.tumiweb.dao.*;
 import com.example.tumiweb.services.*;
-import org.apache.catalina.connector.Response;
+import com.example.tumiweb.services.imp.BackupServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @EnableAsync
@@ -39,24 +31,23 @@ public class SchedulingConfig {
     private ISendMailService sendMailService;
 
     @Autowired
-    private BackupService backupService;
+    private BackupServiceImp backupService;
 
     @Autowired private ICourseService courseService;
     @Autowired private IChapterService chapterService;
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
     @Async
     @Scheduled(cron = "0 47 0 ? * MON-SAT")
 //    @Scheduled(cron = "0 * * ? * *")
-    void sendMailToUser() {
-        Set<User> users = diaryService.findAllUserByDay(simpleDateFormat.format(new Date()));
-        users.forEach(user -> {
-            System.out.println(user.getEmail());
-            sendMailService.sendMailWithText(Constants.SUBJECT_CALL_LEARN, Constants.CONTENT_CALL_LEARN, user.getEmail());
-        });
+    void sendMailToUserCallLearn() {
+        sendMailService.sendMailToUserCallLearn();
     }
 
+    @Async
+    @Scheduled(cron = "0 0 0 * * ?")
+    void sendMailToUserForBirthday() {
+        sendMailService.sendMailToUserForBirthday();
+    }
 
 
     @Async
@@ -123,7 +114,6 @@ public class SchedulingConfig {
                 !isSuccessNotification
         ) {
             sendMailService.sendMailToAdmin();
-            System.out.println("Lỗi ");
         }
     }
 

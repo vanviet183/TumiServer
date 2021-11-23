@@ -1,10 +1,10 @@
 package com.example.tumiweb.services;
 
-import com.example.tumiweb.dao.Category;
 import com.example.tumiweb.dto.CourseDTO;
 import com.example.tumiweb.dao.Course;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ICourseService {
@@ -19,5 +19,7 @@ public interface ICourseService {
 
     Course editCategoryById(Long courseId, Long categoryId);
 
-    Category findCategoryByCourseId(Long courseId);
+    List<Course> getCoursesByKey(String key);
+
+
 }

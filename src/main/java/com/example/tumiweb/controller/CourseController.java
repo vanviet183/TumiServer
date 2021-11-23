@@ -75,4 +75,9 @@ public class CourseController extends BaseController<Course> {
         return this.resSuccess(courseService.editCategoryById(courseId, categoryId));
     }
 
+    @GetMapping("/search/{key}")
+    public ResponseEntity<?> searchCoursesByKey(@PathVariable("key") String key) {
+        return this.resListSuccess(courseService.getCoursesByKey(key));
+    }
+
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -201,6 +202,17 @@ public class UserServiceImp implements IUserService {
             }
             return false;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> searchUsersByKey(String key) {
+        return userRepository.findAllByUsernameContainingOrEmailContainingOrPhoneContaining(key, key, key);
+    }
+
+    @Override
+    public List<User> getAllUserByBirthday(String birthday) {
+        SimpleDateFormat formatDay = new SimpleDateFormat("dd/MM/yyyy");
+        return userRepository.findAllByBirthday(formatDay.format(birthday));
     }
 
     @Override

@@ -1,7 +1,8 @@
-package com.example.tumiweb.services;
+package com.example.tumiweb.services.imp;
 
 import com.example.tumiweb.dao.*;
 import com.example.tumiweb.excel.*;
+import com.example.tumiweb.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BackupService {
+public class BackupServiceImp implements IBackupService {
 
     @Autowired private IUserService userService;
 
@@ -24,6 +25,7 @@ public class BackupService {
     @Autowired private INotificationService notificationService;
     @Autowired private ICourseService courseService;
 
+    @Override
     public boolean backupUser(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -46,7 +48,7 @@ public class BackupService {
         }
     }
 
-
+    @Override
     public boolean backupAnswer(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -69,6 +71,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupQuestionByChapterId(HttpServletResponse res, Long chapterId) throws IOException {
         try {
             if(res != null) {
@@ -91,6 +94,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupCategory(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -112,6 +116,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupChapter(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -133,6 +138,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupDiary(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -154,6 +160,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupGift(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -175,6 +182,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupHelp(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -196,6 +204,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupNotification(HttpServletResponse res) {
         try {
             if(res != null) {
@@ -217,6 +226,7 @@ public class BackupService {
         }
     }
 
+    @Override
     public boolean backupCourse(HttpServletResponse res) {
         try {
            if(res != null) {
@@ -237,8 +247,5 @@ public class BackupService {
             return false;
         }
     }
-
-
-
 
 }
