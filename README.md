@@ -15,6 +15,7 @@
 - Upload file vào Database hoặc project
 - Download file từ Database hoặc project
 - OAuth2: hỗ trợ đăng nhập với github và google
+- Sử dụng Data Redis cho service
 
 ## Note đang làm:
 

@@ -9,6 +9,8 @@ import com.example.tumiweb.services.IHelpService;
 import com.example.tumiweb.services.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class HelpServiceImp implements IHelpService {
     @Autowired
     private IUserService userService;
 
+    @Cacheable(value = "help", key = "'all'")
     @Override
     public Set<Help> getAllHelp(Long page, int size) {
         List<Help> helps;
@@ -49,6 +52,7 @@ public class HelpServiceImp implements IHelpService {
         return help.get();
     }
 
+    @Cacheable(value = "help", key = "#id")
     @Override
     public Help getHelpById(Long id) {
         Help help = findHelpById(id);
@@ -58,6 +62,7 @@ public class HelpServiceImp implements IHelpService {
         return help;
     }
 
+    @CacheEvict(value = "help", allEntries = true)
     @Override
     public Help createNewHelp(Long userId, HelpDTO helpDTO) {
         User user = userService.getUserById(userId);
@@ -69,6 +74,7 @@ public class HelpServiceImp implements IHelpService {
         return helpRepository.save(help);
     }
 
+    @CacheEvict(value = "help", allEntries = true)
     @Override
     public Help deleteHelpById(Long id) {
         Help help = findHelpById(id);
@@ -79,6 +85,7 @@ public class HelpServiceImp implements IHelpService {
         return help;
     }
 
+    @CacheEvict(value = "help", allEntries = true)
     @Override
     public Help disableHelp(Long id) {
         Help help = findHelpById(id);

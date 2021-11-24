@@ -10,11 +10,14 @@ import com.example.tumiweb.dao.Image;
 import com.example.tumiweb.repository.CourseRepository;
 import com.example.tumiweb.services.ICategoryService;
 import com.example.tumiweb.services.ICourseService;
+import com.example.tumiweb.services.IUserService;
 import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,18 +48,24 @@ public class CourseServiceImp implements ICourseService {
     private ICategoryService categoryService;
 
     @Autowired
+    private IUserService userService;
+
+    @Autowired
     private Slugify slugify;
 
+    @Cacheable(value = "course", key = "'all'")
     @Override
     public Set<Course> findAllCourse(Long page, int size, boolean status, boolean both) {
         return new HashSet<>(courseRepository.findAll());
     }
 
+    @Cacheable(value = "course", key = "'userid'+#userId")
     @Override
     public Set<Course> findAllCourseByUserId(Long userId, boolean status, boolean both) {
-        return null;
+        return userService.getUserById(userId).getCourses();
     }
 
+    @CacheEvict(value = "course", allEntries = true)
     @Override
     public Course createNewCourse(CourseDTO courseDTO, MultipartFile multipartFile, Long categoryId) {
         if(courseRepository.findByName(courseDTO.getName()) != null) {
@@ -79,6 +88,7 @@ public class CourseServiceImp implements ICourseService {
         return courseRepository.save(course);
     }
 
+    @Cacheable(value = "course", key = "#id")
     @Override
     public Course findCourseById(Long id) {
         Optional<Course> course = courseRepository.findById(id);
@@ -88,6 +98,7 @@ public class CourseServiceImp implements ICourseService {
         return course.get();
     }
 
+    @CacheEvict(value = "course", allEntries = true)
     @Override
     public Course changeAvatarCourseById(Long id, MultipartFile multipartFile) {
         Course course = findCourseById(id);
@@ -105,6 +116,7 @@ public class CourseServiceImp implements ICourseService {
         return courseRepository.save(course);
     }
 
+    @CacheEvict(value = "course", allEntries = true)
     @Override
     public Course editCourseById(Long id, CourseDTO courseDTO, MultipartFile multipartFile) {
         Course course = findCourseById(id);
@@ -123,6 +135,7 @@ public class CourseServiceImp implements ICourseService {
         return courseRepository.save(ConvertObject.convertCourseDTOToCourse(course, courseDTO));
     }
 
+    @CacheEvict(value = "course", allEntries = true)
     @Override
     public Course deleteCourseById(Long id) {
         Course course = findCourseById(id);
@@ -136,6 +149,7 @@ public class CourseServiceImp implements ICourseService {
         return null;
     }
 
+    @CacheEvict(value = "course", allEntries = true)
     @Override
     public Course changeStatusById(Long id) {
         Course course = findCourseById(id);
@@ -148,6 +162,7 @@ public class CourseServiceImp implements ICourseService {
         return courseRepository.save(course);
     }
 
+    @CacheEvict(value = "course", allEntries = true)
     @Override
     public Course editCategoryById(Long courseId, Long categoryId) {
         Course course = findCourseById(courseId);
@@ -176,6 +191,7 @@ public class CourseServiceImp implements ICourseService {
         return courseRepository.save(course);
     }
 
+    @Cacheable(value = "course", key = "#key")
     @Override
     public List<Course> getCoursesByKey(String key) {
         return courseRepository.findAllByNameContainingOrDescriptionContaining(key, key);

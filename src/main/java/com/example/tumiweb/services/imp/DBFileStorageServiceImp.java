@@ -6,6 +6,8 @@ import com.example.tumiweb.exception.StorageFileNotFoundException;
 import com.example.tumiweb.repository.DBFileRepository;
 import com.example.tumiweb.services.IDBFileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +19,7 @@ public class DBFileStorageServiceImp implements IDBFileStorageService {
     @Autowired
     private DBFileRepository dbFileRepository;
 
+    @CacheEvict(value = "dbfile", allEntries = true)
     @Override
     public DBFile storeFile(MultipartFile file, Long uploadBy) {
         // Normalize file name
@@ -36,6 +39,7 @@ public class DBFileStorageServiceImp implements IDBFileStorageService {
         }
     }
 
+    @Cacheable(value = "dbfile", key = "#fileId")
     @Override
     public DBFile getFile(String fileId) {
         return dbFileRepository.findById(fileId)

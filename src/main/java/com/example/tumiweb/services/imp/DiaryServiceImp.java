@@ -6,8 +6,11 @@ import com.example.tumiweb.dao.User;
 import com.example.tumiweb.repository.DiaryRepository;
 import com.example.tumiweb.services.IDiaryService;
 import com.example.tumiweb.services.IUserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -23,12 +26,10 @@ public class DiaryServiceImp implements IDiaryService {
     @Autowired
     private DiaryRepository diaryRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("dd/MM/yyyy");
 
+    @Cacheable(value = "diary", key = "'du'+#userId")
     @Override
     public Set<Diary> findAllByUserId(Long userId) {
         User user = userService.getUserById(userId);
@@ -39,6 +40,7 @@ public class DiaryServiceImp implements IDiaryService {
         return diaryRepository.findAllByUser_Id(userId);
     }
 
+    @Cacheable(value = "diary", key = "'day'+#userId")
     @Override
     public List<Diary> findAllByUserIdAndOnDay(Long userId, String day) {
         User user = userService.getUserById(userId);
@@ -52,8 +54,10 @@ public class DiaryServiceImp implements IDiaryService {
         return diaryRepository.findAllByUser_IdAndDay(userId, day);
     }
 
+    @Cacheable(value = "diary", key = "#id")
     @Override
     public Diary findDiaryById(Long id) {
+        System.out.println("get by id diary");
         Optional<Diary> diary = diaryRepository.findById(id);
         if(diary.isEmpty()) {
             throw new NotFoundException("Can not find diary by id: " + id);
@@ -61,6 +65,7 @@ public class DiaryServiceImp implements IDiaryService {
         return diary.get();
     }
 
+    @CacheEvict(value = "diary", allEntries = true)
     @Override
     public Diary createNewDiary(Long idUser) {
         User user = userService.getUserById(idUser);
@@ -78,8 +83,11 @@ public class DiaryServiceImp implements IDiaryService {
         return diaryRepository.save(newDiary);
     }
 
+    @CachePut(value = "diary", key = "#id")
     @Override
     public Diary editDiaryById(Long id) {
+        clearCache();
+        System.out.println("Cache put");
         Diary diary = findDiaryById(id);
         if(diary == null) {
             throw new NotFoundException("Can not find diary by id: " + id);
@@ -88,6 +96,7 @@ public class DiaryServiceImp implements IDiaryService {
         return diaryRepository.save(diary);
     }
 
+    @CacheEvict(value = "diary", key = "#id")
     @Override
     public Diary deleteDiaryById(Long id) {
         Diary diary = findDiaryById(id);
@@ -98,12 +107,15 @@ public class DiaryServiceImp implements IDiaryService {
         return diary;
     }
 
+    @Cacheable(value = "diary", key = "'all'")
     @Override
     public List<Diary> findAll() {
+        System.out.println("get all diaries");
         return diaryRepository.findAll();
     }
 
     //lấy những ai k đăng nhập
+    @Cacheable(value = "diary", key = "'day'")
     @Override
     public Set<User> findAllUserByDay(String day) {
         List<Diary> diaries = diaryRepository.findAllByDay(day);
@@ -129,4 +141,11 @@ public class DiaryServiceImp implements IDiaryService {
         }
         return false;
     }
+
+    @CacheEvict("diary")
+    public void clearCacheById(String id) {
+    }
+
+    @CacheEvict(value = "diary", allEntries = true)
+    public void clearCache() {}
 }

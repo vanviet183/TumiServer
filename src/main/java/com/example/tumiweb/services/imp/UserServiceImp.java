@@ -15,12 +15,13 @@ import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class UserServiceImp implements IUserService {
         return user.get();
     }
 
+    @Cacheable(value = "user", key = "'all'")
     @Override
     public Set<User> getAllUsers(Long page, int size, boolean status, boolean both) {
         Set<User> users = new HashSet<>();
@@ -80,8 +82,10 @@ public class UserServiceImp implements IUserService {
         return users;
     }
 
+    @Cacheable(value = "user", key = "#id")
     @Override
     public User getUserById(Long id) {
+        System.out.println("get by id user");
         User user = findUserById(id);
         if(user == null) {
             throw new NotFoundException("Can not find user by id: " + id);
@@ -89,16 +93,19 @@ public class UserServiceImp implements IUserService {
         return user;
     }
 
+    @Cacheable(value = "user", key = "#username")
     @Override
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
+    @Cacheable(value = "user", key = "#email")
     @Override
     public User getByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Override
     public User createNewUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
@@ -119,6 +126,7 @@ public class UserServiceImp implements IUserService {
         return userRepository.save(user);
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Override
     public User editUserById(Long id, UserDTO userDTO) {
         User user = findUserById(id);
@@ -129,6 +137,7 @@ public class UserServiceImp implements IUserService {
         return userRepository.save(ConvertObject.convertUserDTOToUser(user, userDTO));
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Override
     public User deleteUserById(Long id) {
         User user = findUserById(id);
@@ -139,6 +148,7 @@ public class UserServiceImp implements IUserService {
         return user;
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Override
     public User changeStatusById(Long id) {
         User user = findUserById(id);
@@ -149,6 +159,7 @@ public class UserServiceImp implements IUserService {
         return userRepository.save(user);
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Override
     public String changeAvatarById(Long id, MultipartFile avatar) throws IOException {
         User user = findUserById(id);
@@ -166,6 +177,7 @@ public class UserServiceImp implements IUserService {
         return "Change successfully";
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Override
     public Boolean changeMarkById(Long id, Long mark) {
         User user = getUserById(id);
@@ -186,11 +198,13 @@ public class UserServiceImp implements IUserService {
         return userRepository.findByTokenResetPass(token);
     }
 
+    @CacheEvict(value = "user", key = "#user.id")
     @Override
     public User save(User user) {
         return userRepository.save(user);
     }
 
+    @Cacheable(value = "user", key = "'admin'")
     @Override
     public List<User> getAllUserAdmin() {
         return userRepository.findAll().stream().filter(user -> {
@@ -204,16 +218,19 @@ public class UserServiceImp implements IUserService {
         }).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "user", key = "#key")
     @Override
     public List<User> searchUsersByKey(String key) {
         return userRepository.findAllByUsernameContainingOrEmailContainingOrPhoneContaining(key, key, key);
     }
 
+    @Cacheable(value = "user", key = "#birthday")
     @Override
     public List<User> getAllUserByBirthday(String birthday) {
         return userRepository.findAllByBirthday(birthday);
     }
 
+    @CacheEvict(value = "user", key = "'all'")
     @Override
     public String registerCourseByUserIdAndCourseId(Long userId, Long courseId) {
         //mặc định user and course có cho nhanh nhé :v
@@ -239,6 +256,7 @@ public class UserServiceImp implements IUserService {
         return "Register successfully";
     }
 
+    @CacheEvict(value = "user", key = "'all'")
     @Override
     public String cancelCourseByUserIdAndCourseId(Long userId, Long courseId) {
         try {

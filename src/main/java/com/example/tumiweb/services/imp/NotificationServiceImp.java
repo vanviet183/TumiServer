@@ -9,6 +9,8 @@ import com.example.tumiweb.services.INotificationService;
 import com.example.tumiweb.services.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,7 @@ public class NotificationServiceImp implements INotificationService {
         return notification.get();
     }
 
+    @Cacheable(value = "notification", key = "'all'")
     @Override
     public Set<Notification> getAllNotification(Long page, int size, boolean status) {
         List<Notification> notifications;
@@ -62,6 +65,7 @@ public class NotificationServiceImp implements INotificationService {
         return new HashSet<>(notifications);
     }
 
+    @Cacheable(value = "notification", key = "#id")
     @Override
     public Notification getNotificationById(Long id) {
         Notification notification = findNotificationById(id);
@@ -71,6 +75,7 @@ public class NotificationServiceImp implements INotificationService {
         return notification;
     }
 
+    @CacheEvict(value = "notification", allEntries = true)
     @Override
     public Notification createNotification(Long userId, NotificationDTO notificationDTO) {
         User user = userService.getUserById(userId);
@@ -83,6 +88,7 @@ public class NotificationServiceImp implements INotificationService {
         return notificationRepository.save(notification);
     }
 
+    @CacheEvict(value = "notification", allEntries = true)
     @Override
     public Notification editNotificationById(Long id, NotificationDTO notificationDTO) {
         Notification notification = findNotificationById(id);
@@ -94,6 +100,7 @@ public class NotificationServiceImp implements INotificationService {
         return notificationRepository.save(newNotification);
     }
 
+    @CacheEvict(value = "notification", allEntries = true)
     @Override
     public Notification deleteNotificationById(Long id) {
         Notification notification = findNotificationById(id);
@@ -104,6 +111,7 @@ public class NotificationServiceImp implements INotificationService {
         return notification;
     }
 
+    @CacheEvict(value = "notification", allEntries = true)
     @Override
     public Notification changeStatusNotificationById(Long id) {
         Notification notification = findNotificationById(id);

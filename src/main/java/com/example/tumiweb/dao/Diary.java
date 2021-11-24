@@ -27,7 +27,7 @@ public class Diary extends BaseEntity {
     }
 
     //link to table Users
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id")
     private User user;
 }

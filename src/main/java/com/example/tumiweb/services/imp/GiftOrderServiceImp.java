@@ -11,6 +11,8 @@ import com.example.tumiweb.services.IGiftService;
 import com.example.tumiweb.services.INotificationService;
 import com.example.tumiweb.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
 
     SimpleDateFormat formatDay = new SimpleDateFormat("dd/MM/yyyy");
 
+    @Cacheable(value = "gift-order", key = "'all'")
     @Override
     public Set<GiftOrder> getAllGiftOrder(Long page, int size, boolean active) {
         List<GiftOrder> giftOrders;
@@ -58,6 +61,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
         return new HashSet<>(giftOrders);
     }
 
+    @CacheEvict(value = "gift-order", allEntries = true)
     @Override
     public GiftOrder createNewGiftOrder(Long userId, Long giftId) {
         Gift gift = giftService.findGiftById(giftId);
@@ -80,6 +84,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
         throw new NotFoundException("Can not create gift order");
     }
 
+    @CacheEvict(value = "gift-order", allEntries = true)
     @Override
     public GiftOrder changeStatusById(Long id) {
         GiftOrder giftOrder = findGiftOrderById(id);
@@ -90,6 +95,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
         return giftOrderRepository.save(giftOrder);
     }
 
+    @CacheEvict(value = "gift-order", allEntries = true)
     @Override
     public GiftOrder deleteGiftOrderById(Long id) {
         GiftOrder giftOrder = findGiftOrderById(id);
@@ -100,6 +106,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
         return giftOrder;
     }
 
+    @Cacheable(value = "gift-order", key = "#id")
     @Override
     public GiftOrder findGiftOrderById(Long id) {
         Optional<GiftOrder> giftOrder = giftOrderRepository.findById(id);
@@ -114,6 +121,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
         return giftOrderRepository.save(giftOrder);
     }
 
+    @CacheEvict(value = "gift-order", allEntries = true)
     @Override
     public GiftOrder giveRandomGiftToUser(Long userId) {
         List<Gift> gifts = new ArrayList<>(giftService.getAllGift(null, 0, true));

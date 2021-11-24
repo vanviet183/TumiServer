@@ -11,6 +11,8 @@ import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class GiftServiceImp implements IGiftService {
     @Autowired
     private UploadFile uploadFile;
 
+    @Cacheable(value = "gift", key = "'all")
     @Override
     public Set<Gift> getAllGift(Long page, int size, boolean active) {
         List<Gift> gifts;
@@ -57,6 +60,7 @@ public class GiftServiceImp implements IGiftService {
         return gift.get();
     }
 
+    @CacheEvict(value = "gift", allEntries = true)
     @Override
     public Gift createNewGift(GiftDTO giftDTO, MultipartFile file) {
         if(giftRepository.findByName(giftDTO.getName()) != null) {
@@ -68,6 +72,7 @@ public class GiftServiceImp implements IGiftService {
         return giftRepository.save(gift);
     }
 
+    @CacheEvict(value = "gift", allEntries = true)
     @Override
     public Gift editGiftById(Long id, GiftDTO giftDTO, MultipartFile avatar) {
         Gift gift = findGiftById(id);
@@ -81,6 +86,7 @@ public class GiftServiceImp implements IGiftService {
         return giftRepository.save(ConvertObject.convertGiftDTOToGift(gift, giftDTO));
     }
 
+    @CacheEvict(value = "gift", allEntries = true)
     @Override
     public Gift changeStatusById(Long id) {
         Gift gift = findGiftById(id);
@@ -91,6 +97,7 @@ public class GiftServiceImp implements IGiftService {
         return giftRepository.save(gift);
     }
 
+    @CacheEvict(value = "gift", allEntries = true)
     @Override
     public Gift deleteGiftById(Long id) {
         Gift gift = findGiftById(id);
@@ -101,6 +108,7 @@ public class GiftServiceImp implements IGiftService {
         return gift;
     }
 
+    @CacheEvict(value = "gift", allEntries = true)
     @Override
     public Gift changeImageGiftById(Long id, MultipartFile multipartFile) {
         Gift gift = findGiftById(id);
@@ -114,6 +122,7 @@ public class GiftServiceImp implements IGiftService {
         return giftRepository.save(gift);
     }
 
+    @Cacheable(value = "gift", key = "#key")
     @Override
     public List<Gift> getGiftsByKey(String key) {
         try {
@@ -129,27 +138,4 @@ public class GiftServiceImp implements IGiftService {
         return giftRepository.save(gift);
     }
 
-//    @Override
-//    public Set<Gift> findAllGiftByUserId(Long userId, boolean active, boolean both) {
-//        Optional<User> user = userRepository.findById(userId);
-//        if(user.isEmpty()) {
-//            throw new NotFoundException("Can not find user by id: " + userId);
-//        }
-//        Set<Gift> gifts = new HashSet<>();
-//        if(both) {
-//            gifts = new HashSet<>(giftRepository.findAll());
-//        }else if(active) {
-//            gifts = giftRepository.findAllByStatus(true);
-//        }else {
-//            gifts = giftRepository.findAllByStatus(false);
-//        }
-//
-//        if(!gifts.isEmpty()) {
-//            gifts = gifts.stream().filter((item) -> {
-//                return item.getUsers().contains(user.get());
-//            }).collect(Collectors.toSet());
-//        }
-//
-//        return gifts;
-//    }
 }

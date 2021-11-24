@@ -2,7 +2,7 @@ package com.example.tumiweb.controller;
 
 import com.example.tumiweb.base.BaseController;
 import com.example.tumiweb.dao.Diary;
-import com.example.tumiweb.services.IDiaryService;
+import com.example.tumiweb.services.imp.DiaryServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,12 @@ import org.springframework.web.bind.annotation.*;
 public class DiaryController extends BaseController<Diary> {
 
     @Autowired
-    private IDiaryService diaryService;
+    private DiaryServiceImp diaryService;
+
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        return this.resListSuccess(diaryService.findAll());
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> findAllDiaryByUserId(@PathVariable("userId") Long id) {

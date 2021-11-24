@@ -9,6 +9,8 @@ import com.example.tumiweb.services.ICategoryService;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ public class CategoryServiceImp implements ICategoryService {
     @Autowired
     private Slugify slugify;
 
+    @Cacheable(value = "category", key = "'all'")
     @Override
     public Set<Category> findAllCategory(Long page, int size, boolean status, boolean both) {
         Set<Category> categories = new HashSet<>();
@@ -59,6 +62,7 @@ public class CategoryServiceImp implements ICategoryService {
         return categories;
     }
 
+    @Cacheable(value = "category", key = "#id")
     @Override
     public Category findCategoryById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
@@ -68,6 +72,7 @@ public class CategoryServiceImp implements ICategoryService {
         return category.get();
     }
 
+    @CacheEvict(value = "category", allEntries = true)
     @Override
     public Category createNewCategory(CategoryDTO categoryDTO) {
         Category category = categoryRepository.findByName(categoryDTO.getName());
@@ -80,6 +85,7 @@ public class CategoryServiceImp implements ICategoryService {
         return categoryRepository.save(newCategory);
     }
 
+    @CacheEvict(value = "category", allEntries = true)
     @Override
     public Category editCategoryById(Long id, CategoryDTO categoryDTO) {
         Category category = findCategoryById(id);
@@ -92,6 +98,7 @@ public class CategoryServiceImp implements ICategoryService {
         return categoryRepository.save(newCategory);
     }
 
+    @CacheEvict(value = "category", allEntries = true)
     @Override
     public Category deleteCategoryById(Long id) {
         Category category = findCategoryById(id);
@@ -102,6 +109,7 @@ public class CategoryServiceImp implements ICategoryService {
         return category;
     }
 
+    @CacheEvict(value = "category", allEntries = true)
     @Override
     public Category changeStatusById(Long id) {
         Category category = findCategoryById(id);

@@ -11,6 +11,8 @@ import com.example.tumiweb.utils.ConvertObject;
 import com.example.tumiweb.utils.UploadFile;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +33,7 @@ public class AnswerServiceImp implements IAnswerService {
     @Autowired
     private UploadFile uploadFile;
 
+    @Cacheable(value = "answer", key = "'questionId'+#questionId")
     @Override
     public Set<Answer> findAllAnswerByQuestionId(Long questionId) {
         Set<Answer> answers = answerRepository.findAllByQuestion_Id(questionId);
@@ -40,6 +43,7 @@ public class AnswerServiceImp implements IAnswerService {
         return answers;
     }
 
+    @Cacheable(value = "answer", key = "#id")
     @Override
     public Answer findAnswerById(Long id) {
         Optional<Answer> answer = answerRepository.findById(id);
@@ -49,6 +53,7 @@ public class AnswerServiceImp implements IAnswerService {
         return answer.get();
     }
 
+    @CacheEvict(value = "answer", allEntries = true)
     @Override
     public Answer createNewAnswer(AnswerDTO answerDTO, Long questionId, MultipartFile multipartFile) {
         Question question = questionService.findQuestionById(questionId);
@@ -67,6 +72,7 @@ public class AnswerServiceImp implements IAnswerService {
         return answerRepository.save(answer);
     }
 
+    @CacheEvict(value = "answer", allEntries = true)
     @Override
     public Set<Answer> createNewAnswers(Long questionId, List<AnswerDTO> answerDTOS, MultipartFile[] multipartFiles) {
         Question question = questionService.findQuestionById(questionId);
@@ -92,6 +98,7 @@ public class AnswerServiceImp implements IAnswerService {
         return answers;
     }
 
+    @CacheEvict(value = "answer", allEntries = true)
     @Override
     public Answer editAnswerById(Long id, AnswerDTO answerDTO, MultipartFile multipartFile) {
         Answer answer = findAnswerById(id);
@@ -109,6 +116,7 @@ public class AnswerServiceImp implements IAnswerService {
         return answerRepository.save(ConvertObject.convertAnswerDTOToAnswer(answer, answerDTO));
     }
 
+    @CacheEvict(value = "answer", allEntries = true)
     @Override
     public Answer deleteAnswerById(Long id) {
         Answer answer = findAnswerById(id);
@@ -124,6 +132,7 @@ public class AnswerServiceImp implements IAnswerService {
         return answer;
     }
 
+    @Cacheable(value = "answer", key = "'all'")
     @Override
     public List<Answer> findAllAnswer() {
         return answerRepository.findAll();

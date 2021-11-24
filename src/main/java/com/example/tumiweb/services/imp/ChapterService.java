@@ -9,6 +9,8 @@ import com.example.tumiweb.services.IChapterService;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ public class ChapterService implements IChapterService {
     @Autowired
     private Slugify slugify;
 
+    @Cacheable(value = "chapter", key = "'all'")
     @Override
     public Set<Chapter> findAllChapter(Long page, int size) {
         if(page != null) {
@@ -42,6 +45,7 @@ public class ChapterService implements IChapterService {
         return new HashSet<>(chapterRepository.findAll());
     }
 
+    @Cacheable(value = "chapter", key = "'courseid'+#courseId")
     @Override
     public Set<Chapter> findAllChapterByCourseId(Long courseId, Long page, int size, boolean status, boolean both) {
         Course course = courseService.findCourseById(courseId);
@@ -80,6 +84,7 @@ public class ChapterService implements IChapterService {
         return chapterRepository.findAllByCourse_Id(courseId);
     }
 
+    @Cacheable(value = "chapter", key = "#id")
     @Override
     public Chapter findChapterById(Long id) {
         Optional<Chapter> chapter = chapterRepository.findById(id);
@@ -89,6 +94,7 @@ public class ChapterService implements IChapterService {
         return chapter.get();
     }
 
+    @CacheEvict(value = "chapter", allEntries = true)
     @Override
     public Chapter createNewChapter(ChapterDTO chapterDTO, Long courseId) {
         Course course = courseService.findCourseById(courseId);
@@ -103,6 +109,7 @@ public class ChapterService implements IChapterService {
         return chapterRepository.save(chapter);
     }
 
+    @CacheEvict(value = "chapter", allEntries = true)
     @Override
     public Chapter editChapterById(Long id, ChapterDTO chapterDTO) {
         Chapter chapter = findChapterById(id);
@@ -115,6 +122,7 @@ public class ChapterService implements IChapterService {
         return chapterRepository.save(chapter);
     }
 
+    @CacheEvict(value = "chapter", allEntries = true)
     @Override
     public Chapter deleteChapterById(Long id) {
         Chapter chapter = findChapterById(id);
@@ -134,6 +142,7 @@ public class ChapterService implements IChapterService {
         return chapterRepository.save(chapter);
     }
 
+    @Cacheable(value = "chapter", key = "'chapterid'+#chapterId")
     @Override
     public Course findCourseByChapterId(Long chapterId) {
         return findChapterById(chapterId).getCourse();

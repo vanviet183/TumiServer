@@ -13,6 +13,8 @@ import com.example.tumiweb.utils.UploadFile;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +44,7 @@ public class QuestionServiceImp implements IQuestionService {
     @Autowired
     private Slugify slugify;
 
+    @Cacheable(value = "question", key = "'chapter'+#chapterId")
     @Override
     public Set<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size) {
         Chapter chapter = chapterService.findChapterById(chapterId);
@@ -55,11 +58,11 @@ public class QuestionServiceImp implements IQuestionService {
             questions = questionRepository.findAll();
         }
 
-        return questions.stream().filter(item -> {
-            return item.getChapter().equals(chapter);
-        }).collect(Collectors.toSet());
+        return questions.stream().filter(item -> item.getChapter().equals(chapter))
+                .collect(Collectors.toSet());
     }
 
+    @Cacheable(value = "question", key = "#id")
     @Override
     public Question findQuestionById(Long id) {
         Optional<Question> question = questionRepository.findById(id);
@@ -69,6 +72,7 @@ public class QuestionServiceImp implements IQuestionService {
         return question.get();
     }
 
+    @CacheEvict(value = "question", allEntries = true)
     @Override
     public Question createNewQuestion(QuestionDTO questionDTO, Long chapterId, MultipartFile multipartFile) {
         Chapter chapter = chapterService.findChapterById(chapterId);
@@ -91,6 +95,7 @@ public class QuestionServiceImp implements IQuestionService {
         return questionRepository.save(question);
     }
 
+    @CacheEvict(value = "question", allEntries = true)
     @Override
     public Question editQuestionById(Long questionId, QuestionDTO questionDTO, MultipartFile multipartFile) {
         Question question = findQuestionById(questionId);
@@ -119,11 +124,13 @@ public class QuestionServiceImp implements IQuestionService {
         return questionRepository.save(question);
     }
 
+    @CacheEvict(value = "question", allEntries = true)
     @Override
     public Question save(Question question) {
         return questionRepository.save(question);
     }
 
+    @CacheEvict(value = "question", allEntries = true)
     @Override
     public Question deleteQuestionById(Long id) {
         Question question = findQuestionById(id);

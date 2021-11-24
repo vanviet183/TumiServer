@@ -127,7 +127,7 @@ public class User extends BaseEntity {
 
 
     //link to table diary
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     @JsonIgnore
     private Set<Diary> diaries = new HashSet<>();
 
