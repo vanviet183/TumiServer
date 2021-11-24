@@ -1,10 +1,9 @@
 # Tumi server with spring boot
-### Công nghệ and tool:
+### Tính năng:
 
 - Cloudinary: upload ảnh
 - Spring security
 - ModelMapper: convert object
-- Lombok
 - Send mail: đăng ký
 - Swagger: http://localhost:8080/swagger-ui.html
 - Slugify: https://github.com/slugify/slugify
@@ -15,6 +14,7 @@
 - Tự động backup data vào 00:00 ngày 15 mỗi tháng(0 0 0 15 * ?), nếu lỗi thì thông báo cho admin.
 - Upload file vào Database hoặc project
 - Download file từ Database hoặc project
+- OAuth2: hỗ trợ đăng nhập với github và google
 
 ## Note đang làm:
 
@@ -23,4 +23,4 @@
 - Auto backup data (xong)
 - Online 1 ngày có mức giờ và nhận quà theo giờ online.
 - Thêm chức năng nhận quà mỗi ngày như game VLCM :v
-A
+- OAuth2: facebook chưa làm

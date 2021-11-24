@@ -1,5 +1,6 @@
 package com.example.tumiweb.controller;
 
+import com.example.tumiweb.constants.AuthenticationProvider;
 import com.example.tumiweb.dao.Diary;
 import com.example.tumiweb.dto.UserDTO;
 import com.example.tumiweb.exception.DuplicateException;
@@ -108,6 +109,9 @@ public class AuthController {
         //gán role member cho user mới lập
         Role role = roleService.getRoleByName("ROLE_MEMBER");
         user.setRoles(Set.of(role));
+
+        // set provider
+        user.setAuthProvider(AuthenticationProvider.LOCAL);
         User newUser = userService.save(user);
 
         final UserDetails userDetails = myUserDetailsService.loadUserByUsername(newUser.getUsername());

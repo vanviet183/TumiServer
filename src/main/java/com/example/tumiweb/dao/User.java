@@ -1,6 +1,7 @@
 package com.example.tumiweb.dao;
 
 import com.example.tumiweb.base.BaseEntity;
+import com.example.tumiweb.constants.AuthenticationProvider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
@@ -36,6 +37,9 @@ public class User extends BaseEntity {
     private String birthday;
 
     private Long mark = 0L;
+
+    @Enumerated(EnumType.STRING)
+    private AuthenticationProvider authProvider;
 
     public User(Long id, String username, String password, String fullName, String email, String phone, String avatar, Long mark, String birthday, boolean status) {
         this.setId(id);
