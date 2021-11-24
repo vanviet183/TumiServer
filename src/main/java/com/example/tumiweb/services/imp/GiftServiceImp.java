@@ -63,7 +63,7 @@ public class GiftServiceImp implements IGiftService {
             throw new DuplicateException("Duplicate gift with title: " + giftDTO.getName());
         }
         Gift gift = modelMapper.map(giftDTO, Gift.class);
-        gift.setAvatar(uploadFile.getUrlFromFile(file));
+//        gift.setAvatar(uploadFile.getUrlFromFile(file));
 
         return giftRepository.save(gift);
     }
@@ -122,6 +122,11 @@ public class GiftServiceImp implements IGiftService {
         }catch (Exception e) {
             return giftRepository.findAllByNameContainingOrMarkContaining(key, 0L);
         }
+    }
+
+    @Override
+    public Gift save(Gift gift) {
+        return giftRepository.save(gift);
     }
 
 //    @Override

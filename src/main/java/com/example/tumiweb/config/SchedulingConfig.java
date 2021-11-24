@@ -13,7 +13,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -24,20 +26,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @ConditionalOnExpression("true")
 public class SchedulingConfig {
 
-    @Autowired
-    private IDiaryService diaryService;
+    @Autowired private IDiaryService diaryService;
 
-    @Autowired
-    private ISendMailService sendMailService;
+    @Autowired private IUserService userService;
 
-    @Autowired
-    private BackupServiceImp backupService;
+    @Autowired private ISendMailService sendMailService;
+
+    @Autowired private BackupServiceImp backupService;
 
     @Autowired private ICourseService courseService;
+
     @Autowired private IChapterService chapterService;
 
+    @Autowired private IGiftOrderService giftOrderService;
+
+    SimpleDateFormat formatDay = new SimpleDateFormat("dd/MM/yyyy");
+
     @Async
-    @Scheduled(cron = "0 47 0 ? * MON-SAT")
+    @Scheduled(cron = "0 47 23 ? * MON-SAT")
 //    @Scheduled(cron = "0 * * ? * *")
     void sendMailToUserCallLearn() {
         sendMailService.sendMailToUserCallLearn();
@@ -45,8 +51,14 @@ public class SchedulingConfig {
 
     @Async
     @Scheduled(cron = "0 0 0 * * ?")
-    void sendMailToUserForBirthday() {
-        sendMailService.sendMailToUserForBirthday();
+//    @Scheduled(cron = "0 27 23 * * ?")
+    void sendMailAndGiveAGiftToUserForBirthday() {
+        List<User> users = userService.getAllUserByBirthday(formatDay.format(new Date()));
+        if(users.size() > 0) {
+            sendMailService.sendMailToUserForBirthday(users);
+
+            users.forEach(user -> giftOrderService.giveRandomGiftToUser(user.getId()));
+        }
     }
 
 

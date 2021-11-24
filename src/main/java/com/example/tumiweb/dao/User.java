@@ -3,6 +3,7 @@ package com.example.tumiweb.dao;
 import com.example.tumiweb.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -26,7 +27,9 @@ public class User extends BaseEntity {
     @Email
     @NotBlank
     private String email;
+
     @NotBlank
+//    @Nationalized
     private String fullName;
     private String phone;
     private String avatar;

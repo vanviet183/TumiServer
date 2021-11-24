@@ -211,8 +211,7 @@ public class UserServiceImp implements IUserService {
 
     @Override
     public List<User> getAllUserByBirthday(String birthday) {
-        SimpleDateFormat formatDay = new SimpleDateFormat("dd/MM/yyyy");
-        return userRepository.findAllByBirthday(formatDay.format(birthday));
+        return userRepository.findAllByBirthday(birthday);
     }
 
     @Override

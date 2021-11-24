@@ -74,9 +74,7 @@ public class SendMailServiceImp implements ISendMailService {
     }
 
     @Override
-    public void sendMailToUserForBirthday() {
-        List<User> users = userService.getAllUserByBirthday(formatDay.format(new Date()));
-
+    public void sendMailToUserForBirthday(List<User> users) {
         users.forEach(user -> sendMailWithText(
                 Constants.SUBJECT_BIRTHDAY,
                 "Chúc mừng sinh nhật " + user.getFullName() + ". Chúc bạn có một sinh nhật vui vẻ <3",

@@ -18,6 +18,7 @@ public interface IGiftService {
 
     List<Gift> getGiftsByKey(String key);
 
+    Gift save(Gift gift);
     //chưa paging
 //    Set<Gift> findAllGiftByUserId(Long userId, boolean active, boolean both);
 }

@@ -8,7 +8,7 @@
 - Send mail: đăng ký
 - Swagger: http://localhost:8080/swagger-ui.html
 - Slugify: https://github.com/slugify/slugify
-- Gửi mail chúc mừng sinh nhật vào ngày sinh nhật của user
+- Gửi mail chúc mừng sinh nhật vào ngày sinh nhật của user, tặng một món quà ngẫu nhiên và gửi thông báo đến user.
 - Schedule: Nếu 1 ngày 1 đăng nhập web thì sẽ check vào 21h và gửi mail nhắc vào học.
 - Giới hạn request forgot password 2 lần / 1p xử dụng: bucket4j-core.
 - Export / Import excel file.

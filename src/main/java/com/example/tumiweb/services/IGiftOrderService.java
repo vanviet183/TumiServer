@@ -13,5 +13,6 @@ public interface IGiftOrderService {
 
     GiftOrder save(GiftOrder giftOrder);
 
+    GiftOrder giveRandomGiftToUser(Long userId);
 
 }
