@@ -9,8 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class UserDTO {
     private String username;
-    private String password;
+    private String fullName;
     private String email;
     private String phone;
     private Long mark;
+    private String birthday;
+    private String password;
 }

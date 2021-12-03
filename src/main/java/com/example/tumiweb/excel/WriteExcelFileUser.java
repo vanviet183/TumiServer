@@ -41,7 +41,7 @@ public class WriteExcelFileUser implements IExcelFile{
         font.setFontHeight(16);
         style.setFont(font);
 
-        List<String> headersUser = new ArrayList<>(Arrays.asList("User ID", "Username", "Password", "Email", "Phone", "Avatar", "Mark", "Birth day", "Status"));
+        List<String> headersUser = new ArrayList<>(Arrays.asList("User ID", "Username", "Password", "Email", "Full name", "Phone", "Avatar", "Mark", "Birth day", "Status"));
 
         for(int i=0; i<headersUser.size(); i++) {
             XSSFCell cell = row.createCell(i);

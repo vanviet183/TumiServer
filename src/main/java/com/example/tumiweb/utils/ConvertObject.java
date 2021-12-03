@@ -9,6 +9,8 @@ public class ConvertObject {
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
         user.setMark(userDTO.getMark());
+        user.setFullName(userDTO.getFullName());
+        user.setBirthday(userDTO.getBirthday());
         return user;
     }
 
