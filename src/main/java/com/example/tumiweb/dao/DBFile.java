@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 
@@ -21,6 +22,7 @@ public class DBFile {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
+    @Nationalized
     private String fileName;
 
     private String fileType;

@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     private String email;
 
     @NotBlank
-//    @Nationalized
+    @Nationalized
     private String fullName;
     private String phone;
     private String avatar;

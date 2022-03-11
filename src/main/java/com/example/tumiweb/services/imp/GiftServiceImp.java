@@ -33,7 +33,7 @@ public class GiftServiceImp implements IGiftService {
     @Autowired
     private UploadFile uploadFile;
 
-    @Cacheable(value = "gift", key = "'all")
+    @Cacheable(value = "gift", key = "'all'")
     @Override
     public Set<Gift> getAllGift(Long page, int size, boolean active) {
         List<Gift> gifts;
@@ -67,7 +67,9 @@ public class GiftServiceImp implements IGiftService {
             throw new DuplicateException("Duplicate gift with title: " + giftDTO.getName());
         }
         Gift gift = modelMapper.map(giftDTO, Gift.class);
-//        gift.setAvatar(uploadFile.getUrlFromFile(file));
+        if(file != null) {
+            gift.setAvatar(uploadFile.getUrlFromFile(file));
+        }
 
         return giftRepository.save(gift);
     }

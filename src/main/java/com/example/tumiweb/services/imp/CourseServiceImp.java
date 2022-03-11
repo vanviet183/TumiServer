@@ -82,10 +82,14 @@ public class CourseServiceImp implements ICourseService {
             throw new NotFoundException("Can not find category by id: " + categoryId);
         }
         course.setCategory(category);
+        Course newCourse = courseRepository.save(course);
+        category.addRelationCourse(newCourse);
 
-        course.setSeo(slugify.slugify(course.getName()));
+        categoryService.save(category);
 
-        return courseRepository.save(course);
+        newCourse.setSeo(slugify.slugify(newCourse.getName()));
+
+        return courseRepository.save(newCourse);
     }
 
     @Cacheable(value = "course", key = "#id")
