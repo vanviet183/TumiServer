@@ -1,11 +1,13 @@
 package com.example.tumiweb;
 
-import com.example.tumiweb.dao.Role;
-import com.example.tumiweb.dao.User;
-import com.example.tumiweb.repository.RoleRepository;
-import com.example.tumiweb.repository.UserRepository;
-import com.example.tumiweb.storage.StorageProperties;
-import com.example.tumiweb.storage.IStorageService;
+import com.example.tumiweb.application.constants.AuthenticationProvider;
+import com.example.tumiweb.application.constants.RoleConstant;
+import com.example.tumiweb.application.dai.RoleRepository;
+import com.example.tumiweb.application.dai.UserRepository;
+import com.example.tumiweb.application.storage.IStorageService;
+import com.example.tumiweb.application.storage.StorageProperties;
+import com.example.tumiweb.domain.entity.Role;
+import com.example.tumiweb.domain.entity.User;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,60 +26,45 @@ import java.util.Set;
 @EnableScheduling
 @EnableConfigurationProperties(StorageProperties.class)
 public class TumiWebApplication {
+  @Autowired
+  private UserRepository userRepository;
+  @Autowired
+  private RoleRepository roleRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+  public static void main(String[] args) {
+    SpringApplication.run(TumiWebApplication.class, args);
+  }
 
-    @Autowired
-    private RoleRepository roleRepository;
+  @Bean
+  public ModelMapper modelMapper() {
+    return new ModelMapper();
+  }
 
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
+  @Bean
+  public Slugify slugify() {
+    return new Slugify();
+  }
 
-    @Bean
-    public Slugify slugify() {
-        return new Slugify();
-    }
+  @Bean
+  CommandLineRunner init(IStorageService storageService) {
+    return (args) -> {
+      PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+      storageService.init();
 
-    public static void main(String[] args) {
-        SpringApplication.run(TumiWebApplication.class, args);
-    }
+      if (roleRepository.count() == 0) {
+        roleRepository.save(new Role(RoleConstant.ADMIN_NAME, RoleConstant.DES_ADMIN_ROLE, null));
+        roleRepository.save(new Role(RoleConstant.TEACHER_NAME, RoleConstant.DES_TEACHER_ROLE, null));
+        roleRepository.save(new Role(RoleConstant.STUDENT_NAME, RoleConstant.DES_STUDENT_ROLE, null));
+      }
 
-    @Bean
-    CommandLineRunner init(IStorageService storageService) {
-        return (args) -> {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            storageService.init();
+      if (userRepository.count() == 0) {
+        User user = new User(null, "admin", passwordEncoder.encode("admin"), "Admin",
+            "huannd0101@gmail.com", "0375417808", null, 0L, "01-01-2001", false);
+        user.setRoles(Set.copyOf(roleRepository.findAll()));
+        user.setAuthProvider(AuthenticationProvider.SYSTEM);
+        userRepository.save(user);
+      }
+    };
+  }
 
-            if(roleRepository.count() == 0) {
-                roleRepository.save(new Role("ROLE_ADMIN", "This is admin off website", null));
-                roleRepository.save(new Role("ROLE_TEACHER", "This is teacher off website", null));
-                roleRepository.save(new Role("ROLE_MEMBER", "This is member off website", null));
-            }
-
-            if(userRepository.count() == 0) {
-                User user = new User(null,
-                        "admin",
-                        passwordEncoder.encode("admin"),
-                        "Admin",
-                        "huannd0101@gmail.com",
-                        "0375417808",
-                        null,
-                        0L,
-                        "01-01-2001",
-                        true
-                );
-                user.setRoles(
-                        Set.of(
-                                roleRepository.findByName("ROLE_ADMIN"),
-                                roleRepository.findByName("ROLE_TEACHER"),
-                                roleRepository.findByName("ROLE_MEMBER")
-                        )
-                );
-                userRepository.save(user);
-            }
-        };
-    }
 }
