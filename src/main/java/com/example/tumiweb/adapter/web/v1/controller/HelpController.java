@@ -25,7 +25,7 @@ public class HelpController {
 
   @GetMapping(UrlConstant.Help.DATA_HELP_ID)
   public ResponseEntity<?> getHelpById(@PathVariable("id") Long id) {
-    return VsResponseUtil.ok(helpService.getHelpById(id));
+    return VsResponseUtil.ok(helpService.findHelpById(id));
   }
 
   @PostMapping(UrlConstant.Help.DATA_HELP_USER_ID)

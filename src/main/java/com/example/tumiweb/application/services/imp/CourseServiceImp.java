@@ -1,28 +1,23 @@
 package com.example.tumiweb.application.services.imp;
 
-import com.example.tumiweb.application.dai.CourseRepository;
+import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
+import com.example.tumiweb.application.dai.*;
 import com.example.tumiweb.application.mapper.CourseMapper;
-import com.example.tumiweb.application.services.ICategoryService;
 import com.example.tumiweb.application.services.ICourseService;
-import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.CourseDTO;
-import com.example.tumiweb.domain.dto.ImageDTO;
 import com.example.tumiweb.domain.entity.Category;
 import com.example.tumiweb.domain.entity.Course;
-import com.example.tumiweb.domain.entity.Image;
 import com.github.slugify.Slugify;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class CourseServiceImp implements ICourseService {
@@ -30,28 +25,22 @@ public class CourseServiceImp implements ICourseService {
   @Autowired
   private CourseRepository courseRepository;
   @Autowired
-  private ChapterService chapterService;
-  @Autowired
-  private ImageServiceImp imageService;
+  private ChapterRepository chapterRepository;
   @Autowired
   private UploadFile uploadFile;
   @Autowired
-  private ICategoryService categoryService;
+  private CategoryRepository categoryRepository;
   @Autowired
-  private IUserService userService;
+  private QuestionRepository questionRepository;
+  @Autowired
+  private AnswerRepository answerRepository;
   @Autowired
   private Slugify slugify;
 
   //  @Cacheable(value = "course", key = "'all'")
   @Override
-  public Set<Course> findAllCourse(Long page, int size, boolean status, boolean both) {
-    return new HashSet<>(courseRepository.findAll());
-  }
-
-  //  @Cacheable(value = "course", key = "'userid'+#userId")
-  @Override
-  public Set<Course> findAllCourseByUserId(Long userId, boolean status, boolean both) {
-    return userService.getUserById(userId).getCourses();
+  public List<Course> findAllCourse(Long page, int size, boolean status, boolean both) {
+    return courseRepository.findAll();
   }
 
   //  @CacheEvict(value = "course", allEntries = true)
@@ -60,23 +49,21 @@ public class CourseServiceImp implements ICourseService {
     if (courseRepository.findByName(courseDTO.getName()) != null) {
       throw new VsException("This name off course is contain");
     }
-    Course course = courseMapper.toCourse(courseDTO);
-    if (multipartFile != null) {
-      Image image = imageService.createNewImage(new ImageDTO(multipartFile.getName()), multipartFile);
-    }
 
-    Category category = categoryService.findCategoryById(categoryId);
-    if (category == null) {
+    Optional<Category> category = categoryRepository.findById(categoryId);
+    if (category.isEmpty()) {
       throw new VsException("Can not find category by id: " + categoryId);
     }
-    course.setCategory(category);
-    Course newCourse = courseRepository.save(course);
 
-    categoryService.save(category);
+    Course course = courseMapper.toCourse(courseDTO);
+    if (multipartFile != null) {
+      course.setAvatar(uploadFile.getUrlFromFile(multipartFile));
+    }
 
-    newCourse.setSeo(slugify.slugify(newCourse.getName()));
+    course.setCategory(category.get());
+    course.setSeo(slugify.slugify(course.getName()));
 
-    return courseRepository.save(newCourse);
+    return courseRepository.save(course);
   }
 
   //  @Cacheable(value = "course", key = "#id")
@@ -84,7 +71,7 @@ public class CourseServiceImp implements ICourseService {
   public Course findCourseById(Long id) {
     Optional<Course> course = courseRepository.findById(id);
     if (course.isEmpty()) {
-      return null;
+      throw new VsException("Can not find course by id: " + id);
     }
     return course.get();
   }
@@ -93,9 +80,6 @@ public class CourseServiceImp implements ICourseService {
   @Override
   public Course changeAvatarCourseById(Long id, MultipartFile multipartFile) {
     Course course = findCourseById(id);
-    if (course == null) {
-      throw new VsException("Can not find course by id: " + id);
-    }
     if (course.getAvatar() != null) {
       uploadFile.removeImageFromUrl(course.getAvatar());
     }
@@ -111,9 +95,6 @@ public class CourseServiceImp implements ICourseService {
   @Override
   public Course editCourseById(Long id, CourseDTO courseDTO, MultipartFile multipartFile) {
     Course course = findCourseById(id);
-    if (course == null) {
-      throw new VsException("Can not find course by id: " + id);
-    }
     courseDTO.setSeo(slugify.slugify(courseDTO.getName()));
 
     if (multipartFile != null) {
@@ -128,25 +109,29 @@ public class CourseServiceImp implements ICourseService {
 
   //  @CacheEvict(value = "course", allEntries = true)
   @Override
-  public Course deleteCourseById(Long id) {
+  public TrueFalseResponse deleteCourseById(Long id) {
     Course course = findCourseById(id);
-    if (course == null) {
-      throw new VsException("Can not find course by id: " + id);
-    }
-    course.getChapters().forEach((item) -> {
-      chapterService.deleteChapterById(Long.parseLong(item.getId().toString()));
+    course.getChapters().forEach(chapter -> {
+      chapter.getQuestions().forEach(question -> {
+        question.getAnswers().forEach(answer -> {
+          answer.setDeleteFlag(true);
+          answerRepository.save(answer);
+        });
+        question.setDeleteFlag(true);
+        questionRepository.save(question);
+      });
+      chapter.setDeleteFlag(true);
+      chapterRepository.save(chapter);
     });
-    return null;
+    course.setDeleteFlag(true);
+    courseRepository.save(course);
+    return new TrueFalseResponse(true);
   }
 
   //  @CacheEvict(value = "course", allEntries = true)
   @Override
-  public Course changeStatusById(Long id) {
+  public Course changeDeleteFlagById(Long id) {
     Course course = findCourseById(id);
-
-    if (course == null) {
-      throw new VsException("Can not find course by id: " + id);
-    }
     course.setDeleteFlag(!course.getDeleteFlag());
 
     return courseRepository.save(course);
@@ -156,26 +141,25 @@ public class CourseServiceImp implements ICourseService {
   @Override
   public Course editCategoryById(Long courseId, Long categoryId) {
     Course course = findCourseById(courseId);
-    if (course == null) {
-      throw new VsException("Can not find course by id: " + courseId);
-    }
+    Optional<Category> category = categoryRepository.findById(categoryId);
 
-    Category category = categoryService.findCategoryById(categoryId);
-    if (category == null) {
+    if (category.isEmpty()) {
       throw new VsException("Can not find category by id: " + categoryId);
     }
 
-    //xóa category cũ
     if (course.getCategory() != null) {
-      Category oldCategory = categoryService.findCategoryById(course.getCategory().getId());
-      if (oldCategory != null) {
-        categoryService.save(oldCategory);
-      }
+      Optional<Category> oldCategory = categoryRepository.findById(course.getCategory().getId());
+      oldCategory.ifPresent(value -> {
+        value.getCourses().remove(course);
+        categoryRepository.save(value);
+      });
     }
 
-    category = categoryService.save(category);
+    category.get().getCourses().add(course);
 
-    course.setCategory(category);
+    course.setCategory(category.get());
+    categoryRepository.save(category.get());
+
     return courseRepository.save(course);
   }
 

@@ -2,15 +2,19 @@ package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.adapter.web.v1.transfer.parameter.AuthenticationRequest;
 import com.example.tumiweb.adapter.web.v1.transfer.response.AuthenticationResponse;
+import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
 import com.example.tumiweb.application.constants.AuthenticationProvider;
+import com.example.tumiweb.application.constants.RoleConstant;
 import com.example.tumiweb.application.mapper.UserMapper;
 import com.example.tumiweb.application.services.*;
+import com.example.tumiweb.application.utils.DateTimeUtil;
 import com.example.tumiweb.application.utils.JwtUtil;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.UserDTO;
 import com.example.tumiweb.domain.entity.Diary;
 import com.example.tumiweb.domain.entity.Role;
 import com.example.tumiweb.domain.entity.User;
+import org.apache.commons.collections4.CollectionUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,10 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.InvalidObjectException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -68,7 +69,7 @@ public class AuthServiceImp implements IAuthService {
     User user = userService.getUserByUsername(request.getUsername());
     List<String> roles = new ArrayList<>();
     Set<Role> roleSet = user.getRoles();
-    if (roleSet.size() > 0) {
+    if (CollectionUtils.isNotEmpty(roleSet)) {
       roleSet.forEach(item -> roles.add(item.getName()));
     }
 
@@ -78,29 +79,23 @@ public class AuthServiceImp implements IAuthService {
     SecurityContext context = SecurityContextHolder.createEmptyContext();
     context.setAuthentication(authentication);
 
-    //lưu lại lịch sử
     diaryService.createNewDiary(user.getId());
 
     return new AuthenticationResponse(jwt, user.getId(), user.getUsername(), roles);
   }
 
   @Override
-  public AuthenticationResponse signup(UserDTO userDTO) throws InvalidObjectException {
+  public AuthenticationResponse signup(UserDTO userDTO) {
     User oldUser = userService.getUserByUsername(userDTO.getUsername());
     if (oldUser != null) {
       throw new VsException("Username has already exists");
     }
     User user = userMapper.toUser(userDTO);
-    if (user == null) {
-      throw new InvalidObjectException("Invalid user");
-    }
     user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-    //gán role member cho user mới lập
-    Role role = roleService.getRoleByName("ROLE_MEMBER");
+    Role role = roleService.getRoleByName(RoleConstant.STUDENT_NAME);
     user.setRoles(Set.of(role));
 
-    // set provider
     user.setAuthProvider(AuthenticationProvider.LOCAL);
     User newUser = userService.save(user);
 
@@ -111,29 +106,28 @@ public class AuthServiceImp implements IAuthService {
   }
 
   @Override
-  public Boolean logoutHandler(Long id) {
+  public TrueFalseResponse logoutHandler(Long id) {
     try {
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
       List<Diary> diaries = new ArrayList<>(diaryService.findAllByUserIdAndOnDay(id,
-          simpleDateFormat.format(new Date())));
+          DateTimeUtil.getDateTimeNow()));
 
       diaryService.editDiaryById(diaries.get(diaries.size() - 1).getId());
-      return true;
+      return new TrueFalseResponse(true);
     } catch (Exception ex) {
-      return false;
+      return new TrueFalseResponse(false);
     }
   }
 
   @Override
-  public Boolean validateToken(AuthenticationResponse authenticationResponse) {
+  public TrueFalseResponse validateToken(AuthenticationResponse authenticationResponse) {
     try {
       String jwt = authenticationResponse.getJwt();
       String username = jwtUtil.extractUsername(jwt);
       UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
 
-      return jwtUtil.validateToken(jwt, userDetails);
+      return new TrueFalseResponse(jwtUtil.validateToken(jwt, userDetails));
     } catch (Exception e) {
-      return false;
+      return new TrueFalseResponse(false);
     }
   }
 

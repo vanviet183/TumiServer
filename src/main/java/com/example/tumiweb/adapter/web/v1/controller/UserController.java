@@ -92,16 +92,16 @@ public class UserController {
       @ApiParam(value = "Id của user cần thay đổi trạng thái", required = true)
       @PathVariable("id") Long id
   ) {
-    return VsResponseUtil.ok(userService.changeStatusById(id));
+    return VsResponseUtil.ok(userService.changeDeleteFlagById(id));
   }
 
   @PostMapping(UrlConstant.User.DATA_USER_AVATAR)
   @ApiOperation(value = "Thay đổi avatar của user")
-  public String changeAvatarById(@ApiParam(value = "Id của user cần thay đổi avatar", required = true)
-                                 @PathVariable("id") Long id,
-                                 @ApiParam(value = "File ảnh truyền lên")
-                                 @RequestParam(name = "avt", required = false) MultipartFile avt) throws IOException {
-    return userService.changeAvatarById(id, avt);
+  public ResponseEntity<?> changeAvatarById(@ApiParam(value = "Id của user cần thay đổi avatar", required = true)
+                                            @PathVariable("id") Long id,
+                                            @ApiParam(value = "File ảnh truyền lên")
+                                            @RequestParam(name = "avt", required = false) MultipartFile avt) throws IOException {
+    return VsResponseUtil.ok(userService.changeAvatarById(id, avt));
   }
 
   @GetMapping(UrlConstant.User.DATA_USER_SEARCH)

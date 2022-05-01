@@ -4,13 +4,13 @@ import com.example.tumiweb.domain.entity.Answer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+import java.util.List;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
-  Set<Answer> findAllByQuestion_Id(Long questionId);
+  List<Answer> findAllByQuestion_IdAndActiveFlagAndDeleteFlag(Long questionId, Boolean activeFlag, Boolean deleteFlag);
 
-  Set<Answer> findAllByDeleteFlag(boolean flag);
+  List<Answer> findAllByDeleteFlag(Boolean flag);
 
 }

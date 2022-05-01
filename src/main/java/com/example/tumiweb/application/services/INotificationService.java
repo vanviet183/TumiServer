@@ -3,15 +3,13 @@ package com.example.tumiweb.application.services;
 import com.example.tumiweb.domain.dto.NotificationDTO;
 import com.example.tumiweb.domain.entity.Notification;
 
-import java.util.Set;
+import java.util.List;
 
 public interface INotificationService {
 
   Notification findNotificationById(Long id);
 
-  Set<Notification> getAllNotification(Long page, int size, boolean status);
-
-  Notification getNotificationById(Long id);
+  List<Notification> getAllNotification(Long page, int size, Boolean activeFlag);
 
   Notification createNotification(Long userId, NotificationDTO notificationDTO);
 
@@ -19,6 +17,6 @@ public interface INotificationService {
 
   Notification deleteNotificationById(Long id);
 
-  Notification changeStatusNotificationById(Long id);
+  Notification changeDeleteFlagNotificationById(Long id);
 
 }

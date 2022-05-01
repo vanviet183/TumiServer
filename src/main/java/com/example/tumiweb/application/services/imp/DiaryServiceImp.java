@@ -116,7 +116,7 @@ public class DiaryServiceImp implements IDiaryService {
 
     Set<User> userSet = diaries.stream().map(Diary::getUser).collect(Collectors.toSet());
 
-    Set<User> users = userService.getAllUsers(null, 0, false, false);
+    List<User> users = userService.getAllUsers(null, 0, false, false);
 
     Set<User> userDiary = new HashSet<>();
     for (User user : users) {

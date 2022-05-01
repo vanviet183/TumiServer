@@ -4,11 +4,11 @@ import com.example.tumiweb.domain.dto.QuestionDTO;
 import com.example.tumiweb.domain.entity.Question;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Set;
+import java.util.List;
 
 public interface IQuestionService {
 
-  Set<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size);
+  List<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size);
 
   Question findQuestionById(Long id);
 
@@ -18,7 +18,6 @@ public interface IQuestionService {
 
   Question save(Question question);
 
-  //không cho delete nữa :v, lười r
   Question deleteQuestionById(Long id);
 
 }

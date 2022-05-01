@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface IGiftService {
 
-  Set<Gift> getAllGift(Long page, int size, boolean active);
+  List<Gift> getAllGift(Long page, int size, boolean active);
 
   Gift findGiftById(Long id);
 

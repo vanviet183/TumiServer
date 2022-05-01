@@ -1,16 +1,16 @@
 package com.example.tumiweb.application.services;
 
+import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
 import com.example.tumiweb.domain.dto.UserDTO;
 import com.example.tumiweb.domain.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public interface IUserService {
 
-  Set<User> getAllUsers(Long page, int size, boolean status, boolean both);
+  List<User> getAllUsers(Long page, int size, boolean activeFlag, boolean both);
 
   User getUserById(Long id);
 
@@ -22,13 +22,13 @@ public interface IUserService {
 
   User editUserById(Long id, UserDTO userDTO);
 
-  User deleteUserById(Long id);
+  TrueFalseResponse deleteUserById(Long id);
 
-  User changeStatusById(Long id);
+  User changeDeleteFlagById(Long id);
 
-  String changeAvatarById(Long id, MultipartFile avatar) throws IOException;
+  User changeAvatarById(Long id, MultipartFile avatar) throws IOException;
 
-  Boolean changeMarkById(Long id, Long mark);
+  TrueFalseResponse changeMarkById(Long id, Long mark);
 
   User getUserByTokenResetPass(String token);
 
@@ -39,10 +39,5 @@ public interface IUserService {
   List<User> searchUsersByKey(String key);
 
   List<User> getAllUserByBirthday(String birthday);
-
-  //
-  String registerCourseByUserIdAndCourseId(Long userId, Long courseId);
-
-  String cancelCourseByUserIdAndCourseId(Long userId, Long courseId);
 
 }

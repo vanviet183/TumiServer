@@ -33,13 +33,13 @@ public class AuthController {
   }
 
   @PostMapping(UrlConstant.Auth.VALIDATE)
-  public Boolean validateToken(@RequestBody AuthenticationResponse authenticationResponse) {
-    return authService.validateToken(authenticationResponse);
+  public ResponseEntity<?> validateToken(@RequestBody AuthenticationResponse authenticationResponse) {
+    return VsResponseUtil.ok(authService.validateToken(authenticationResponse));
   }
 
   @PostMapping(UrlConstant.Auth.LOGOUT)
-  public Boolean logoutHandler(@PathVariable("id") Long id) {
-    return authService.logoutHandler(id);
+  public ResponseEntity<?> logoutHandler(@PathVariable("id") Long id) {
+    return VsResponseUtil.ok(authService.logoutHandler(id));
   }
 
 }

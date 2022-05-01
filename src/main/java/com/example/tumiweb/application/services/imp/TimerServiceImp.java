@@ -39,11 +39,6 @@ public class TimerServiceImp implements ITimerService {
   }
 
   @Override
-  public String getDay() {
-    return DateTimeUtil.getDateTimeNow();
-  }
-
-  @Override
   public int getTotalMinuteFromDay(Long id, String day) throws ParseException {
     List<Diary> diaries = diaryService.findAllByUserIdAndOnDay(id, day);
     if (diaries.size() == 0) {

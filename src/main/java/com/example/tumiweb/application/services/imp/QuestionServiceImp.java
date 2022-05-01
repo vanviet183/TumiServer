@@ -14,7 +14,10 @@ import com.example.tumiweb.domain.entity.Question;
 import com.github.slugify.Slugify;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,21 +42,21 @@ public class QuestionServiceImp implements IQuestionService {
 
   //  @Cacheable(value = "question", key = "'chapter'+#chapterId")
   @Override
-  public Set<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size) {
-    Optional<Chapter> optional = chapterRepository.findById(chapterId);
-    if (optional.isEmpty()) {
+  public List<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size) {
+    Optional<Chapter> chapterOptional = chapterRepository.findById(chapterId);
+    if (chapterOptional.isEmpty()) {
       throw new VsException("Can not find chapter by id: " + chapterId);
     }
-    Chapter chapter = optional.get();
-    List<Question> questions;
+    if(chapterOptional.get().getDeleteFlag()) {
+      throw new VsException("This chapter was delete");
+    }
+    List<Question> questions = questionRepository.findAllByChapter_IdAndDeleteFlagAndActiveFlag(chapterId, false, true);
     if (page != null) {
-      questions = questionRepository.findAll(PageRequest.of(page.intValue(), size)).getContent();
-    } else {
-      questions = questionRepository.findAll();
+      Page<Question> questionPage = new PageImpl<>(questions, Pageable.ofSize(page.intValue()), questions.size());
+      questions = questionPage.getContent();
     }
 
-    return questions.stream().filter(item -> item.getChapter().equals(chapter))
-        .collect(Collectors.toSet());
+    return questions;
   }
 
   //  @Cacheable(value = "question", key = "#id")
@@ -61,7 +64,10 @@ public class QuestionServiceImp implements IQuestionService {
   public Question findQuestionById(Long id) {
     Optional<Question> question = questionRepository.findById(id);
     if (question.isEmpty()) {
-      return null;
+      throw new VsException("Can not find question by id: " + id);
+    }
+    if(question.get().getDeleteFlag()) {
+      throw new VsException("This question was delete");
     }
     return question.get();
   }
@@ -73,6 +79,9 @@ public class QuestionServiceImp implements IQuestionService {
     if (optional.isEmpty()) {
       throw new VsException("Can not find chapter by id: " + chapterId);
     }
+    if(optional.get().getDeleteFlag()) {
+      throw new VsException("Chapter was delete. Chapter id: " + chapterId);
+    }
     Chapter chapter = optional.get();
 
     questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
@@ -82,9 +91,7 @@ public class QuestionServiceImp implements IQuestionService {
     if (multipartFile != null) {
       question.setAvatar(uploadFile.getUrlFromFile(multipartFile));
     }
-
     question = questionRepository.save(question);
-
     chapterRepository.save(chapter);
 
     return questionRepository.save(question);
@@ -94,13 +101,12 @@ public class QuestionServiceImp implements IQuestionService {
   @Override
   public Question editQuestionById(Long questionId, QuestionDTO questionDTO, MultipartFile multipartFile) {
     Question question = findQuestionById(questionId);
-    if (question == null) {
-      throw new VsException("Can not find question by id: " + questionId);
-    }
-
     Optional<Chapter> optional = chapterRepository.findById(question.getChapter().getId());
     if (optional.isEmpty()) {
       throw new VsException("Can not find chapter by id: " + question.getChapter().getId());
+    }
+    if(optional.get().getDeleteFlag()) {
+      throw new VsException("Chapter was delete. Chapter id: " + questionId);
     }
     Chapter chapter = optional.get();
 
@@ -110,12 +116,11 @@ public class QuestionServiceImp implements IQuestionService {
       }
       questionDTO.setAvatar(uploadFile.getUrlFromFile(multipartFile));
     }
-
     questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
 
     question = questionRepository.save(ConvertObject.convertQuestionDTOToQuestion(question, questionDTO));
-
     chapterRepository.save(chapter);
+
     return questionRepository.save(question);
   }
 
@@ -129,14 +134,12 @@ public class QuestionServiceImp implements IQuestionService {
   @Override
   public Question deleteQuestionById(Long id) {
     Question question = findQuestionById(id);
-    if (question == null) {
-      throw new VsException("Can not find question by id: " + id);
-    }
     question.getAnswers().forEach((item) -> {
-      answerRepository.delete(item);
+      item.setDeleteFlag(true);
+      answerRepository.save(item);
     });
-    questionRepository.delete(question);
-    return question;
+    question.setDeleteFlag(true);
+    return questionRepository.save(question);
   }
 
 }

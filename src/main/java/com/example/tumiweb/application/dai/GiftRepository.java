@@ -17,7 +17,9 @@ public interface GiftRepository extends JpaRepository<Gift, Long> {
 
   Set<Gift> findAllByDeleteFlag(boolean flag);
 
-  List<Gift> findAllByNameContainingOrMarkContaining(@NotBlank String name, @Min(0) @Max(100) Long mark);
+  List<Gift> findAllByNameContainingOrMarkContainingAndDeleteFlagAndActiveFlag(@NotBlank String name,
+                                                                               @Min(0) @Max(100) Long mark,
+                                                                               Boolean deleteFlag, Boolean activeFlag);
 
 
 }

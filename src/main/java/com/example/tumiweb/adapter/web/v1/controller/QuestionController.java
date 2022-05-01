@@ -54,6 +54,12 @@ public class QuestionController {
     return VsResponseUtil.ok(questionService.editQuestionById(id, questionDTO, image));
   }
 
+  @DeleteMapping(UrlConstant.Question.DATA_QUESTION_ID)
+  @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+  public ResponseEntity<?> deleteQuestionById(@PathVariable("id") Long id) {
+    return VsResponseUtil.ok(questionService.deleteQuestionById(id));
+  }
+
   // Excel file
   @GetMapping(UrlConstant.Question.DATA_QUESTION_EXPORT)
   public ResponseEntity<?> exportToExcel(HttpServletResponse res, @PathVariable("chapterId") Long chapterId) throws IOException {

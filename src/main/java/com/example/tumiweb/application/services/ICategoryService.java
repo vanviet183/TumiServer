@@ -3,11 +3,11 @@ package com.example.tumiweb.application.services;
 import com.example.tumiweb.domain.dto.CategoryDTO;
 import com.example.tumiweb.domain.entity.Category;
 
-import java.util.Set;
+import java.util.List;
 
 public interface ICategoryService {
 
-  Set<Category> findAllCategory(Long page, int size, boolean status, boolean both);
+  List<Category> findAllCategory(Long page, int size, Boolean activeFlag, Boolean both);
 
   Category findCategoryById(Long id);
 

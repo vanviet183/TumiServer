@@ -4,13 +4,13 @@ import com.example.tumiweb.domain.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+import java.util.List;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
   Category findByName(String name);
 
-  Set<Category> findAllByDeleteFlag(boolean flag);
+  List<Category> findAllByDeleteFlag(Boolean deleteFlag);
 
 }

@@ -9,7 +9,7 @@ public interface IRoleService {
 
   Set<Role> getAllRole();
 
-  Role getRoleById(Long id);
+  Role findRoleById(Long id);
 
   Role getRoleByName(String name);
 

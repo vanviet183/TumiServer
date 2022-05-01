@@ -60,7 +60,7 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   @Override
   public GiftOrder createNewGiftOrder(Long userId, Long giftId) {
     Gift gift = giftService.findGiftById(giftId);
-    if (userService.changeMarkById(userId, -gift.getMark())) {
+    if (userService.changeMarkById(userId, -gift.getMark()).getStatus()) {
       User user = userService.getUserById(userId);
       GiftOrder giftOrder = new GiftOrder();
       giftOrder.setEmail(user.getEmail());

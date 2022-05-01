@@ -57,7 +57,7 @@ public class CourseController {
   @PostMapping(UrlConstant.Course.DATA_COURSE_ID_STATUS)
   @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
   public ResponseEntity<?> changeStatusCourseById(@PathVariable("id") Long id) {
-    return VsResponseUtil.ok(courseService.changeStatusById(id));
+    return VsResponseUtil.ok(courseService.changeDeleteFlagById(id));
   }
 
   @PostMapping(UrlConstant.Course.DATA_COURSE_CHANGE_CATEGORY)

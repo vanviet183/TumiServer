@@ -21,10 +21,17 @@ public class RoleServiceImp implements IRoleService {
   @Autowired
   private RoleRepository roleRepository;
 
-  private Role findRoleById(Long id) {
+  @Override
+  public Role findRoleById(Long id) {
     Optional<Role> role = roleRepository.findById(id);
     if (role.isEmpty()) {
-      return null;
+      throw new VsException("Can not find role by id: " + id);
+    }
+    if (role.get().getDeleteFlag()) {
+      throw new VsException("This role was delete");
+    }
+    if (!role.get().getActiveFlag()) {
+      throw new VsException("This role was disable");
     }
     return role.get();
   }
@@ -39,26 +46,18 @@ public class RoleServiceImp implements IRoleService {
   }
 
   @Override
-  public Role getRoleById(Long id) {
-    Role role = findRoleById(id);
-    if (role == null) {
-      throw new VsException("Can not find role by id: " + id);
-    }
-    return role;
-  }
-
-  @Override
   public Role getRoleByName(String name) {
     Role role = roleRepository.findByName(name);
     if (role == null) {
-      throw new VsException("Can not find role");
+      throw new VsException("Can not find role by name: " + name);
     }
     return role;
   }
 
   @Override
   public Role createRole(RoleDTO roleDTO) {
-    if (roleRepository.findByName(roleDTO.getName()) != null) {
+    Role role = roleRepository.findByName(roleDTO.getName());
+    if (role != null) {
       throw new VsException("This role is contain");
     }
     return roleRepository.save(roleMapper.toRole(roleDTO));
@@ -67,20 +66,20 @@ public class RoleServiceImp implements IRoleService {
   @Override
   public Role editRoleById(Long id, RoleDTO roleDTO) {
     Role role = findRoleById(id);
-    if (role == null) {
-      throw new VsException("Can not find role by id: " + id);
-    }
-    return roleRepository.save(roleMapper.toRole(roleDTO));
+
+    role.setName(roleDTO.getName());
+    role.setDescription(roleDTO.getDescription());
+
+    return roleRepository.save(role);
   }
 
   @Override
   public Role deleteRoleById(Long id) {
     Role role = findRoleById(id);
-    if (role == null) {
-      throw new VsException("Can not find role by id: " + id);
-    }
-    roleRepository.delete(role);
-    return role;
+
+    role.setDeleteFlag(true);
+
+    return roleRepository.save(role);
   }
 
   @Override

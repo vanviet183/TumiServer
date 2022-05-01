@@ -8,7 +8,6 @@ import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.GiftDTO;
 import com.example.tumiweb.domain.entity.Gift;
-import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,10 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +29,7 @@ public class GiftServiceImp implements IGiftService {
 
   //  @Cacheable(value = "gift", key = "'all'")
   @Override
-  public Set<Gift> getAllGift(Long page, int size, boolean active) {
+  public List<Gift> getAllGift(Long page, int size, boolean active) {
     List<Gift> gifts;
     if (page != null) {
       Page<Gift> giftPage = giftRepository.findAll(PageRequest.of(page.intValue(), size));
@@ -42,17 +39,23 @@ public class GiftServiceImp implements IGiftService {
     }
 
     if (active) {
-      gifts = gifts.stream().filter(AbstractAuditingEntity::getActiveFlag).collect(Collectors.toList());
+      gifts = gifts.stream().filter(item -> !item.getDeleteFlag() && item.getActiveFlag()).collect(Collectors.toList());
     }
 
-    return new HashSet<>(gifts);
+    return gifts;
   }
 
   @Override
   public Gift findGiftById(Long id) {
     Optional<Gift> gift = giftRepository.findById(id);
     if (gift.isEmpty()) {
-      return null;
+      throw new VsException("Can not find gift by id: " + id);
+    }
+    if (gift.get().getDeleteFlag()) {
+      throw new VsException("This gift was delete");
+    }
+    if (!gift.get().getActiveFlag()) {
+      throw new VsException("This gift was disable");
     }
     return gift.get();
   }
@@ -75,9 +78,6 @@ public class GiftServiceImp implements IGiftService {
   @Override
   public Gift editGiftById(Long id, GiftDTO giftDTO, MultipartFile avatar) {
     Gift gift = findGiftById(id);
-    if (gift == null) {
-      throw new VsException("Can not find gift by id: " + id);
-    }
     if (avatar != null) {
       giftDTO.setAvatar(uploadFile.getUrlFromFile(avatar));
     }
@@ -89,10 +89,9 @@ public class GiftServiceImp implements IGiftService {
   @Override
   public Gift changeStatusById(Long id) {
     Gift gift = findGiftById(id);
-    if (gift == null) {
-      throw new VsException("Can not find gift by id: " + id);
-    }
+
     gift.setDeleteFlag(!gift.getDeleteFlag());
+
     return giftRepository.save(gift);
   }
 
@@ -100,24 +99,22 @@ public class GiftServiceImp implements IGiftService {
   @Override
   public Gift deleteGiftById(Long id) {
     Gift gift = findGiftById(id);
-    if (gift == null) {
-      throw new VsException("Can not find gift by id: " + id);
-    }
-    giftRepository.delete(gift);
-    return gift;
+
+    gift.setDeleteFlag(true);
+
+    return giftRepository.save(gift);
   }
 
   //  @CacheEvict(value = "gift", allEntries = true)
   @Override
   public Gift changeImageGiftById(Long id, MultipartFile multipartFile) {
     Gift gift = findGiftById(id);
-    if (gift == null) {
-      throw new VsException("Can not gift by id: " + id);
-    }
+
     if (gift.getAvatar() != null) {
       uploadFile.removeImageFromUrl(gift.getAvatar());
     }
     gift.setAvatar(uploadFile.getUrlFromFile(multipartFile));
+
     return giftRepository.save(gift);
   }
 
@@ -126,9 +123,9 @@ public class GiftServiceImp implements IGiftService {
   public List<Gift> getGiftsByKey(String key) {
     try {
       Long mark = Long.parseLong(key);
-      return giftRepository.findAllByNameContainingOrMarkContaining(key, mark);
+      return giftRepository.findAllByNameContainingOrMarkContainingAndDeleteFlagAndActiveFlag(key, mark, false, true);
     } catch (Exception e) {
-      return giftRepository.findAllByNameContainingOrMarkContaining(key, 0L);
+      return giftRepository.findAllByNameContainingOrMarkContainingAndDeleteFlagAndActiveFlag(key, 0L, false, true);
     }
   }
 

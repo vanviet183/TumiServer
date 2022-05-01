@@ -1,9 +1,9 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.HelpRepository;
+import com.example.tumiweb.application.dai.UserRepository;
 import com.example.tumiweb.application.mapper.HelpMapper;
 import com.example.tumiweb.application.services.IHelpService;
-import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.HelpDTO;
 import com.example.tumiweb.domain.entity.Help;
@@ -25,7 +25,7 @@ public class HelpServiceImp implements IHelpService {
   @Autowired
   private HelpRepository helpRepository;
   @Autowired
-  private IUserService userService;
+  private UserRepository userRepository;
 
   //  @Cacheable(value = "help", key = "'all'")
   @Override
@@ -45,30 +45,26 @@ public class HelpServiceImp implements IHelpService {
   public Help findHelpById(Long id) {
     Optional<Help> help = helpRepository.findById(id);
     if (help.isEmpty()) {
-      return null;
+      throw new VsException("Not find help by id: " + id);
+    }
+    if (help.get().getDeleteFlag()) {
+      throw new VsException("This help was delete");
     }
     return help.get();
-  }
-
-  //  @Cacheable(value = "help", key = "#id")
-  @Override
-  public Help getHelpById(Long id) {
-    Help help = findHelpById(id);
-    if (help == null) {
-      throw new VsException("Can not find help by id: " + id);
-    }
-    return help;
   }
 
   //  @CacheEvict(value = "help", allEntries = true)
   @Override
   public Help createNewHelp(Long userId, HelpDTO helpDTO) {
-    User user = userService.getUserById(userId);
-    if (user == null) {
+    Optional<User> user = userRepository.findById(userId);
+    if (user.isEmpty()) {
       throw new VsException("Can not find user to create help");
     }
+    if (user.get().getDeleteFlag()) {
+      throw new VsException("This user was delete");
+    }
     Help help = helpMapper.toHelp(helpDTO);
-    help.setUser(user);
+    help.setUser(user.get());
     return helpRepository.save(help);
   }
 
@@ -76,21 +72,19 @@ public class HelpServiceImp implements IHelpService {
   @Override
   public Help deleteHelpById(Long id) {
     Help help = findHelpById(id);
-    if (help == null) {
-      throw new VsException("Can not find help with id: " + id);
-    }
-    helpRepository.delete(help);
-    return help;
+
+    help.setDeleteFlag(true);
+
+    return helpRepository.save(help);
   }
 
   //  @CacheEvict(value = "help", allEntries = true)
   @Override
   public Help disableHelp(Long id) {
     Help help = findHelpById(id);
-    if (help == null) {
-      throw new VsException("Can not find help by id: " + id);
-    }
-    help.setDeleteFlag(true);
+
+    help.setActiveFlag(false);
+
     return helpRepository.save(help);
   }
 

@@ -4,13 +4,13 @@ import com.example.tumiweb.domain.entity.Chapter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+import java.util.List;
 
 @Repository
 public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 
-  Set<Chapter> findAllByDeleteFlag(boolean flag);
+  List<Chapter> findAllByDeleteFlag(boolean flag);
 
-  Set<Chapter> findAllByCourse_Id(Long courseId);
+  List<Chapter> findAllByCourse_IdAndActiveFlag(Long courseId, Boolean activeFlag);
 
 }

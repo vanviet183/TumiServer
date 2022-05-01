@@ -44,9 +44,9 @@ public class ChapterController {
     return VsResponseUtil.ok(chapterService.editChapterById(id, chapterDTO));
   }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteChapterById(@PathVariable("id") Long id) {
-//        return VsResponseUtil.ok(chapterService.deleteChapterById(id));
-//    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteChapterById(@PathVariable("id") Long id) {
+    return VsResponseUtil.ok(chapterService.deleteChapterById(id));
+  }
 
 }

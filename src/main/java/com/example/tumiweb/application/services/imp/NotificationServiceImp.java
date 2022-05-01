@@ -8,13 +8,15 @@ import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.NotificationDTO;
 import com.example.tumiweb.domain.entity.Notification;
 import com.example.tumiweb.domain.entity.User;
+import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationServiceImp implements INotificationService {
@@ -28,46 +30,29 @@ public class NotificationServiceImp implements INotificationService {
   public Notification findNotificationById(Long id) {
     Optional<Notification> notification = notificationRepository.findById(id);
     if (notification.isEmpty()) {
-      return null;
+      throw new VsException("Can not find notification by id: " + id);
+    }
+    if (notification.get().getDeleteFlag()) {
+      throw new VsException("This notification was delete");
     }
     return notification.get();
   }
 
   //  @Cacheable(value = "notification", key = "'all'")
   @Override
-  public Set<Notification> getAllNotification(Long page, int size, boolean status) {
+  public List<Notification> getAllNotification(Long page, int size, Boolean activeFlag) {
     List<Notification> notifications;
     if (page != null) {
-      Page<Notification> notificationPage = notificationRepository.findAll(PageRequest.of(page.intValue(), size));
-      notifications = notificationPage.getContent();
+      notifications = notificationRepository.findAll(PageRequest.of(page.intValue(), size)).getContent();
     } else {
       notifications = notificationRepository.findAll();
     }
 
-    if (status) {
-      if (page != null) {
-        int length = notifications.size();
-        int totalPage = (length % page != 0) ? length / size + 1 : length / size;
-        if (totalPage > page.intValue()) {
-          return new HashSet<>();
-        }
-        notifications = notifications.subList(page.intValue() * size, page.intValue() * size + size);
-      } else {
-        notifications = new ArrayList<>(notificationRepository.findAllByDeleteFlag(true));
-      }
+    if (activeFlag) {
+      return notifications.parallelStream().filter(AbstractAuditingEntity::getActiveFlag).collect(Collectors.toList());
     }
 
-    return new HashSet<>(notifications);
-  }
-
-  //  @Cacheable(value = "notification", key = "#id")
-  @Override
-  public Notification getNotificationById(Long id) {
-    Notification notification = findNotificationById(id);
-    if (notification == null) {
-      throw new VsException("Can not find notification with id: " + id);
-    }
-    return notification;
+    return notifications;
   }
 
   //  @CacheEvict(value = "notification", allEntries = true)
@@ -87,11 +72,10 @@ public class NotificationServiceImp implements INotificationService {
   @Override
   public Notification editNotificationById(Long id, NotificationDTO notificationDTO) {
     Notification notification = findNotificationById(id);
-    if (notification == null) {
-      throw new VsException("Can not find notification with id: " + id);
-    }
+
     Notification newNotification = notificationMapper.toNotification(notificationDTO);
     newNotification.setId(notification.getId());
+
     return notificationRepository.save(newNotification);
   }
 
@@ -99,20 +83,17 @@ public class NotificationServiceImp implements INotificationService {
   @Override
   public Notification deleteNotificationById(Long id) {
     Notification notification = findNotificationById(id);
-    if (notification == null) {
-      throw new VsException("Can not find notification with id: " + id);
-    }
-    notificationRepository.delete(notification);
-    return notification;
+
+    notification.setDeleteFlag(true);
+
+    return notificationRepository.save(notification);
   }
 
   //  @CacheEvict(value = "notification", allEntries = true)
   @Override
-  public Notification changeStatusNotificationById(Long id) {
+  public Notification changeDeleteFlagNotificationById(Long id) {
     Notification notification = findNotificationById(id);
-    if (notification == null) {
-      throw new VsException("Can not find notification with id: " + id);
-    }
+    notification.setDeleteFlag(!notification.getDeleteFlag());
     return notificationRepository.save(notification);
   }
 

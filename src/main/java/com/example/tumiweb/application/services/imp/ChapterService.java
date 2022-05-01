@@ -1,22 +1,28 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.dai.AnswerRepository;
 import com.example.tumiweb.application.dai.ChapterRepository;
 import com.example.tumiweb.application.dai.CourseRepository;
+import com.example.tumiweb.application.dai.QuestionRepository;
 import com.example.tumiweb.application.mapper.ChapterMapper;
 import com.example.tumiweb.application.services.IChapterService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.ChapterDTO;
 import com.example.tumiweb.domain.entity.Chapter;
 import com.example.tumiweb.domain.entity.Course;
+import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
 import com.github.slugify.Slugify;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ChapterService implements IChapterService {
@@ -26,60 +32,44 @@ public class ChapterService implements IChapterService {
   @Autowired
   private CourseRepository courseRepository;
   @Autowired
-  private QuestionServiceImp questionService;
+  private QuestionRepository questionRepository;
+  @Autowired
+  private AnswerRepository answerRepository;
   @Autowired
   private Slugify slugify;
 
   //  @Cacheable(value = "chapter", key = "'all'")
   @Override
-  public Set<Chapter> findAllChapter(Long page, int size) {
+  public List<Chapter> findAllChapter(Long page, int size) {
+    List<Chapter> chapters;
     if (page != null) {
-      return new HashSet<>(chapterRepository.findAll(PageRequest.of(page.intValue(), size)).getContent());
+      chapters = chapterRepository.findAll(PageRequest.of(page.intValue(), size)).getContent();
+    } else {
+      chapters = chapterRepository.findAll();
     }
-    return new HashSet<>(chapterRepository.findAll());
+    return chapters.parallelStream().filter(AbstractAuditingEntity::getActiveFlag).collect(Collectors.toList());
   }
 
   //  @Cacheable(value = "chapter", key = "'courseid'+#courseId")
   @Override
-  public Set<Chapter> findAllChapterByCourseId(Long courseId, Long page, int size, boolean status, boolean both) {
-    Optional<Course> optional = courseRepository.findById(courseId);
-    if (optional.isEmpty()) {
+  public List<Chapter> findAllChapterByCourseId(Long courseId, Long page, int size, boolean deleteFlag, boolean both) {
+    Optional<Course> courseOptional = courseRepository.findById(courseId);
+    if (courseOptional.isEmpty()) {
       throw new VsException("Can not find course by id: " + courseId);
     }
-    Course course = optional.get();
 
-//        //Đang đau đầu quá, copy cho nhanh khi nào rảnh thì vào sửa
-//        Set<Chapter> chapters = new HashSet<>();
-//        //paging
-//        if(page != null) {
-//            //có paging
-//            if(both) {
-//                chapters = new HashSet<>(chapterRepository.findAll(PageRequest.of(page.intValue(), size))
-//                .getContent());
-//            }else if(status) {
-//                chapters = chapterRepository.findAllByStatus(true);
-//                int length = chapters.size();
-//                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
-//                if(totalPage > page.intValue()) {
-//                    return new HashSet<>();
-//                }
-//                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()
-//                *size + size));
-//            }else {
-//                chapters = chapterRepository.findAllByStatus(false);
-//                int length = chapters.size();
-//                int totalPage = (length % page != 0) ? length/size + 1 : length/size;
-//                if(totalPage > page.intValue()) {
-//                    return new HashSet<>();
-//                }
-//                chapters = new HashSet<>(new ArrayList<>(chapters).subList(page.intValue()*size, page.intValue()
-//                *size + size));
-//            }
-//        }else {
-//            chapters = new HashSet<>(chapterRepository.findAll());
-//        }
+    List<Chapter> chapters = chapterRepository.findAllByCourse_IdAndActiveFlag(courseId, true);
 
-    return chapterRepository.findAllByCourse_Id(courseId);
+    if (!both && deleteFlag) {
+      chapters = chapters.parallelStream().filter(item -> !item.getDeleteFlag()).collect(Collectors.toList());
+    }
+
+    if (page != null) {
+      Page<Chapter> pageChapter = new PageImpl<>(chapters, Pageable.ofSize(page.intValue()), chapters.size());
+      chapters = pageChapter.getContent();
+    }
+
+    return chapters;
   }
 
   //  @Cacheable(value = "chapter", key = "#id")
@@ -87,7 +77,10 @@ public class ChapterService implements IChapterService {
   public Chapter findChapterById(Long id) {
     Optional<Chapter> chapter = chapterRepository.findById(id);
     if (chapter.isEmpty()) {
-      return null;
+      throw new VsException("Can not find chapter by id: " + id);
+    }
+    if (!chapter.get().getActiveFlag()) {
+      throw new VsException("This chapter is disable active");
     }
     return chapter.get();
   }
@@ -99,12 +92,11 @@ public class ChapterService implements IChapterService {
     if (optional.isEmpty()) {
       throw new VsException("Can not find course by id: " + courseId);
     }
-    Course course = optional.get();
     Chapter chapter = chapterMapper.toChapter(chapterDTO);
 
     chapter.setSeo(slugify.slugify(chapter.getName()));
+    chapter.setCourse(optional.get());
 
-    chapter.setCourse(course);
     return chapterRepository.save(chapter);
   }
 
@@ -112,12 +104,10 @@ public class ChapterService implements IChapterService {
   @Override
   public Chapter editChapterById(Long id, ChapterDTO chapterDTO) {
     Chapter chapter = findChapterById(id);
-    if (chapter == null) {
-      throw new VsException("Can not find Chapter by id: " + id);
-    }
 
     chapter.setSeo(slugify.slugify(chapterDTO.getName()));
     chapter.setName(chapterDTO.getName());
+
     return chapterRepository.save(chapter);
   }
 
@@ -125,14 +115,17 @@ public class ChapterService implements IChapterService {
   @Override
   public Chapter deleteChapterById(Long id) {
     Chapter chapter = findChapterById(id);
-    if (chapter == null) {
-      throw new VsException("Can not find Chapter by id: " + id);
-    }
-    chapter.getQuestions().forEach((item) -> {
-      questionService.deleteQuestionById(Long.parseLong(item.getId().toString()));
+    chapter.getQuestions().forEach(question -> {
+      question.getAnswers().forEach(answer -> {
+        answer.setDeleteFlag(true);
+        answerRepository.save(answer);
+      });
+      question.setDeleteFlag(true);
+      questionRepository.save(question);
     });
-    chapterRepository.delete(chapter);
-    return chapter;
+    chapter.setDeleteFlag(true);
+
+    return chapterRepository.save(chapter);
   }
 
   @Override

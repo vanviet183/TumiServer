@@ -11,8 +11,6 @@ public interface IHelpService {
 
   Help findHelpById(Long id);
 
-  Help getHelpById(Long id);
-
   Help createNewHelp(Long userId, HelpDTO helpDTO);
 
   Help deleteHelpById(Long id);

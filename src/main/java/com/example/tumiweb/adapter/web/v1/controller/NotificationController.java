@@ -20,7 +20,7 @@ public class NotificationController {
 
   @GetMapping(UrlConstant.Notification.DATA_NOTIFICATION_ID)
   public ResponseEntity<?> getNotificationById(@PathVariable("id") Long id) {
-    return VsResponseUtil.ok(notificationService.getNotificationById(id));
+    return VsResponseUtil.ok(notificationService.findNotificationById(id));
   }
 
   @GetMapping(UrlConstant.Notification.DATA_NOTIFICATION)
@@ -49,7 +49,7 @@ public class NotificationController {
 
   @PostMapping(UrlConstant.Notification.DATA_NOTIFICATION_ID_STATUS)
   public ResponseEntity<?> changeStatusById(@PathVariable("id") Long id) {
-    return VsResponseUtil.ok(notificationService.changeStatusNotificationById(id));
+    return VsResponseUtil.ok(notificationService.changeDeleteFlagNotificationById(id));
   }
 
 }

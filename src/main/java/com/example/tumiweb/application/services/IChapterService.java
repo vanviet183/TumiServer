@@ -4,13 +4,13 @@ import com.example.tumiweb.domain.dto.ChapterDTO;
 import com.example.tumiweb.domain.entity.Chapter;
 import com.example.tumiweb.domain.entity.Course;
 
-import java.util.Set;
+import java.util.List;
 
 public interface IChapterService {
 
-  Set<Chapter> findAllChapter(Long page, int size);
+  List<Chapter> findAllChapter(Long page, int size);
 
-  Set<Chapter> findAllChapterByCourseId(Long courseId, Long page, int size, boolean status, boolean both);
+  List<Chapter> findAllChapterByCourseId(Long courseId, Long page, int size, boolean status, boolean both);
 
   Chapter findChapterById(Long id);
 

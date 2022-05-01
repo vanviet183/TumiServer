@@ -27,7 +27,7 @@ public class RoleController {
 
   @GetMapping(UrlConstant.Role.DATA_ROLE_ID)
   public ResponseEntity<?> getRoleById(@PathVariable("id") Long id) {
-    return VsResponseUtil.ok(roleService.getRoleById(id));
+    return VsResponseUtil.ok(roleService.findRoleById(id));
   }
 
   @PostMapping(UrlConstant.Role.DATA_ROLE)

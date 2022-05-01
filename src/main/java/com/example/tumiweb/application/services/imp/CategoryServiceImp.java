@@ -6,15 +6,15 @@ import com.example.tumiweb.application.services.ICategoryService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.CategoryDTO;
 import com.example.tumiweb.domain.entity.Category;
+import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
 import com.github.slugify.Slugify;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImp implements ICategoryService {
@@ -29,32 +29,20 @@ public class CategoryServiceImp implements ICategoryService {
 
   //  @Cacheable(value = "category", key = "'all'")
   @Override
-  public Set<Category> findAllCategory(Long page, int size, boolean status, boolean both) {
-    Set<Category> categories = new HashSet<>();
-    //lấy cả 2 true and false
-    if (both) {
-      if (page == null) {
-        categories = new HashSet<>(categoryRepository.findAll());
-      } else {
-        categories = new HashSet<>(categoryRepository.findAll(PageRequest.of(page.intValue(), size)).getContent());
-      }
-    } else if (status) { //lấy 1 kiểu active
-      if (page == null) {
-        //true and no paging
-        categories = categoryRepository.findAllByDeleteFlag(true);
-      } else {
-        //true and paging
-        categories = categoryRepository.findAllByDeleteFlag(true);
-        int length = categories.size();
-        int totalPage = (length % page != 0) ? length / size + 1 : length / size;
-        if (totalPage > page.intValue()) {
-          return new HashSet<>();
-        }
-        categories = new HashSet<>(new ArrayList<>(categories).subList(page.intValue() * size,
-            page.intValue() * size + size));
-      }
+  public List<Category> findAllCategory(Long page, int size, Boolean activeFlag, Boolean both) {
+    List<Category> categories;
+    if (page != null) {
+      categories = categoryRepository.findAll(PageRequest.of(page.intValue(), size)).getContent();
     } else {
-      categories = new HashSet<>(categoryRepository.findAll());
+      categories = categoryRepository.findAll();
+    }
+
+    if (both) {
+      return categories;
+    }
+
+    if (activeFlag) {
+      return categories.parallelStream().filter(AbstractAuditingEntity::getActiveFlag).collect(Collectors.toList());
     }
     return categories;
   }
@@ -64,7 +52,10 @@ public class CategoryServiceImp implements ICategoryService {
   public Category findCategoryById(Long id) {
     Optional<Category> category = categoryRepository.findById(id);
     if (category.isEmpty()) {
-      throw new VsException("Can not find Category by id: " + id);
+      throw new VsException("Can not find category by id: " + id);
+    }
+    if (category.get().getDeleteFlag()) {
+      throw new VsException("This category was delete");
     }
     return category.get();
   }
@@ -74,7 +65,7 @@ public class CategoryServiceImp implements ICategoryService {
   public Category createNewCategory(CategoryDTO categoryDTO) {
     Category category = categoryRepository.findByName(categoryDTO.getName());
     if (category != null) {
-      throw new VsException("Duplicate Category by name: " + categoryDTO.getName());
+      throw new VsException("Duplicate category by name: " + categoryDTO.getName());
     }
 
     Category newCategory = categoryMapper.toCategory(categoryDTO);
@@ -86,34 +77,31 @@ public class CategoryServiceImp implements ICategoryService {
   @Override
   public Category editCategoryById(Long id, CategoryDTO categoryDTO) {
     Category category = findCategoryById(id);
-    if (category == null) {
-      throw new VsException("Can not find Category by id: " + id);
-    }
 
-    Category newCategory = categoryMapper.toCategory(categoryDTO);
-    newCategory.setSeo(slugify.slugify(newCategory.getName()));
-    return categoryRepository.save(newCategory);
+    category.setName(categoryDTO.getName());
+    category.setDescription(categoryDTO.getDescription());
+    category.setSeo(slugify.slugify(category.getName()));
+
+    return categoryRepository.save(category);
   }
 
   //  @CacheEvict(value = "category", allEntries = true)
   @Override
   public Category deleteCategoryById(Long id) {
     Category category = findCategoryById(id);
-    if (category == null) {
-      throw new VsException("Can not find Category by id: " + id);
-    }
-    categoryRepository.delete(category);
-    return category;
+
+    category.setDeleteFlag(true);
+
+    return categoryRepository.save(category);
   }
 
   //  @CacheEvict(value = "category", allEntries = true)
   @Override
   public Category changeStatusById(Long id) {
     Category category = findCategoryById(id);
-    if (category == null) {
-      throw new VsException("Can not find Category by id: " + id);
-    }
+
     category.setDeleteFlag(!category.getDeleteFlag());
+
     return categoryRepository.save(category);
   }
 

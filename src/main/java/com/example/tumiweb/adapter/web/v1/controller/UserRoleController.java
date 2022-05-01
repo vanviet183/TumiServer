@@ -35,7 +35,7 @@ public class UserRoleController {
   @PostMapping(UrlConstant.UserRole.DATA_USER_ROLE_ADD_ROLE)
 //    @PreAuthorize("@appAuthorizer.authorize(authentication, 'ADMIN', this)")
   public ResponseEntity<?> addRoleToUser(@PathVariable("userId") Long userId, @PathVariable("roleId") Long roleId) {
-    Role role = roleService.getRoleById(roleId);
+    Role role = roleService.findRoleById(roleId);
     User user = userService.getUserById(userId);
     if (role == null || user == null) {
       throw new VsException("");
@@ -60,7 +60,7 @@ public class UserRoleController {
   @PostMapping(UrlConstant.UserRole.DATA_USER_ROLE_REMOVE_ROLE)
   @PreAuthorize("@appAuthorizer.authorize(authentication, 'ADMIN', this)")
   public ResponseEntity<?> removeRoleToUser(@PathVariable("userId") Long userId, @PathVariable("roleId") Long roleId) {
-    Role role = roleService.getRoleById(roleId);
+    Role role = roleService.findRoleById(roleId);
     User user = userService.getUserById(userId);
     if (role == null || user == null) {
       throw new VsException("");
