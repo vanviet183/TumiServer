@@ -3,6 +3,7 @@ package com.example.tumiweb.application.services.imp;
 import com.example.tumiweb.application.constants.EmailConstant;
 import com.example.tumiweb.application.dai.CourseRepository;
 import com.example.tumiweb.application.dai.UserRepository;
+import com.example.tumiweb.application.mapper.UserMapper;
 import com.example.tumiweb.application.services.ISendMailService;
 import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.application.utils.ConvertObject;
@@ -12,7 +13,7 @@ import com.example.tumiweb.domain.dto.UserDTO;
 import com.example.tumiweb.domain.entity.Course;
 import com.example.tumiweb.domain.entity.Role;
 import com.example.tumiweb.domain.entity.User;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImp implements IUserService {
+  private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
   @Autowired
   private UserRepository userRepository;
-  @Autowired
-  private ModelMapper modelMapper;
   @Autowired
   private CourseRepository courseRepository;
   @Autowired
@@ -100,7 +100,7 @@ public class UserServiceImp implements IUserService {
   //  @CacheEvict(value = "user", allEntries = true)
   @Override
   public User createNewUser(UserDTO userDTO) {
-    User user = modelMapper.map(userDTO, User.class);
+    User user = userMapper.toUser(userDTO);
     if (userRepository.findByUsername(user.getUsername()) != null) {
       throw new VsException("Duplicate username: " + user.getUsername());
     }

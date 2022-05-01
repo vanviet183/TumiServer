@@ -1,12 +1,13 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.ImageRepository;
+import com.example.tumiweb.application.mapper.ImageMapper;
 import com.example.tumiweb.application.services.IImageService;
 import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.ImageDTO;
 import com.example.tumiweb.domain.entity.Image;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,9 @@ import java.util.Set;
 
 @Service
 public class ImageServiceImp implements IImageService {
+  private final ImageMapper imageMapper = Mappers.getMapper(ImageMapper.class);
   @Autowired
   private ImageRepository imageRepository;
-  @Autowired
-  private ModelMapper modelMapper;
   @Autowired
   private UploadFile uploadFile;
 
@@ -50,7 +50,7 @@ public class ImageServiceImp implements IImageService {
     if (imageRepository.findByTitle(imageDTO.getTitle()) != null) {
       throw new VsException("Duplicate image by title: " + imageDTO.getTitle());
     }
-    Image image = modelMapper.map(imageDTO, Image.class);
+    Image image = imageMapper.toImage(imageDTO);
     image.setPath(uploadFile.getUrlFromFile(multipartFile));
     return imageRepository.save(image);
   }

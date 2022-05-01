@@ -1,13 +1,14 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.NotificationRepository;
+import com.example.tumiweb.application.mapper.NotificationMapper;
 import com.example.tumiweb.application.services.INotificationService;
 import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.NotificationDTO;
 import com.example.tumiweb.domain.entity.Notification;
 import com.example.tumiweb.domain.entity.User;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +18,9 @@ import java.util.*;
 
 @Service
 public class NotificationServiceImp implements INotificationService {
+  private final NotificationMapper notificationMapper = Mappers.getMapper(NotificationMapper.class);
   @Autowired
   private NotificationRepository notificationRepository;
-  @Autowired
-  private ModelMapper modelMapper;
   @Autowired
   private IUserService userService;
 
@@ -77,7 +77,7 @@ public class NotificationServiceImp implements INotificationService {
     if (user == null) {
       throw new VsException("Can not find user by id: " + userId);
     }
-    Notification notification = modelMapper.map(notificationDTO, Notification.class);
+    Notification notification = notificationMapper.toNotification(notificationDTO);
     notification.setUser(user);
 
     return notificationRepository.save(notification);
@@ -90,7 +90,7 @@ public class NotificationServiceImp implements INotificationService {
     if (notification == null) {
       throw new VsException("Can not find notification with id: " + id);
     }
-    Notification newNotification = modelMapper.map(notificationDTO, Notification.class);
+    Notification newNotification = notificationMapper.toNotification(notificationDTO);
     newNotification.setId(notification.getId());
     return notificationRepository.save(newNotification);
   }

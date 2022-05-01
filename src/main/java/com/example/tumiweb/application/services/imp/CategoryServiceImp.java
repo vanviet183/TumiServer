@@ -1,12 +1,13 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.CategoryRepository;
+import com.example.tumiweb.application.mapper.CategoryMapper;
 import com.example.tumiweb.application.services.ICategoryService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.CategoryDTO;
 import com.example.tumiweb.domain.entity.Category;
 import com.github.slugify.Slugify;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,12 @@ import java.util.Set;
 
 @Service
 public class CategoryServiceImp implements ICategoryService {
+  private final CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
   private final CategoryRepository categoryRepository;
-  private final ModelMapper modelMapper;
   private final Slugify slugify;
 
-  public CategoryServiceImp(CategoryRepository categoryRepository, ModelMapper modelMapper, Slugify slugify) {
+  public CategoryServiceImp(CategoryRepository categoryRepository, Slugify slugify) {
     this.categoryRepository = categoryRepository;
-    this.modelMapper = modelMapper;
     this.slugify = slugify;
   }
 
@@ -77,7 +77,7 @@ public class CategoryServiceImp implements ICategoryService {
       throw new VsException("Duplicate Category by name: " + categoryDTO.getName());
     }
 
-    Category newCategory = modelMapper.map(categoryDTO, Category.class);
+    Category newCategory = categoryMapper.toCategory(categoryDTO);
     newCategory.setSeo(slugify.slugify(newCategory.getName()));
     return categoryRepository.save(newCategory);
   }
@@ -90,7 +90,7 @@ public class CategoryServiceImp implements ICategoryService {
       throw new VsException("Can not find Category by id: " + id);
     }
 
-    Category newCategory = modelMapper.map(categoryDTO, Category.class);
+    Category newCategory = categoryMapper.toCategory(categoryDTO);
     newCategory.setSeo(slugify.slugify(newCategory.getName()));
     return categoryRepository.save(newCategory);
   }

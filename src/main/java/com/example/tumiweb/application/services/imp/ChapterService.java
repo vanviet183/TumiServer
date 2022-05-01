@@ -2,13 +2,14 @@ package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.ChapterRepository;
 import com.example.tumiweb.application.dai.CourseRepository;
+import com.example.tumiweb.application.mapper.ChapterMapper;
 import com.example.tumiweb.application.services.IChapterService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.ChapterDTO;
 import com.example.tumiweb.domain.entity.Chapter;
 import com.example.tumiweb.domain.entity.Course;
 import com.github.slugify.Slugify;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,19 +20,13 @@ import java.util.Set;
 
 @Service
 public class ChapterService implements IChapterService {
-
+  private final ChapterMapper chapterMapper = Mappers.getMapper(ChapterMapper.class);
   @Autowired
   private ChapterRepository chapterRepository;
-
   @Autowired
   private CourseRepository courseRepository;
-
   @Autowired
   private QuestionServiceImp questionService;
-
-  @Autowired
-  private ModelMapper modelMapper;
-
   @Autowired
   private Slugify slugify;
 
@@ -105,7 +100,7 @@ public class ChapterService implements IChapterService {
       throw new VsException("Can not find course by id: " + courseId);
     }
     Course course = optional.get();
-    Chapter chapter = modelMapper.map(chapterDTO, Chapter.class);
+    Chapter chapter = chapterMapper.toChapter(chapterDTO);
 
     chapter.setSeo(slugify.slugify(chapter.getName()));
 

@@ -1,6 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.GiftRepository;
+import com.example.tumiweb.application.mapper.GiftMapper;
 import com.example.tumiweb.application.services.IGiftService;
 import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
@@ -8,7 +9,7 @@ import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.GiftDTO;
 import com.example.tumiweb.domain.entity.Gift;
 import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +24,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class GiftServiceImp implements IGiftService {
+  private final GiftMapper giftMapper = Mappers.getMapper(GiftMapper.class);
   @Autowired
   private GiftRepository giftRepository;
-  @Autowired
-  private ModelMapper modelMapper;
   @Autowired
   private UploadFile uploadFile;
 
@@ -63,7 +63,7 @@ public class GiftServiceImp implements IGiftService {
     if (giftRepository.findByName(giftDTO.getName()) != null) {
       throw new VsException("Duplicate gift with title: " + giftDTO.getName());
     }
-    Gift gift = modelMapper.map(giftDTO, Gift.class);
+    Gift gift = giftMapper.toGift(giftDTO);
     if (file != null) {
       gift.setAvatar(uploadFile.getUrlFromFile(file));
     }

@@ -9,7 +9,6 @@ import com.example.tumiweb.application.storage.StorageProperties;
 import com.example.tumiweb.domain.entity.Role;
 import com.example.tumiweb.domain.entity.User;
 import com.github.slugify.Slugify;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -33,11 +32,6 @@ public class TumiWebApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(TumiWebApplication.class, args);
-  }
-
-  @Bean
-  public ModelMapper modelMapper() {
-    return new ModelMapper();
   }
 
   @Bean

@@ -1,13 +1,14 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.HelpRepository;
+import com.example.tumiweb.application.mapper.HelpMapper;
 import com.example.tumiweb.application.services.IHelpService;
 import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.HelpDTO;
 import com.example.tumiweb.domain.entity.Help;
 import com.example.tumiweb.domain.entity.User;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,10 +21,9 @@ import java.util.Set;
 
 @Service
 public class HelpServiceImp implements IHelpService {
+  private final HelpMapper helpMapper = Mappers.getMapper(HelpMapper.class);
   @Autowired
   private HelpRepository helpRepository;
-  @Autowired
-  private ModelMapper modelMapper;
   @Autowired
   private IUserService userService;
 
@@ -67,7 +67,7 @@ public class HelpServiceImp implements IHelpService {
     if (user == null) {
       throw new VsException("Can not find user to create help");
     }
-    Help help = modelMapper.map(helpDTO, Help.class);
+    Help help = helpMapper.toHelp(helpDTO);
     help.setUser(user);
     return helpRepository.save(help);
   }

@@ -3,6 +3,7 @@ package com.example.tumiweb.application.services.imp;
 import com.example.tumiweb.adapter.web.v1.transfer.parameter.AuthenticationRequest;
 import com.example.tumiweb.adapter.web.v1.transfer.response.AuthenticationResponse;
 import com.example.tumiweb.application.constants.AuthenticationProvider;
+import com.example.tumiweb.application.mapper.UserMapper;
 import com.example.tumiweb.application.services.*;
 import com.example.tumiweb.application.utils.JwtUtil;
 import com.example.tumiweb.config.exception.VsException;
@@ -10,7 +11,7 @@ import com.example.tumiweb.domain.dto.UserDTO;
 import com.example.tumiweb.domain.entity.Diary;
 import com.example.tumiweb.domain.entity.Role;
 import com.example.tumiweb.domain.entity.User;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,25 +31,23 @@ import java.util.Set;
 
 @Service
 public class AuthServiceImp implements IAuthService {
+  private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
   private final JwtUtil jwtUtil;
   private final MyUserDetailsService myUserDetailsService;
   private final AuthenticationManager authenticationManager;
   private final PasswordEncoder passwordEncoder;
   private final IUserService userService;
-  private final ModelMapper modelMapper;
   private final IRoleService roleService;
   private final IDiaryService diaryService;
 
   public AuthServiceImp(JwtUtil jwtUtil, MyUserDetailsService myUserDetailsService,
                         AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder,
-                        IUserService userService, ModelMapper modelMapper, IRoleService roleService,
-                        IDiaryService diaryService) {
+                        IUserService userService, IRoleService roleService, IDiaryService diaryService) {
     this.jwtUtil = jwtUtil;
     this.myUserDetailsService = myUserDetailsService;
     this.authenticationManager = authenticationManager;
     this.passwordEncoder = passwordEncoder;
     this.userService = userService;
-    this.modelMapper = modelMapper;
     this.roleService = roleService;
     this.diaryService = diaryService;
   }
@@ -91,7 +90,7 @@ public class AuthServiceImp implements IAuthService {
     if (oldUser != null) {
       throw new VsException("Username has already exists");
     }
-    User user = modelMapper.map(userDTO, User.class);
+    User user = userMapper.toUser(userDTO);
     if (user == null) {
       throw new InvalidObjectException("Invalid user");
     }

@@ -3,6 +3,7 @@ package com.example.tumiweb.application.services.imp;
 import com.example.tumiweb.application.dai.AnswerRepository;
 import com.example.tumiweb.application.dai.ChapterRepository;
 import com.example.tumiweb.application.dai.QuestionRepository;
+import com.example.tumiweb.application.mapper.QuestionMapper;
 import com.example.tumiweb.application.services.IQuestionService;
 import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
@@ -11,7 +12,7 @@ import com.example.tumiweb.domain.dto.QuestionDTO;
 import com.example.tumiweb.domain.entity.Chapter;
 import com.example.tumiweb.domain.entity.Question;
 import com.github.slugify.Slugify;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//Phần này chưa sửa repository của các bảng liên quan thành service :v
 @Service
 public class QuestionServiceImp implements IQuestionService {
+  private final QuestionMapper questionMapper = Mappers.getMapper(QuestionMapper.class);
   @Autowired
   private QuestionRepository questionRepository;
-  @Autowired
-  private ModelMapper modelMapper;
   @Autowired
   private ChapterRepository chapterRepository;
   @Autowired
@@ -77,7 +76,7 @@ public class QuestionServiceImp implements IQuestionService {
     Chapter chapter = optional.get();
 
     questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
-    Question question = modelMapper.map(questionDTO, Question.class);
+    Question question = questionMapper.toQuestion(questionDTO);
     question.setChapter(chapter);
 
     if (multipartFile != null) {

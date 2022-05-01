@@ -1,6 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.CourseRepository;
+import com.example.tumiweb.application.mapper.CourseMapper;
 import com.example.tumiweb.application.services.ICategoryService;
 import com.example.tumiweb.application.services.ICourseService;
 import com.example.tumiweb.application.services.IUserService;
@@ -13,7 +14,7 @@ import com.example.tumiweb.domain.entity.Category;
 import com.example.tumiweb.domain.entity.Course;
 import com.example.tumiweb.domain.entity.Image;
 import com.github.slugify.Slugify;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,28 +26,19 @@ import java.util.Set;
 
 @Service
 public class CourseServiceImp implements ICourseService {
-
+  private final CourseMapper courseMapper = Mappers.getMapper(CourseMapper.class);
   @Autowired
   private CourseRepository courseRepository;
-
-  @Autowired
-  private ModelMapper modelMapper;
-
   @Autowired
   private ChapterService chapterService;
-
   @Autowired
   private ImageServiceImp imageService;
-
   @Autowired
   private UploadFile uploadFile;
-
   @Autowired
   private ICategoryService categoryService;
-
   @Autowired
   private IUserService userService;
-
   @Autowired
   private Slugify slugify;
 
@@ -68,7 +60,7 @@ public class CourseServiceImp implements ICourseService {
     if (courseRepository.findByName(courseDTO.getName()) != null) {
       throw new VsException("This name off course is contain");
     }
-    Course course = modelMapper.map(courseDTO, Course.class);
+    Course course = courseMapper.toCourse(courseDTO);
     if (multipartFile != null) {
       Image image = imageService.createNewImage(new ImageDTO(multipartFile.getName()), multipartFile);
     }

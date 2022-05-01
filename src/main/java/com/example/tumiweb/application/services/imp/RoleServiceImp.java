@@ -1,11 +1,12 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.RoleRepository;
+import com.example.tumiweb.application.mapper.RoleMapper;
 import com.example.tumiweb.application.services.IRoleService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.RoleDTO;
 import com.example.tumiweb.domain.entity.Role;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,9 @@ import java.util.Set;
 
 @Service
 public class RoleServiceImp implements IRoleService {
+  private final RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);
   @Autowired
   private RoleRepository roleRepository;
-  @Autowired
-  private ModelMapper modelMapper;
 
   private Role findRoleById(Long id) {
     Optional<Role> role = roleRepository.findById(id);
@@ -61,7 +61,7 @@ public class RoleServiceImp implements IRoleService {
     if (roleRepository.findByName(roleDTO.getName()) != null) {
       throw new VsException("This role is contain");
     }
-    return roleRepository.save(modelMapper.map(roleDTO, Role.class));
+    return roleRepository.save(roleMapper.toRole(roleDTO));
   }
 
   @Override
@@ -70,7 +70,7 @@ public class RoleServiceImp implements IRoleService {
     if (role == null) {
       throw new VsException("Can not find role by id: " + id);
     }
-    return roleRepository.save(modelMapper.map(roleDTO, Role.class));
+    return roleRepository.save(roleMapper.toRole(roleDTO));
   }
 
   @Override
