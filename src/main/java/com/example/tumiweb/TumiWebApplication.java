@@ -42,14 +42,9 @@ public class TumiWebApplication {
   @Bean
   CommandLineRunner init(IStorageService storageService) {
     return (args) -> {
-      User user2 = userRepository.findById(4L).get();
-      user2.setDeleteFlag(false);
-      user2.setAuthProvider(AuthenticationProvider.SYSTEM);
-      user2.setMark(1000L);
-      userRepository.save(user2);
+      storageService.init();
 
       PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-      storageService.init();
 
       if (roleRepository.count() == 0) {
         roleRepository.save(new Role(RoleConstant.ADMIN_NAME, RoleConstant.DES_ADMIN_ROLE, null));
