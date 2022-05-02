@@ -9,7 +9,6 @@ import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,16 +24,17 @@ import java.util.regex.Pattern;
 public class ForgotPasswordController {
 
   private final Bucket bucket;
-  @Autowired
-  public PasswordEncoder passwordEncoder;
-  @Autowired
-  private IUserService userService;
-  @Autowired
-  private ISendMailService sendMailService;
+  private final PasswordEncoder passwordEncoder;
+  private final IUserService userService;
+  private final ISendMailService sendMailService;
 
-  public ForgotPasswordController() {
+  public ForgotPasswordController(PasswordEncoder passwordEncoder, IUserService userService,
+                                  ISendMailService sendMailService) {
     Bandwidth limit = Bandwidth.classic(2, Refill.greedy(2, Duration.ofMinutes(1)));
     this.bucket = Bucket4j.builder().addLimit(limit).build();
+    this.passwordEncoder = passwordEncoder;
+    this.userService = userService;
+    this.sendMailService = sendMailService;
   }
 
   @PostMapping("/forgetPassword/{email}")
@@ -52,7 +52,8 @@ public class ForgotPasswordController {
 
           String mess = "Quên mật khẩu Tumi\nĐây mã bí mật đổi mật khẩu của bạn: " + tokenResetPass;
 
-          System.out.println(sendMailService.sendMailWithText(EmailConstant.SUBJECT_FORGOT_PASS, mess, user.getEmail()));
+          System.out.println(sendMailService.sendMailWithText(EmailConstant.SUBJECT_FORGOT_PASS, mess,
+              user.getEmail()));
 
           return ResponseEntity.status(HttpStatus.OK)
               .body("Đường link đổi mật khẩu đã được gửi vào email của bạn");

@@ -1,7 +1,6 @@
 package com.example.tumiweb.config.oauth2;
 
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +13,11 @@ public class AuthGithubController {
 
   ///oauth2/authorization/github
 
-  @Autowired
-  private GithubService githubService;
+  private final GithubService githubService;
+
+  public AuthGithubController(GithubService githubService) {
+    this.githubService = githubService;
+  }
 
   @GetMapping("/save")
   public ResponseEntity<?> save(OAuth2AuthenticationToken token) {

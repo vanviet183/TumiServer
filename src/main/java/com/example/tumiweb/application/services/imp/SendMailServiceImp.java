@@ -8,7 +8,6 @@ import com.example.tumiweb.application.services.ISendMailService;
 import com.example.tumiweb.application.utils.DateTimeUtil;
 import com.example.tumiweb.domain.entity.Diary;
 import com.example.tumiweb.domain.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,14 +20,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class SendMailServiceImp implements ISendMailService {
-  @Autowired
-  private JavaMailSender javaMailSender;
-  @Autowired
-  private UserRepository userRepository;
-  @Autowired
-  private DiaryRepository diaryRepository;
-  @Autowired
-  private RoleRepository roleRepository;
+  private final JavaMailSender javaMailSender;
+  private final UserRepository userRepository;
+  private final DiaryRepository diaryRepository;
+  private final RoleRepository roleRepository;
+
+  public SendMailServiceImp(JavaMailSender javaMailSender, UserRepository userRepository,
+                            DiaryRepository diaryRepository, RoleRepository roleRepository) {
+    this.javaMailSender = javaMailSender;
+    this.userRepository = userRepository;
+    this.diaryRepository = diaryRepository;
+    this.roleRepository = roleRepository;
+  }
 
   @Override
   public String sendMailWithText(String sub, String content, String to) {

@@ -1,16 +1,18 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.GiftOrderRepository;
+import com.example.tumiweb.application.dai.GiftRepository;
+import com.example.tumiweb.application.dai.NotificationRepository;
+import com.example.tumiweb.application.dai.UserRepository;
+import com.example.tumiweb.application.mapper.NotificationMapper;
 import com.example.tumiweb.application.services.IGiftOrderService;
-import com.example.tumiweb.application.services.IGiftService;
-import com.example.tumiweb.application.services.INotificationService;
-import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.NotificationDTO;
 import com.example.tumiweb.domain.entity.Gift;
 import com.example.tumiweb.domain.entity.GiftOrder;
+import com.example.tumiweb.domain.entity.Notification;
 import com.example.tumiweb.domain.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,14 +23,19 @@ import java.util.*;
 @Service
 @Transactional
 public class GiftOrderServiceImp implements IGiftOrderService {
-  @Autowired
-  private GiftOrderRepository giftOrderRepository;
-  @Autowired
-  private IUserService userService;
-  @Autowired
-  private IGiftService giftService;
-  @Autowired
-  private INotificationService notificationService;
+  private final NotificationMapper notificationMapper = Mappers.getMapper(NotificationMapper.class);
+  private final GiftOrderRepository giftOrderRepository;
+  private final UserRepository userRepository;
+  private final GiftRepository giftRepository;
+  private final NotificationRepository notificationRepository;
+
+  public GiftOrderServiceImp(GiftOrderRepository giftOrderRepository, UserRepository userRepository,
+                             GiftRepository giftRepository, NotificationRepository notificationRepository) {
+    this.giftOrderRepository = giftOrderRepository;
+    this.userRepository = userRepository;
+    this.giftRepository = giftRepository;
+    this.notificationRepository = notificationRepository;
+  }
 
   //  @Cacheable(value = "gift-order", key = "'all'")
   @Override
@@ -59,19 +66,22 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   //  @CacheEvict(value = "gift-order", allEntries = true)
   @Override
   public GiftOrder createNewGiftOrder(Long userId, Long giftId) {
-    Gift gift = giftService.findGiftById(giftId);
-    if (userService.changeMarkById(userId, -gift.getMark()).getStatus()) {
-      User user = userService.getUserById(userId);
+    Gift gift = findGiftById(giftId);
+    User user = getUserById(userId);
+    user.setMark(user.getMark() - gift.getMark());
+    if (user.getMark() >= 0) {
       GiftOrder giftOrder = new GiftOrder();
       giftOrder.setEmail(user.getEmail());
       giftOrder.setQuality(1L);
 
       giftOrder = giftOrderRepository.save(giftOrder);
-      userService.save(user);
+      userRepository.save(user);
 
       //create notification
       NotificationDTO notificationDTO = new NotificationDTO("Bạn đã nhận được \'" + gift.getName() + "\'", "");
-      notificationService.createNotification(userId, notificationDTO);
+      Notification notification = notificationMapper.toNotification(notificationDTO);
+      notification.setUser(user);
+      notificationRepository.save(notification);
 
       return giftOrderRepository.save(giftOrder);
     }
@@ -82,10 +92,9 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   @Override
   public GiftOrder changeStatusById(Long id) {
     GiftOrder giftOrder = findGiftOrderById(id);
-    if (giftOrder == null) {
-      throw new VsException("Can not find GiftOrder by id: " + id);
-    }
-    giftOrder.setDeleteFlag(false);
+
+    giftOrder.setDeleteFlag(!giftOrder.getDeleteFlag());
+
     return giftOrderRepository.save(giftOrder);
   }
 
@@ -93,10 +102,9 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   @Override
   public GiftOrder deleteGiftOrderById(Long id) {
     GiftOrder giftOrder = findGiftOrderById(id);
-    if (giftOrder == null) {
-      throw new VsException("Can not find GiftOrder by id: " + id);
-    }
+
     giftOrderRepository.delete(giftOrder);
+
     return giftOrder;
   }
 
@@ -105,7 +113,10 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   public GiftOrder findGiftOrderById(Long id) {
     Optional<GiftOrder> giftOrder = giftOrderRepository.findById(id);
     if (giftOrder.isEmpty()) {
-      return null;
+      throw new VsException("Can not find giftOrder by id: " + id);
+    }
+    if (giftOrder.get().getDeleteFlag()) {
+      throw new VsException("This giftOrder was delete");
     }
     return giftOrder.get();
   }
@@ -118,13 +129,11 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   //  @CacheEvict(value = "gift-order", allEntries = true)
   @Override
   public GiftOrder giveRandomGiftToUser(Long userId) {
-    List<Gift> gifts = new ArrayList<>(giftService.getAllGift(null, 0, true));
+    List<Gift> gifts = giftRepository.findAllByDeleteFlag(false);
     Random random = new Random();
-//        int randomNumber = random.nextInt(max + 1 - min) + min;
     int index = random.nextInt(gifts.size());
 
-//        createNewGiftOrder(userId, gifts.get(index).getId());
-    User user = userService.getUserById(userId);
+    User user = getUserById(userId);
     GiftOrder giftOrder = new GiftOrder();
     giftOrder.setEmail(user.getEmail());
     giftOrder.setQuality(1L);
@@ -140,16 +149,47 @@ public class GiftOrderServiceImp implements IGiftOrderService {
     giftOrders.add(newGiftOrder);
     gifts.get(index).setGiftOrders(giftOrders);
 
-    giftService.save(gifts.get(index));
+    giftRepository.save(gifts.get(index));
 
-    userService.save(user);
+    userRepository.save(user);
 
     //create notification
     NotificationDTO notificationDTO = new NotificationDTO("Bạn đã nhận được \'" + gifts.get(index).getName() + "\'",
         "");
-    notificationService.createNotification(userId, notificationDTO);
+    Notification notification = notificationMapper.toNotification(notificationDTO);
+    notification.setUser(user);
+    notificationRepository.save(notification);
 
     return giftOrderRepository.save(newGiftOrder);
+  }
+
+  private Gift findGiftById(Long id) {
+    Optional<Gift> gift = giftRepository.findById(id);
+    if (gift.isEmpty()) {
+      throw new VsException("Can not find gift by id: " + id);
+    }
+    if (gift.get().getDeleteFlag()) {
+      throw new VsException("This gift was delete");
+    }
+    if (!gift.get().getActiveFlag()) {
+      throw new VsException("This gift was disable");
+    }
+
+    return gift.get();
+  }
+
+  private User getUserById(Long id) {
+    Optional<User> user = userRepository.findById(id);
+    if (user.isEmpty()) {
+      throw new VsException("Can not find user by id: " + id);
+    }
+    if (user.get().getDeleteFlag()) {
+      throw new VsException("This user was delete");
+    }
+    if (!user.get().getActiveFlag()) {
+      throw new VsException("This user was disable");
+    }
+    return user.get();
   }
 
 }

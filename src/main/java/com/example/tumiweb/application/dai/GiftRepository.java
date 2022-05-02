@@ -8,14 +8,13 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface GiftRepository extends JpaRepository<Gift, Long> {
 
   Gift findByName(String title);
 
-  Set<Gift> findAllByDeleteFlag(boolean flag);
+  List<Gift> findAllByDeleteFlag(boolean flag);
 
   List<Gift> findAllByNameContainingOrMarkContainingAndDeleteFlagAndActiveFlag(@NotBlank String name,
                                                                                @Min(0) @Max(100) Long mark,

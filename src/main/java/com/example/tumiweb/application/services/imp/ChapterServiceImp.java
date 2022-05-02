@@ -13,7 +13,6 @@ import com.example.tumiweb.domain.entity.Course;
 import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
 import com.github.slugify.Slugify;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -25,18 +24,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ChapterService implements IChapterService {
+public class ChapterServiceImp implements IChapterService {
   private final ChapterMapper chapterMapper = Mappers.getMapper(ChapterMapper.class);
-  @Autowired
-  private ChapterRepository chapterRepository;
-  @Autowired
-  private CourseRepository courseRepository;
-  @Autowired
-  private QuestionRepository questionRepository;
-  @Autowired
-  private AnswerRepository answerRepository;
-  @Autowired
-  private Slugify slugify;
+  private final ChapterRepository chapterRepository;
+  private final CourseRepository courseRepository;
+  private final QuestionRepository questionRepository;
+  private final AnswerRepository answerRepository;
+  private final Slugify slugify;
+
+  public ChapterServiceImp(ChapterRepository chapterRepository, CourseRepository courseRepository,
+                           QuestionRepository questionRepository, AnswerRepository answerRepository, Slugify slugify) {
+    this.chapterRepository = chapterRepository;
+    this.courseRepository = courseRepository;
+    this.questionRepository = questionRepository;
+    this.answerRepository = answerRepository;
+    this.slugify = slugify;
+  }
 
   //  @Cacheable(value = "chapter", key = "'all'")
   @Override

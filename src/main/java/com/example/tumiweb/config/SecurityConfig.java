@@ -3,7 +3,6 @@ package com.example.tumiweb.config;
 import com.example.tumiweb.application.filters.JwtRequestFilter;
 import com.example.tumiweb.application.services.MyUserDetailsService;
 import com.example.tumiweb.config.oauth2.CustomOAuth2UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,15 +24,16 @@ import org.springframework.web.cors.CorsConfiguration;
     jsr250Enabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+  private final MyUserDetailsService myUserDetailsService;
+  private final JwtRequestFilter jwtRequestFilter;
+  private final CustomOAuth2UserService userService;
 
-  @Autowired
-  private MyUserDetailsService myUserDetailsService;
-
-  @Autowired
-  private JwtRequestFilter jwtRequestFilter;
-
-  @Autowired
-  private CustomOAuth2UserService userService;
+  public SecurityConfig(MyUserDetailsService myUserDetailsService, JwtRequestFilter jwtRequestFilter,
+                        CustomOAuth2UserService userService) {
+    this.myUserDetailsService = myUserDetailsService;
+    this.jwtRequestFilter = jwtRequestFilter;
+    this.userService = userService;
+  }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -86,6 +86,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected AuthenticationManager authenticationManager() throws Exception {
     return super.authenticationManager();
   }
-
 
 }

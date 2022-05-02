@@ -14,7 +14,6 @@ import com.example.tumiweb.domain.entity.Role;
 import com.example.tumiweb.domain.entity.User;
 import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,12 +26,15 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImp implements IUserService {
   private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-  @Autowired
-  private UserRepository userRepository;
-  @Autowired
-  private UploadFile uploadFile;
-  @Autowired
-  private ISendMailService sendMailService;
+  private final UserRepository userRepository;
+  private final UploadFile uploadFile;
+  private final ISendMailService sendMailService;
+
+  public UserServiceImp(UserRepository userRepository, UploadFile uploadFile, ISendMailService sendMailService) {
+    this.userRepository = userRepository;
+    this.uploadFile = uploadFile;
+    this.sendMailService = sendMailService;
+  }
 
   //  @Cacheable(value = "user", key = "'all'")
   @Override

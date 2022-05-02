@@ -7,7 +7,6 @@ import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.RoleDTO;
 import com.example.tumiweb.domain.entity.Role;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -18,8 +17,11 @@ import java.util.Set;
 @Service
 public class RoleServiceImp implements IRoleService {
   private final RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);
-  @Autowired
-  private RoleRepository roleRepository;
+  private final RoleRepository roleRepository;
+
+  public RoleServiceImp(RoleRepository roleRepository) {
+    this.roleRepository = roleRepository;
+  }
 
   @Override
   public Role findRoleById(Long id) {

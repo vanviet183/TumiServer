@@ -8,7 +8,6 @@ import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.GiftDTO;
 import com.example.tumiweb.domain.entity.Gift;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,10 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class GiftServiceImp implements IGiftService {
   private final GiftMapper giftMapper = Mappers.getMapper(GiftMapper.class);
-  @Autowired
-  private GiftRepository giftRepository;
-  @Autowired
-  private UploadFile uploadFile;
+  private final GiftRepository giftRepository;
+  private final UploadFile uploadFile;
+
+  public GiftServiceImp(GiftRepository giftRepository, UploadFile uploadFile) {
+    this.giftRepository = giftRepository;
+    this.uploadFile = uploadFile;
+  }
 
   //  @Cacheable(value = "gift", key = "'all'")
   @Override

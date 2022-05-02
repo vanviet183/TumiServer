@@ -22,10 +22,13 @@ import java.util.Set;
 @Service
 public class HelpServiceImp implements IHelpService {
   private final HelpMapper helpMapper = Mappers.getMapper(HelpMapper.class);
-  @Autowired
-  private HelpRepository helpRepository;
-  @Autowired
-  private UserRepository userRepository;
+  private final HelpRepository helpRepository;
+  private final UserRepository userRepository;
+
+  public HelpServiceImp(HelpRepository helpRepository, UserRepository userRepository) {
+    this.helpRepository = helpRepository;
+    this.userRepository = userRepository;
+  }
 
   //  @Cacheable(value = "help", key = "'all'")
   @Override

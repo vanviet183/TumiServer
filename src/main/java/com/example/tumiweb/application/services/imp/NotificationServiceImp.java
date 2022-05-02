@@ -10,7 +10,6 @@ import com.example.tumiweb.domain.entity.Notification;
 import com.example.tumiweb.domain.entity.User;
 import com.example.tumiweb.domain.entity.base.AbstractAuditingEntity;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class NotificationServiceImp implements INotificationService {
   private final NotificationMapper notificationMapper = Mappers.getMapper(NotificationMapper.class);
-  @Autowired
-  private NotificationRepository notificationRepository;
-  @Autowired
-  private IUserService userService;
+  private final NotificationRepository notificationRepository;
+  private final IUserService userService;
+
+  public NotificationServiceImp(NotificationRepository notificationRepository, IUserService userService) {
+    this.notificationRepository = notificationRepository;
+    this.userService = userService;
+  }
 
   @Override
   public Notification findNotificationById(Long id) {

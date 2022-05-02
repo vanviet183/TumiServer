@@ -1,13 +1,13 @@
 package com.example.tumiweb.config.oauth2;
 
 import com.example.tumiweb.application.constants.AuthenticationProvider;
+import com.example.tumiweb.application.constants.RoleConstant;
 import com.example.tumiweb.application.services.IRoleService;
 import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.application.services.MyUserDetailsService;
 import com.example.tumiweb.application.utils.JwtUtil;
 import com.example.tumiweb.domain.entity.Role;
 import com.example.tumiweb.domain.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,15 +18,18 @@ import java.util.Set;
 
 @Service
 public class GithubService {
+  private final IRoleService roleService;
+  private final IUserService userService;
+  private final MyUserDetailsService myUserDetailsService;
+  private final JwtUtil jwtUtil;
 
-  @Autowired
-  private IRoleService roleService;
-  @Autowired
-  private IUserService userService;
-  @Autowired
-  private MyUserDetailsService myUserDetailsService;
-  @Autowired
-  private JwtUtil jwtUtil;
+  public GithubService(IRoleService roleService, IUserService userService, MyUserDetailsService myUserDetailsService,
+                       JwtUtil jwtUtil) {
+    this.roleService = roleService;
+    this.userService = userService;
+    this.myUserDetailsService = myUserDetailsService;
+    this.jwtUtil = jwtUtil;
+  }
 
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -50,7 +53,7 @@ public class GithubService {
     user.setAvatar((String) token.getPrincipal().getAttributes().get("avatar_url"));
     user.setEmail(token.getPrincipal().getAttributes().get("login") + "@gmail.com");
     user.setMark(0L);
-    Role role = roleService.getRoleByName("ROLE_MEMBER");
+    Role role = roleService.getRoleByName(RoleConstant.STUDENT_NAME);
     user.setRoles(Set.of(role));
 
     User newUser = userService.save(user);

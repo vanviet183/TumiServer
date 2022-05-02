@@ -11,7 +11,6 @@ import com.example.tumiweb.domain.entity.Category;
 import com.example.tumiweb.domain.entity.Course;
 import com.github.slugify.Slugify;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,20 +20,25 @@ import java.util.Optional;
 @Service
 public class CourseServiceImp implements ICourseService {
   private final CourseMapper courseMapper = Mappers.getMapper(CourseMapper.class);
-  @Autowired
-  private CourseRepository courseRepository;
-  @Autowired
-  private ChapterRepository chapterRepository;
-  @Autowired
-  private UploadFile uploadFile;
-  @Autowired
-  private CategoryRepository categoryRepository;
-  @Autowired
-  private QuestionRepository questionRepository;
-  @Autowired
-  private AnswerRepository answerRepository;
-  @Autowired
-  private Slugify slugify;
+  private final CourseRepository courseRepository;
+  private final ChapterRepository chapterRepository;
+  private final UploadFile uploadFile;
+  private final CategoryRepository categoryRepository;
+  private final QuestionRepository questionRepository;
+  private final AnswerRepository answerRepository;
+  private final Slugify slugify;
+
+  public CourseServiceImp(CourseRepository courseRepository, ChapterRepository chapterRepository,
+                          UploadFile uploadFile, CategoryRepository categoryRepository,
+                          QuestionRepository questionRepository, AnswerRepository answerRepository, Slugify slugify) {
+    this.courseRepository = courseRepository;
+    this.chapterRepository = chapterRepository;
+    this.uploadFile = uploadFile;
+    this.categoryRepository = categoryRepository;
+    this.questionRepository = questionRepository;
+    this.answerRepository = answerRepository;
+    this.slugify = slugify;
+  }
 
   //  @Cacheable(value = "course", key = "'all'")
   @Override

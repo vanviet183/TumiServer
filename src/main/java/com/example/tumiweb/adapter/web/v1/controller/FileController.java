@@ -3,7 +3,6 @@ package com.example.tumiweb.adapter.web.v1.controller;
 import com.example.tumiweb.application.services.IDBFileStorageService;
 import com.example.tumiweb.application.storage.IStorageService;
 import com.example.tumiweb.domain.entity.DBFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -20,15 +19,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/files")
 public class FileController {
-
   //Save to project
-  @Autowired
-  private IStorageService storageService;
-
+  private final IStorageService storageService;
   //Save to DB
-  @Autowired
-  private IDBFileStorageService dbFileStorageService;
+  private final IDBFileStorageService dbFileStorageService;
 
+  public FileController(IStorageService storageService, IDBFileStorageService dbFileStorageService) {
+    this.storageService = storageService;
+    this.dbFileStorageService = dbFileStorageService;
+  }
 
   // ------------------------- Save to project
   @PostMapping("/proj")

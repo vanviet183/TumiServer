@@ -4,7 +4,6 @@ import com.example.tumiweb.application.dai.DBFileRepository;
 import com.example.tumiweb.application.services.IDBFileStorageService;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.entity.DBFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,8 +12,11 @@ import java.io.IOException;
 
 @Service
 public class DBFileStorageServiceImp implements IDBFileStorageService {
-  @Autowired
-  private DBFileRepository dbFileRepository;
+  private final DBFileRepository dbFileRepository;
+
+  public DBFileStorageServiceImp(DBFileRepository dbFileRepository) {
+    this.dbFileRepository = dbFileRepository;
+  }
 
   //  @CacheEvict(value = "dbfile", allEntries = true)
   @Override

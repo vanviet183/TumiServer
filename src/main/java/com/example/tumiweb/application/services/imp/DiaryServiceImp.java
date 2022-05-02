@@ -7,7 +7,6 @@ import com.example.tumiweb.application.utils.DateTimeUtil;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.entity.Diary;
 import com.example.tumiweb.domain.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +18,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class DiaryServiceImp implements IDiaryService {
-  @Autowired
-  private IUserService userService;
-  @Autowired
-  private DiaryRepository diaryRepository;
+  private final IUserService userService;
+  private final DiaryRepository diaryRepository;
+
+  public DiaryServiceImp(IUserService userService, DiaryRepository diaryRepository) {
+    this.userService = userService;
+    this.diaryRepository = diaryRepository;
+  }
 
   //  @Cacheable(value = "diary", key = "'du'+#userId")
   @Override

@@ -12,7 +12,6 @@ import com.example.tumiweb.domain.entity.Chapter;
 import com.example.tumiweb.domain.entity.Question;
 import com.github.slugify.Slugify;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +24,20 @@ import java.util.Optional;
 @Service
 public class QuestionServiceImp implements IQuestionService {
   private final QuestionMapper questionMapper = Mappers.getMapper(QuestionMapper.class);
-  @Autowired
-  private QuestionRepository questionRepository;
-  @Autowired
-  private ChapterRepository chapterRepository;
-  @Autowired
-  private AnswerRepository answerRepository;
-  @Autowired
-  private UploadFile uploadFile;
-  @Autowired
-  private Slugify slugify;
+  private final QuestionRepository questionRepository;
+  private final ChapterRepository chapterRepository;
+  private final AnswerRepository answerRepository;
+  private final UploadFile uploadFile;
+  private final Slugify slugify;
+
+  public QuestionServiceImp(QuestionRepository questionRepository, ChapterRepository chapterRepository,
+                            AnswerRepository answerRepository, UploadFile uploadFile, Slugify slugify) {
+    this.questionRepository = questionRepository;
+    this.chapterRepository = chapterRepository;
+    this.answerRepository = answerRepository;
+    this.uploadFile = uploadFile;
+    this.slugify = slugify;
+  }
 
   //  @Cacheable(value = "question", key = "'chapter'+#chapterId")
   @Override

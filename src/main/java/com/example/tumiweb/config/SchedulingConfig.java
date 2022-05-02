@@ -2,6 +2,7 @@ package com.example.tumiweb.config;
 
 import com.example.tumiweb.application.services.*;
 import com.example.tumiweb.application.services.imp.BackupServiceImp;
+import com.example.tumiweb.application.utils.DateTimeUtil;
 import com.example.tumiweb.domain.entity.Chapter;
 import com.example.tumiweb.domain.entity.Course;
 import com.example.tumiweb.domain.entity.User;
@@ -28,7 +29,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @ConditionalOnExpression("true")
 public class SchedulingConfig {
 
-  SimpleDateFormat formatDay = new SimpleDateFormat("dd/MM/yyyy");
   @Autowired
   private IDiaryService diaryService;
   @Autowired
@@ -55,7 +55,7 @@ public class SchedulingConfig {
   @Scheduled(cron = "0 0 0 * * ?")
 //    @Scheduled(cron = "0 27 23 * * ?")
   void sendMailAndGiveAGiftToUserForBirthday() {
-    List<User> users = userService.getAllUserByBirthday(formatDay.format(new Date()));
+    List<User> users = userService.getAllUserByBirthday(DateTimeUtil.getDateTimeNow());
     if (users.size() > 0) {
       sendMailService.sendMailToUserForBirthday(users);
 

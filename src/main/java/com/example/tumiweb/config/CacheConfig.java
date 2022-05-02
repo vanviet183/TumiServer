@@ -13,6 +13,7 @@ import java.util.Arrays;
 @Configuration
 @EnableCaching
 public class CacheConfig {
+
   @Bean
   public CacheManager cacheManager() {
     SimpleCacheManager cacheManager = new SimpleCacheManager();
@@ -43,4 +44,5 @@ public class CacheConfig {
 
     return cacheManager;
   }
+
 }

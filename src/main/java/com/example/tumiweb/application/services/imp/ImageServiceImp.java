@@ -8,7 +8,6 @@ import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.ImageDTO;
 import com.example.tumiweb.domain.entity.Image;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +19,13 @@ import java.util.Set;
 @Service
 public class ImageServiceImp implements IImageService {
   private final ImageMapper imageMapper = Mappers.getMapper(ImageMapper.class);
-  @Autowired
-  private ImageRepository imageRepository;
-  @Autowired
-  private UploadFile uploadFile;
+  private final ImageRepository imageRepository;
+  private final UploadFile uploadFile;
+
+  public ImageServiceImp(ImageRepository imageRepository, UploadFile uploadFile) {
+    this.imageRepository = imageRepository;
+    this.uploadFile = uploadFile;
+  }
 
   @Override
   public Set<Image> findAllImage(Long page, int size) {
