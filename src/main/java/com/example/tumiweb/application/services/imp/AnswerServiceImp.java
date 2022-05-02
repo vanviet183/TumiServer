@@ -4,7 +4,6 @@ import com.example.tumiweb.application.dai.AnswerRepository;
 import com.example.tumiweb.application.dai.QuestionRepository;
 import com.example.tumiweb.application.mapper.AnswerMapper;
 import com.example.tumiweb.application.services.IAnswerService;
-import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.AnswerDTO;
@@ -60,7 +59,7 @@ public class AnswerServiceImp implements IAnswerService {
   public Answer createNewAnswer(AnswerDTO answerDTO, Long questionId, MultipartFile multipartFile) {
     Question question = findQuestionById(questionId);
 
-    Answer answer = answerMapper.toAnswer(answerDTO);
+    Answer answer = answerMapper.toAnswer(answerDTO, null);
     if (multipartFile != null) {
       answer.setImage(uploadFile.getUrlFromFile(multipartFile));
     }
@@ -78,7 +77,7 @@ public class AnswerServiceImp implements IAnswerService {
       if (multipartFiles[i] != null) {
         answerDTOS.get(i).setImage(uploadFile.getUrlFromFile(multipartFiles[i]));
       }
-      answers.add(answerRepository.save(answerMapper.toAnswer(answerDTOS.get(i))));
+      answers.add(answerRepository.save(answerMapper.toAnswer(answerDTOS.get(i), null)));
     }
 
     return answers;
@@ -96,7 +95,7 @@ public class AnswerServiceImp implements IAnswerService {
       answerDTO.setImage(uploadFile.getUrlFromFile(multipartFile));
     }
 
-    return answerRepository.save(ConvertObject.convertAnswerDTOToAnswer(answer, answerDTO));
+    return answerRepository.save(answerMapper.toAnswer(answerDTO, answer.getId()));
   }
 
   //  @CacheEvict(value = "answer", allEntries = true)

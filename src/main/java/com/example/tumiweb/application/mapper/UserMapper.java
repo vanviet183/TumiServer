@@ -10,6 +10,7 @@ import org.mapstruct.Mappings;
 public interface UserMapper {
 
   @Mappings({
+      @Mapping(target = "id", source = "id"),
       @Mapping(target = "username", source = "userDTO.username"),
       @Mapping(target = "password", source = "userDTO.password"),
       @Mapping(target = "email", source = "userDTO.email"),
@@ -18,6 +19,6 @@ public interface UserMapper {
       @Mapping(target = "birthday", source = "userDTO.birthday"),
       @Mapping(target = "fullName", source = "userDTO.fullName")
   })
-  User toUser(UserDTO userDTO);
+  User toUser(UserDTO userDTO, Long id);
 
 }

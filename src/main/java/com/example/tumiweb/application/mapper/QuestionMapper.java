@@ -10,10 +10,11 @@ import org.mapstruct.Mappings;
 public interface QuestionMapper {
 
   @Mappings({
+      @Mapping(target = "id", source = "id"),
       @Mapping(target = "title", source = "questionDTO.title"),
       @Mapping(target = "seo", source = "questionDTO.seo"),
       @Mapping(target = "avatar", source = "questionDTO.avatar")
   })
-  Question toQuestion(QuestionDTO questionDTO);
+  Question toQuestion(QuestionDTO questionDTO, Long id);
 
 }

@@ -3,7 +3,6 @@ package com.example.tumiweb.application.services.imp;
 import com.example.tumiweb.application.dai.GiftRepository;
 import com.example.tumiweb.application.mapper.GiftMapper;
 import com.example.tumiweb.application.services.IGiftService;
-import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.GiftDTO;
@@ -66,7 +65,7 @@ public class GiftServiceImp implements IGiftService {
     if (giftRepository.findByName(giftDTO.getName()) != null) {
       throw new VsException("Duplicate gift with title: " + giftDTO.getName());
     }
-    Gift gift = giftMapper.toGift(giftDTO);
+    Gift gift = giftMapper.toGift(giftDTO, null);
     if (file != null) {
       gift.setAvatar(uploadFile.getUrlFromFile(file));
     }
@@ -82,7 +81,7 @@ public class GiftServiceImp implements IGiftService {
       giftDTO.setAvatar(uploadFile.getUrlFromFile(avatar));
     }
 
-    return giftRepository.save(ConvertObject.convertGiftDTOToGift(gift, giftDTO));
+    return giftRepository.save(giftMapper.toGift(giftDTO, gift.getId()));
   }
 
   //  @CacheEvict(value = "gift", allEntries = true)

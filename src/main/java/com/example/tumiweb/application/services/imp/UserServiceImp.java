@@ -3,12 +3,10 @@ package com.example.tumiweb.application.services.imp;
 import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
 import com.example.tumiweb.application.constants.EmailConstant;
 import com.example.tumiweb.application.constants.RoleConstant;
-import com.example.tumiweb.application.dai.CourseRepository;
 import com.example.tumiweb.application.dai.UserRepository;
 import com.example.tumiweb.application.mapper.UserMapper;
 import com.example.tumiweb.application.services.ISendMailService;
 import com.example.tumiweb.application.services.IUserService;
-import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.UserDTO;
@@ -31,8 +29,6 @@ public class UserServiceImp implements IUserService {
   private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
   @Autowired
   private UserRepository userRepository;
-  @Autowired
-  private CourseRepository courseRepository;
   @Autowired
   private UploadFile uploadFile;
   @Autowired
@@ -65,6 +61,9 @@ public class UserServiceImp implements IUserService {
     if (user.isEmpty()) {
       throw new VsException("Can not find user by id: " + id);
     }
+    if (user.get().getDeleteFlag()) {
+      throw new VsException("This user was delete");
+    }
     return user.get();
   }
 
@@ -91,7 +90,7 @@ public class UserServiceImp implements IUserService {
   //  @CacheEvict(value = "user", allEntries = true)
   @Override
   public User createNewUser(UserDTO userDTO) {
-    User user = userMapper.toUser(userDTO);
+    User user = userMapper.toUser(userDTO, null);
     if (userRepository.findByUsername(user.getUsername()) != null) {
       throw new VsException("Can not create user because duplicate username: " + user.getUsername());
     }
@@ -111,7 +110,7 @@ public class UserServiceImp implements IUserService {
   @Override
   public User editUserById(Long id, UserDTO userDTO) {
     User user = getUserById(id);
-    return userRepository.save(ConvertObject.convertUserDTOToUser(user, userDTO));
+    return userRepository.save(userMapper.toUser(userDTO, user.getId()));
   }
 
   //  @CacheEvict(value = "user", allEntries = true)

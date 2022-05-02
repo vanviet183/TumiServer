@@ -10,12 +10,13 @@ import org.mapstruct.Mappings;
 public interface CourseMapper {
 
   @Mappings({
+      @Mapping(target = "id", source = "id"),
       @Mapping(target = "name", source = "courseDTO.name"),
       @Mapping(target = "seo", source = "courseDTO.seo"),
       @Mapping(target = "price", source = "courseDTO.price"),
       @Mapping(target = "process", source = "courseDTO.process"),
       @Mapping(target = "description", source = "courseDTO.description")
   })
-  Course toCourse(CourseDTO courseDTO);
+  Course toCourse(CourseDTO courseDTO, Long id);
 
 }

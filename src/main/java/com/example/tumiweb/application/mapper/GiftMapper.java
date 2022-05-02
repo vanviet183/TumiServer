@@ -10,10 +10,11 @@ import org.mapstruct.Mappings;
 public interface GiftMapper {
 
   @Mappings({
+      @Mapping(target = "id", source = "id"),
       @Mapping(target = "name", source = "giftDTO.name"),
       @Mapping(target = "avatar", source = "giftDTO.avatar"),
       @Mapping(target = "mark", source = "giftDTO.mark"),
   })
-  Gift toGift(GiftDTO giftDTO);
+  Gift toGift(GiftDTO giftDTO, Long id);
 
 }

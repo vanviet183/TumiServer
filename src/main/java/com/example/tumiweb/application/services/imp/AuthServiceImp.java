@@ -90,7 +90,7 @@ public class AuthServiceImp implements IAuthService {
     if (oldUser != null) {
       throw new VsException("Username has already exists");
     }
-    User user = userMapper.toUser(userDTO);
+    User user = userMapper.toUser(userDTO, null);
     user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
     Role role = roleService.getRoleByName(RoleConstant.STUDENT_NAME);

@@ -4,7 +4,6 @@ import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
 import com.example.tumiweb.application.dai.*;
 import com.example.tumiweb.application.mapper.CourseMapper;
 import com.example.tumiweb.application.services.ICourseService;
-import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.CourseDTO;
@@ -55,7 +54,7 @@ public class CourseServiceImp implements ICourseService {
       throw new VsException("Can not find category by id: " + categoryId);
     }
 
-    Course course = courseMapper.toCourse(courseDTO);
+    Course course = courseMapper.toCourse(courseDTO, null);
     if (multipartFile != null) {
       course.setAvatar(uploadFile.getUrlFromFile(multipartFile));
     }
@@ -104,7 +103,7 @@ public class CourseServiceImp implements ICourseService {
       course.setAvatar(uploadFile.getUrlFromFile(multipartFile));
     }
 
-    return courseRepository.save(ConvertObject.convertCourseDTOToCourse(course, courseDTO));
+    return courseRepository.save(courseMapper.toCourse(courseDTO, course.getId()));
   }
 
   //  @CacheEvict(value = "course", allEntries = true)

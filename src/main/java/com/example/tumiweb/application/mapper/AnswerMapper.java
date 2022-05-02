@@ -10,10 +10,11 @@ import org.mapstruct.Mappings;
 public interface AnswerMapper {
 
   @Mappings({
+      @Mapping(target = "id", source = "id"),
       @Mapping(target = "title", source = "answerDTO.title"),
       @Mapping(target = "image", source = "answerDTO.image"),
       @Mapping(target = "isTrue", source = "answerDTO.isTrue")
   })
-  Answer toAnswer(AnswerDTO answerDTO);
+  Answer toAnswer(AnswerDTO answerDTO, Long id);
 
 }

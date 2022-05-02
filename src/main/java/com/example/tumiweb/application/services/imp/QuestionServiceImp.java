@@ -5,7 +5,6 @@ import com.example.tumiweb.application.dai.ChapterRepository;
 import com.example.tumiweb.application.dai.QuestionRepository;
 import com.example.tumiweb.application.mapper.QuestionMapper;
 import com.example.tumiweb.application.services.IQuestionService;
-import com.example.tumiweb.application.utils.ConvertObject;
 import com.example.tumiweb.application.utils.UploadFile;
 import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.QuestionDTO;
@@ -16,15 +15,12 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImp implements IQuestionService {
@@ -47,7 +43,7 @@ public class QuestionServiceImp implements IQuestionService {
     if (chapterOptional.isEmpty()) {
       throw new VsException("Can not find chapter by id: " + chapterId);
     }
-    if(chapterOptional.get().getDeleteFlag()) {
+    if (chapterOptional.get().getDeleteFlag()) {
       throw new VsException("This chapter was delete");
     }
     List<Question> questions = questionRepository.findAllByChapter_IdAndDeleteFlagAndActiveFlag(chapterId, false, true);
@@ -66,7 +62,7 @@ public class QuestionServiceImp implements IQuestionService {
     if (question.isEmpty()) {
       throw new VsException("Can not find question by id: " + id);
     }
-    if(question.get().getDeleteFlag()) {
+    if (question.get().getDeleteFlag()) {
       throw new VsException("This question was delete");
     }
     return question.get();
@@ -79,13 +75,13 @@ public class QuestionServiceImp implements IQuestionService {
     if (optional.isEmpty()) {
       throw new VsException("Can not find chapter by id: " + chapterId);
     }
-    if(optional.get().getDeleteFlag()) {
+    if (optional.get().getDeleteFlag()) {
       throw new VsException("Chapter was delete. Chapter id: " + chapterId);
     }
     Chapter chapter = optional.get();
 
     questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
-    Question question = questionMapper.toQuestion(questionDTO);
+    Question question = questionMapper.toQuestion(questionDTO, null);
     question.setChapter(chapter);
 
     if (multipartFile != null) {
@@ -105,7 +101,7 @@ public class QuestionServiceImp implements IQuestionService {
     if (optional.isEmpty()) {
       throw new VsException("Can not find chapter by id: " + question.getChapter().getId());
     }
-    if(optional.get().getDeleteFlag()) {
+    if (optional.get().getDeleteFlag()) {
       throw new VsException("Chapter was delete. Chapter id: " + questionId);
     }
     Chapter chapter = optional.get();
@@ -118,7 +114,7 @@ public class QuestionServiceImp implements IQuestionService {
     }
     questionDTO.setSeo(slugify.slugify(questionDTO.getTitle()));
 
-    question = questionRepository.save(ConvertObject.convertQuestionDTOToQuestion(question, questionDTO));
+    question = questionRepository.save(questionMapper.toQuestion(questionDTO, question.getId()));
     chapterRepository.save(chapter);
 
     return questionRepository.save(question);
