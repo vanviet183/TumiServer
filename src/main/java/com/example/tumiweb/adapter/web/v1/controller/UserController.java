@@ -12,6 +12,7 @@ import com.example.tumiweb.domain.dto.UserDTO;
 import com.example.tumiweb.domain.entity.User;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +32,7 @@ public class UserController {
     this.backupService = backupService;
   }
 
-  @ApiOperation(value = "Xem danh sách user", response = Set.class)
+  @ApiOperation(value = "Xem danh sách user", response = ResponseEntity.class)
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "Thành công"),
       @ApiResponse(code = 401, message = "Chưa xác thực"),
@@ -50,7 +51,7 @@ public class UserController {
 
   @GetMapping(UrlConstant.User.DATA_USER_ID)
 //    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
-  @ApiOperation(value = "Tìm một user với ID")
+  @ApiOperation(value = "Tìm một user với ID", response = ResponseEntity.class)
   public ResponseEntity<?> getUserById(
       @ApiParam(value = "Id của user cần tìm", required = true)
       @PathVariable("id") Long id
@@ -58,14 +59,15 @@ public class UserController {
     return VsResponseUtil.ok(userService.getUserById(id));
   }
 
-//    @PostMapping("")
-//    public ResponseEntity<?> createNewUser(@RequestBody UserDTO userDTO) {
-//        return VsResponseUtil.ok(userService.createNewUser(userDTO));
-//    }
+  @PostMapping(UrlConstant.User.DATA_USER)
+  @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+  public ResponseEntity<?> createNewUser(@RequestBody UserDTO userDTO) {
+    return VsResponseUtil.ok(userService.createNewUser(userDTO));
+  }
 
   @PatchMapping(UrlConstant.User.DATA_USER_ID)
 //    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
-  @ApiOperation(value = "Edit thông tin của một user")
+  @ApiOperation(value = "Edit thông tin của một user", response = ResponseEntity.class)
   public ResponseEntity<?> editUserById(
       @ApiParam(value = "Id cuả user cần sửa thông tin", required = true)
       @PathVariable("id") Long id,
@@ -77,7 +79,7 @@ public class UserController {
 
   @DeleteMapping(UrlConstant.User.DATA_USER_ID)
 //    @PreAuthorize("hasRole('ADMIN')")
-  @ApiOperation(value = "Delete user với id")
+  @ApiOperation(value = "Delete user với id", response = ResponseEntity.class)
   public ResponseEntity<?> deleteUserById(
       @ApiParam(value = "Id của user cần xóa", required = true)
       @PathVariable("id") Long id
@@ -87,7 +89,7 @@ public class UserController {
 
   @PostMapping(UrlConstant.User.DATA_USER_STATUS)
 //    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
-  @ApiOperation(value = "Thay đổi trạng thái của user với id")
+  @ApiOperation(value = "Thay đổi trạng thái của user với id", response = ResponseEntity.class)
   public ResponseEntity<?> changeStatusById(
       @ApiParam(value = "Id của user cần thay đổi trạng thái", required = true)
       @PathVariable("id") Long id
@@ -96,7 +98,7 @@ public class UserController {
   }
 
   @PostMapping(UrlConstant.User.DATA_USER_AVATAR)
-  @ApiOperation(value = "Thay đổi avatar của user")
+  @ApiOperation(value = "Thay đổi avatar của user", response = ResponseEntity.class)
   public ResponseEntity<?> changeAvatarById(@ApiParam(value = "Id của user cần thay đổi avatar", required = true)
                                             @PathVariable("id") Long id,
                                             @ApiParam(value = "File ảnh truyền lên")
@@ -110,6 +112,7 @@ public class UserController {
   }
 
   // Excel file
+  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping(UrlConstant.User.DATA_USER_EXPORT)
   public ResponseEntity<?> exportToExcel(HttpServletResponse res) {
     if (!backupService.backupUser(res)) {
@@ -121,6 +124,7 @@ public class UserController {
   }
 
   @PostMapping(UrlConstant.User.DATA_USER_IMPORT)
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<?> importExcelFile(@RequestParam(name = "file") MultipartFile file) throws IOException {
     List<User> users = ReadExcelFile.readFileUser(UploadFile.convertMultipartToFile(file));
 

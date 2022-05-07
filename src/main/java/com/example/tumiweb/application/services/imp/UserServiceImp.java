@@ -61,7 +61,7 @@ public class UserServiceImp implements IUserService {
   public User getUserById(Long id) {
     Optional<User> user = userRepository.findById(id);
     if (user.isEmpty()) {
-      throw new VsException("Can not find user by id: " + id);
+      throw new VsException("exception.general", "invalid.general.required");
     }
     if (user.get().getDeleteFlag()) {
       throw new VsException("This user was delete");
