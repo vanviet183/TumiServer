@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.excel.ReadExcelFile;
 import com.example.tumiweb.application.services.IQuestionService;
@@ -32,7 +32,7 @@ public class QuestionController {
   @GetMapping(UrlConstant.Question.DATA_QUESTION_CHAPTER_ID)
   public ResponseEntity<?> getAllQuestionByChapterId(@PathVariable("chapterId") Long chapterId,
                                                      @RequestParam(name = "page", required = false) Long page) {
-    return VsResponseUtil.ok(questionService.findAllQuestionByChapterId(chapterId, page, EmailConstant.SIZE_OFF_PAGE));
+    return VsResponseUtil.ok(questionService.findAllQuestionByChapterId(chapterId, page, CommonConstant.SIZE_OFF_PAGE));
   }
 
   @GetMapping(UrlConstant.Question.DATA_QUESTION_DETAIL)

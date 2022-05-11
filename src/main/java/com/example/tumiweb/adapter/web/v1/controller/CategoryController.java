@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.ICategoryService;
 import com.example.tumiweb.domain.dto.CategoryDTO;
@@ -22,7 +22,7 @@ public class CategoryController {
   public ResponseEntity<?> getAllCategories(@RequestParam(name = "page", required = false) Long page,
                                             @RequestParam(name = "status", required = false) boolean status,
                                             @RequestParam(name = "both", required = false) boolean both) {
-    return VsResponseUtil.ok(categoryService.findAllCategory(page, EmailConstant.SIZE_OFF_PAGE, status, both));
+    return VsResponseUtil.ok(categoryService.findAllCategory(page, CommonConstant.SIZE_OFF_PAGE, status, both));
   }
 
   @PostMapping(UrlConstant.Category.DATA_CATEGORY)

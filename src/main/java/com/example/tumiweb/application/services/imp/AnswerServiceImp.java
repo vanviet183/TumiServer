@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.AnswerRepository;
 import com.example.tumiweb.application.dai.QuestionRepository;
 import com.example.tumiweb.application.mapper.AnswerMapper;
@@ -9,6 +11,7 @@ import com.example.tumiweb.config.exception.VsException;
 import com.example.tumiweb.domain.dto.AnswerDTO;
 import com.example.tumiweb.domain.entity.Answer;
 import com.example.tumiweb.domain.entity.Question;
+import org.apache.commons.collections4.CollectionUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +38,8 @@ public class AnswerServiceImp implements IAnswerService {
   @Override
   public List<Answer> findAllAnswerByQuestionId(Long questionId) {
     List<Answer> answers = answerRepository.findAllByQuestion_IdAndActiveFlagAndDeleteFlag(questionId, true, false);
-    if (answers.isEmpty()) {
-      throw new VsException("Answer list is empty");
+    if (CollectionUtils.isEmpty(answers)) {
+      throw new VsException(UserMessageConstant.ERR_NO_DATA_SELECT_RESULT, DevMessageConstant.Common.NO_DATA_SELECTED);
     }
     return answers;
   }
@@ -46,10 +49,12 @@ public class AnswerServiceImp implements IAnswerService {
   public Answer findAnswerById(Long id) {
     Optional<Answer> answer = answerRepository.findById(id);
     if (answer.isEmpty()) {
-      throw new VsException("Can not find answer by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "answer", id));
     }
     if (answer.get().getDeleteFlag()) {
-      throw new VsException("This answer was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     return answer.get();
   }
@@ -120,13 +125,16 @@ public class AnswerServiceImp implements IAnswerService {
   private Question findQuestionById(Long id) {
     Optional<Question> question = questionRepository.findById(id);
     if (question.isEmpty()) {
-      throw new VsException("Can not find question by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "question", id));
     }
     if (question.get().getDeleteFlag()) {
-      throw new VsException("This question was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     if (question.get().getAnswers().size() >= 4) {
-      throw new VsException("This question is full answer");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          DevMessageConstant.Answer.FULL_ANSWER_FOR_THIS_QUESTION);
     }
     return question.get();
   }

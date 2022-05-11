@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.AnswerRepository;
 import com.example.tumiweb.application.dai.ChapterRepository;
 import com.example.tumiweb.application.dai.QuestionRepository;
@@ -44,10 +46,12 @@ public class QuestionServiceImp implements IQuestionService {
   public List<Question> findAllQuestionByChapterId(Long chapterId, Long page, int size) {
     Optional<Chapter> chapterOptional = chapterRepository.findById(chapterId);
     if (chapterOptional.isEmpty()) {
-      throw new VsException("Can not find chapter by id: " + chapterId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "chapter", chapterId));
     }
     if (chapterOptional.get().getDeleteFlag()) {
-      throw new VsException("This chapter was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DISABLE, chapterId));
     }
     List<Question> questions = questionRepository.findAllByChapter_IdAndDeleteFlagAndActiveFlag(chapterId, false, true);
     if (page != null) {
@@ -63,10 +67,12 @@ public class QuestionServiceImp implements IQuestionService {
   public Question findQuestionById(Long id) {
     Optional<Question> question = questionRepository.findById(id);
     if (question.isEmpty()) {
-      throw new VsException("Can not find question by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "question", id));
     }
     if (question.get().getDeleteFlag()) {
-      throw new VsException("This question was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DISABLE, id));
     }
     return question.get();
   }
@@ -76,10 +82,12 @@ public class QuestionServiceImp implements IQuestionService {
   public Question createNewQuestion(QuestionDTO questionDTO, Long chapterId, MultipartFile multipartFile) {
     Optional<Chapter> optional = chapterRepository.findById(chapterId);
     if (optional.isEmpty()) {
-      throw new VsException("Can not find chapter by id: " + chapterId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "chapter", chapterId));
     }
     if (optional.get().getDeleteFlag()) {
-      throw new VsException("Chapter was delete. Chapter id: " + chapterId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, chapterId));
     }
     Chapter chapter = optional.get();
 
@@ -102,10 +110,12 @@ public class QuestionServiceImp implements IQuestionService {
     Question question = findQuestionById(questionId);
     Optional<Chapter> optional = chapterRepository.findById(question.getChapter().getId());
     if (optional.isEmpty()) {
-      throw new VsException("Can not find chapter by id: " + question.getChapter().getId());
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "chapter", question.getChapter().getId()));
     }
     if (optional.get().getDeleteFlag()) {
-      throw new VsException("Chapter was delete. Chapter id: " + questionId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, questionId));
     }
     Chapter chapter = optional.get();
 

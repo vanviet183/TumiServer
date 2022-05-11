@@ -1,6 +1,8 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.CourseRepository;
 import com.example.tumiweb.application.dai.UserRepository;
 import com.example.tumiweb.application.services.IUserCourseService;
@@ -72,7 +74,8 @@ public class UserCourseServiceImp implements IUserCourseService {
   private User findUserById(Long id) {
     Optional<User> userOptional = userRepository.findById(id);
     if (userOptional.isEmpty()) {
-      throw new VsException("Can not find user by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "user", id));
     }
     return userOptional.get();
   }
@@ -80,7 +83,8 @@ public class UserCourseServiceImp implements IUserCourseService {
   private Course findCourseById(Long id) {
     Optional<Course> courseOptional = courseRepository.findById(id);
     if (courseOptional.isEmpty()) {
-      throw new VsException("Can not find course by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "course", id));
     }
     return courseOptional.get();
   }

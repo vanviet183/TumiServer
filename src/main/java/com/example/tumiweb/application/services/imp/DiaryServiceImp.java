@@ -1,6 +1,8 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.dai.DiaryRepository;
+import com.example.tumiweb.application.input.common.GetAllDataInput;
+import com.example.tumiweb.application.output.common.GetAllDataOutput;
 import com.example.tumiweb.application.services.IDiaryService;
 import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.application.utils.DateTimeUtil;
@@ -118,10 +120,12 @@ public class DiaryServiceImp implements IDiaryService {
 
     Set<User> userSet = diaries.stream().map(Diary::getUser).collect(Collectors.toSet());
 
-    List<User> users = userService.getAllUsers(null, 0, false, false);
+    GetAllDataInput input = new GetAllDataInput(null, false, false, 0);
+
+    GetAllDataOutput<User> users = userService.getAllUsers(input);
 
     Set<User> userDiary = new HashSet<>();
-    for (User user : users) {
+    for (User user : users.getItems()) {
       if (!isContainUser(userSet, user)) {
         userDiary.add(user);
       }

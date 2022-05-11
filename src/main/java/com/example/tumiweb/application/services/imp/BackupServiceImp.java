@@ -1,6 +1,8 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.application.excel.*;
+import com.example.tumiweb.application.input.common.GetAllDataInput;
+import com.example.tumiweb.application.output.common.GetAllDataOutput;
 import com.example.tumiweb.application.services.*;
 import com.example.tumiweb.domain.entity.*;
 import org.springframework.stereotype.Service;
@@ -49,9 +51,10 @@ public class BackupServiceImp implements IBackupService {
       }
 
       //data
-      List<User> users = new ArrayList<>(userService.getAllUsers(null, 0, false, false));
+      GetAllDataInput input = new GetAllDataInput(null, false, false, 0);
+      GetAllDataOutput<User> users = userService.getAllUsers(input);
 
-      WriteExcelFileUser userExcelService = new WriteExcelFileUser(users);
+      WriteExcelFileUser userExcelService = new WriteExcelFileUser(users.getItems());
       userExcelService.export(res);
 
       return true;

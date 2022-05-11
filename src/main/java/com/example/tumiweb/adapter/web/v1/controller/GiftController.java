@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.IGiftService;
 import com.example.tumiweb.domain.dto.GiftDTO;
@@ -23,7 +23,7 @@ public class GiftController {
   public ResponseEntity<?> getAllGifts(@RequestParam(name = "page", required = false) Long page,
                                        @RequestParam(name = "status", required = false) boolean status,
                                        @RequestParam(name = "both", required = false) boolean bool) {
-    return VsResponseUtil.ok(giftService.getAllGift(page, EmailConstant.SIZE_OFF_PAGE, status));
+    return VsResponseUtil.ok(giftService.getAllGift(page, CommonConstant.SIZE_OFF_PAGE, status));
   }
 
   @GetMapping(UrlConstant.Gift.DATA_GIFT_ID)

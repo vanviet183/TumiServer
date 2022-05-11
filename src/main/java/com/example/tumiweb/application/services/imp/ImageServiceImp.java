@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.ImageRepository;
 import com.example.tumiweb.application.mapper.ImageMapper;
 import com.example.tumiweb.application.services.IImageService;
@@ -39,7 +41,8 @@ public class ImageServiceImp implements IImageService {
   public Image findImageById(Long id) {
     Optional<Image> image = imageRepository.findById(id);
     if (image.isEmpty()) {
-      throw new VsException("Can not find image by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "image", id));
     }
     return image.get();
   }
@@ -47,10 +50,11 @@ public class ImageServiceImp implements IImageService {
   @Override
   public Image createNewImage(ImageDTO imageDTO, MultipartFile multipartFile) {
     if (multipartFile.isEmpty()) {
-      throw new VsException("File image is empty, can not create Image");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL, DevMessageConstant.Common.FILE_IS_EMPTY);
     }
     if (imageRepository.findByTitle(imageDTO.getTitle()) != null) {
-      throw new VsException("Duplicate image by title: " + imageDTO.getTitle());
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DUPLICATE_NAME, imageDTO.getTitle()));
     }
     Image image = imageMapper.toImage(imageDTO);
     image.setPath(uploadFile.getUrlFromFile(multipartFile));
@@ -61,7 +65,8 @@ public class ImageServiceImp implements IImageService {
   public Image editImageById(Long id, ImageDTO imageDTO, MultipartFile multipartFile) {
     Image image = findImageById(id);
     if (image == null) {
-      throw new VsException("Can not find image by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "image", id));
     }
     image.setTitle(imageDTO.getTitle());
     if (!multipartFile.isEmpty()) {
@@ -74,7 +79,8 @@ public class ImageServiceImp implements IImageService {
   public Image deleteImageById(Long id) {
     Image image = findImageById(id);
     if (image == null) {
-      throw new VsException("Can not find image by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "image", id));
     }
     uploadFile.removeImageFromUrl(image.getPath());
     imageRepository.delete(image);

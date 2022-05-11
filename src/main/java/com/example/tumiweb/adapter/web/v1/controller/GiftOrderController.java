@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.IGiftOrderService;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class GiftOrderController {
   @GetMapping(UrlConstant.GiftOrder.DATA_GIFT_ORDER)
   public ResponseEntity<?> getAllGiftOder(@RequestParam(name = "page", required = false) Long page,
                                           @RequestParam(name = "status", required = false) boolean status) {
-    return VsResponseUtil.ok(giftOrderService.getAllGiftOrder(page, EmailConstant.SIZE_OFF_PAGE, status));
+    return VsResponseUtil.ok(giftOrderService.getAllGiftOrder(page, CommonConstant.SIZE_OFF_PAGE, status));
   }
 
   @GetMapping(UrlConstant.GiftOrder.DATA_GIFT_ORDER_ID)

@@ -20,6 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   List<User> findAllByUsernameContainingOrEmailContainingOrPhoneContaining(String key, String key2, String key3);
 
-  List<User> findAllByBirthday(String birthday);
+  List<User> findAllByBirthdayAndDeleteFlagAndActiveFlag(String birthday, boolean deleteFlag, boolean activeFlag);
 
 }

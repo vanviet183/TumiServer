@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.RoleRepository;
 import com.example.tumiweb.application.mapper.RoleMapper;
 import com.example.tumiweb.application.services.IRoleService;
@@ -27,13 +29,16 @@ public class RoleServiceImp implements IRoleService {
   public Role findRoleById(Long id) {
     Optional<Role> role = roleRepository.findById(id);
     if (role.isEmpty()) {
-      throw new VsException("Can not find role by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "role", id));
     }
     if (role.get().getDeleteFlag()) {
-      throw new VsException("This role was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     if (!role.get().getActiveFlag()) {
-      throw new VsException("This role was disable");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DISABLE, id));
     }
     return role.get();
   }
@@ -42,7 +47,7 @@ public class RoleServiceImp implements IRoleService {
   public Set<Role> getAllRole() {
     List<Role> roles = roleRepository.findAll();
     if (roles.isEmpty()) {
-      throw new VsException("Role list is empty");
+      throw new VsException(UserMessageConstant.ERR_NO_DATA_SELECT_RESULT, DevMessageConstant.Common.NO_DATA_SELECTED);
     }
     return new HashSet<>(roles);
   }
@@ -51,7 +56,8 @@ public class RoleServiceImp implements IRoleService {
   public Role getRoleByName(String name) {
     Role role = roleRepository.findByName(name);
     if (role == null) {
-      throw new VsException("Can not find role by name: " + name);
+      throw new VsException(UserMessageConstant.ERR_NO_DATA_SELECT_RESULT,
+          String.format(DevMessageConstant.Role.NOT_FOUND_ROLE_BY_NAME, name));
     }
     return role;
   }
@@ -60,7 +66,8 @@ public class RoleServiceImp implements IRoleService {
   public Role createRole(RoleDTO roleDTO) {
     Role role = roleRepository.findByName(roleDTO.getName());
     if (role != null) {
-      throw new VsException("This role is contain");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DUPLICATE_NAME, role.getName()));
     }
     return roleRepository.save(roleMapper.toRole(roleDTO));
   }

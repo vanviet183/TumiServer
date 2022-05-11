@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.IChapterService;
 import com.example.tumiweb.domain.dto.ChapterDTO;
@@ -23,7 +23,7 @@ public class ChapterController {
                                                    @RequestParam(name = "page", required = false) Long page,
                                                    @RequestParam(name = "status", required = false) boolean status,
                                                    @RequestParam(name = "both", required = false) boolean both) {
-    return VsResponseUtil.ok(chapterService.findAllChapterByCourseId(id, page, EmailConstant.SIZE_OFF_PAGE, status,
+    return VsResponseUtil.ok(chapterService.findAllChapterByCourseId(id, page, CommonConstant.SIZE_OFF_PAGE, status,
         both));
   }
 

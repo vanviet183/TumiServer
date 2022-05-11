@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.GiftRepository;
 import com.example.tumiweb.application.mapper.GiftMapper;
 import com.example.tumiweb.application.services.IGiftService;
@@ -50,13 +52,16 @@ public class GiftServiceImp implements IGiftService {
   public Gift findGiftById(Long id) {
     Optional<Gift> gift = giftRepository.findById(id);
     if (gift.isEmpty()) {
-      throw new VsException("Can not find gift by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "gift", id));
     }
     if (gift.get().getDeleteFlag()) {
-      throw new VsException("This gift was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     if (!gift.get().getActiveFlag()) {
-      throw new VsException("This gift was disable");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DISABLE, id));
     }
     return gift.get();
   }
@@ -65,7 +70,8 @@ public class GiftServiceImp implements IGiftService {
   @Override
   public Gift createNewGift(GiftDTO giftDTO, MultipartFile file) {
     if (giftRepository.findByName(giftDTO.getName()) != null) {
-      throw new VsException("Duplicate gift with title: " + giftDTO.getName());
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DUPLICATE_NAME, giftDTO.getName()));
     }
     Gift gift = giftMapper.toGift(giftDTO, null);
     if (file != null) {

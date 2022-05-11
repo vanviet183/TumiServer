@@ -1,6 +1,8 @@
 package com.example.tumiweb.application.services;
 
 import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
+import com.example.tumiweb.application.input.common.GetAllDataInput;
+import com.example.tumiweb.application.output.common.GetAllDataOutput;
 import com.example.tumiweb.domain.dto.UserDTO;
 import com.example.tumiweb.domain.entity.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,7 +12,7 @@ import java.util.List;
 
 public interface IUserService {
 
-  List<User> getAllUsers(Long page, int size, boolean activeFlag, boolean both);
+  GetAllDataOutput getAllUsers(GetAllDataInput input);
 
   User getUserById(Long id);
 

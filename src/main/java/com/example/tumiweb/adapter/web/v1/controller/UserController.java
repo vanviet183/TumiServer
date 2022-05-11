@@ -2,9 +2,12 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.adapter.web.v1.transfer.parameter.common.GetAllDataParameter;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.excel.ReadExcelFile;
+import com.example.tumiweb.application.input.common.GetAllDataInput;
+import com.example.tumiweb.application.output.common.GetAllDataOutput;
 import com.example.tumiweb.application.services.IUserService;
 import com.example.tumiweb.application.services.imp.BackupServiceImp;
 import com.example.tumiweb.application.utils.UploadFile;
@@ -17,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @RestApiV1
 @Api(value = "User APIs")
@@ -41,12 +44,13 @@ public class UserController {
   })
   @GetMapping(UrlConstant.User.DATA_USER)
 //    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
-  public ResponseEntity<?> getAllUser(
-      @RequestParam(name = "page", required = false) Long page,
-      @RequestParam(name = "status", required = false) boolean status,
-      @RequestParam(name = "both", required = false) boolean both
-  ) {
-    return VsResponseUtil.ok(userService.getAllUsers(page, EmailConstant.SIZE_OFF_PAGE, status, both));
+  public ResponseEntity<?> getAllUser(@Valid GetAllDataParameter parameter) {
+    GetAllDataInput input = new GetAllDataInput(parameter.getPage(), parameter.getActiveFlag(), parameter.getBoth(),
+        CommonConstant.SIZE_OFF_PAGE);
+
+    GetAllDataOutput<?> output = userService.getAllUsers(input);
+
+    return VsResponseUtil.ok(output);
   }
 
   @GetMapping(UrlConstant.User.DATA_USER_ID)

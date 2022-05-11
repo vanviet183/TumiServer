@@ -1,6 +1,8 @@
 package com.example.tumiweb.application.services.imp;
 
 import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.*;
 import com.example.tumiweb.application.mapper.CourseMapper;
 import com.example.tumiweb.application.services.ICourseService;
@@ -50,12 +52,14 @@ public class CourseServiceImp implements ICourseService {
   @Override
   public Course createNewCourse(CourseDTO courseDTO, MultipartFile multipartFile, Long categoryId) {
     if (courseRepository.findByName(courseDTO.getName()) != null) {
-      throw new VsException("This name off course is contain");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DUPLICATE_NAME, courseDTO.getName()));
     }
 
     Optional<Category> category = categoryRepository.findById(categoryId);
     if (category.isEmpty()) {
-      throw new VsException("Can not find category by id: " + categoryId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "category", categoryId));
     }
 
     Course course = courseMapper.toCourse(courseDTO, null);
@@ -74,7 +78,8 @@ public class CourseServiceImp implements ICourseService {
   public Course findCourseById(Long id) {
     Optional<Course> course = courseRepository.findById(id);
     if (course.isEmpty()) {
-      throw new VsException("Can not find course by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "course", id));
     }
     return course.get();
   }
@@ -147,7 +152,8 @@ public class CourseServiceImp implements ICourseService {
     Optional<Category> category = categoryRepository.findById(categoryId);
 
     if (category.isEmpty()) {
-      throw new VsException("Can not find category by id: " + categoryId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "category", categoryId));
     }
 
     if (course.getCategory() != null) {

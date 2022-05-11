@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.CategoryRepository;
 import com.example.tumiweb.application.mapper.CategoryMapper;
 import com.example.tumiweb.application.services.ICategoryService;
@@ -52,10 +54,12 @@ public class CategoryServiceImp implements ICategoryService {
   public Category findCategoryById(Long id) {
     Optional<Category> category = categoryRepository.findById(id);
     if (category.isEmpty()) {
-      throw new VsException("Can not find category by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "category", id));
     }
     if (category.get().getDeleteFlag()) {
-      throw new VsException("This category was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     return category.get();
   }
@@ -65,7 +69,8 @@ public class CategoryServiceImp implements ICategoryService {
   public Category createNewCategory(CategoryDTO categoryDTO) {
     Category category = categoryRepository.findByName(categoryDTO.getName());
     if (category != null) {
-      throw new VsException("Duplicate category by name: " + categoryDTO.getName());
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DUPLICATE_NAME, categoryDTO.getName()));
     }
 
     Category newCategory = categoryMapper.toCategory(categoryDTO);

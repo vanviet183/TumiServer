@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.IHelpService;
 import com.example.tumiweb.domain.dto.HelpDTO;
@@ -20,7 +20,7 @@ public class HelpController {
 
   @RequestMapping(UrlConstant.Help.DATA_HELP)
   public ResponseEntity<?> getAllHelp(@RequestParam(name = "page", required = false) Long page) {
-    return VsResponseUtil.ok(helpService.getAllHelp(page, EmailConstant.SIZE_OFF_PAGE));
+    return VsResponseUtil.ok(helpService.getAllHelp(page, CommonConstant.SIZE_OFF_PAGE));
   }
 
   @GetMapping(UrlConstant.Help.DATA_HELP_ID)

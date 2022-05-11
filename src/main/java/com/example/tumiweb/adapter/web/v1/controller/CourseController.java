@@ -3,7 +3,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.ICourseService;
 import com.example.tumiweb.domain.dto.CourseDTO;
@@ -24,7 +24,7 @@ public class CourseController {
   public ResponseEntity<?> getAllCourse(@RequestParam(name = "page", required = false) Long page,
                                         @RequestParam(name = "status", required = false) boolean status,
                                         @RequestParam(name = "both", required = false) boolean both) {
-    return VsResponseUtil.ok(courseService.findAllCourse(page, EmailConstant.SIZE_OFF_PAGE, status, both));
+    return VsResponseUtil.ok(courseService.findAllCourse(page, CommonConstant.SIZE_OFF_PAGE, status, both));
   }
 
   @GetMapping(UrlConstant.Course.DATA_COURSE_ID)

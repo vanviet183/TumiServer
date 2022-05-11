@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 
 public class CommonConstant {
 
+  public static int SIZE_OFF_PAGE = 10;
+
   public static final String FORMAT_DATE_PATTERN = "dd/MM/yyyy";
   public static final String FORMAT_DATE_PATTERN_DETAIL = "dd/MM/yyyy HH:mm:ss";
   public static final SimpleDateFormat FORMAT_DATE = new SimpleDateFormat(FORMAT_DATE_PATTERN);
@@ -24,5 +26,8 @@ public class CommonConstant {
   public static String PATH_QUESTION_FILE = "data-backup/question.xlsx";
   public static String PATH_ANSWER_FILE = "data-backup/answer.xlsx";
   public static String PATH_CATEGORY_FILE = "data-backup/categories.xlsx";
+
+//  public static Long ZERO_VALUE = 0L;
+  public static Integer ZERO_VALUE = 0;
 
 }

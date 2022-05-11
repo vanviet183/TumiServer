@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.GiftOrderRepository;
 import com.example.tumiweb.application.dai.GiftRepository;
 import com.example.tumiweb.application.dai.NotificationRepository;
@@ -85,7 +87,8 @@ public class GiftOrderServiceImp implements IGiftOrderService {
 
       return giftOrderRepository.save(giftOrder);
     }
-    throw new VsException("Can not create gift order");
+    throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+        DevMessageConstant.GiftOrder.CAN_NOT_CREATE_GIFT_ORDER);
   }
 
   //  @CacheEvict(value = "gift-order", allEntries = true)
@@ -113,10 +116,12 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   public GiftOrder findGiftOrderById(Long id) {
     Optional<GiftOrder> giftOrder = giftOrderRepository.findById(id);
     if (giftOrder.isEmpty()) {
-      throw new VsException("Can not find giftOrder by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "giftOrder", id));
     }
     if (giftOrder.get().getDeleteFlag()) {
-      throw new VsException("This giftOrder was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     return giftOrder.get();
   }
@@ -166,13 +171,16 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   private Gift findGiftById(Long id) {
     Optional<Gift> gift = giftRepository.findById(id);
     if (gift.isEmpty()) {
-      throw new VsException("Can not find gift by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "gift", id));
     }
     if (gift.get().getDeleteFlag()) {
-      throw new VsException("This gift was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     if (!gift.get().getActiveFlag()) {
-      throw new VsException("This gift was disable");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DISABLE, id));
     }
 
     return gift.get();
@@ -181,13 +189,16 @@ public class GiftOrderServiceImp implements IGiftOrderService {
   private User getUserById(Long id) {
     Optional<User> user = userRepository.findById(id);
     if (user.isEmpty()) {
-      throw new VsException("Can not find user by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "user", id));
     }
     if (user.get().getDeleteFlag()) {
-      throw new VsException("This user was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     if (!user.get().getActiveFlag()) {
-      throw new VsException("This user was disable");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DISABLE, id));
     }
     return user.get();
   }

@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.NotificationRepository;
 import com.example.tumiweb.application.mapper.NotificationMapper;
 import com.example.tumiweb.application.services.INotificationService;
@@ -32,10 +34,12 @@ public class NotificationServiceImp implements INotificationService {
   public Notification findNotificationById(Long id) {
     Optional<Notification> notification = notificationRepository.findById(id);
     if (notification.isEmpty()) {
-      throw new VsException("Can not find notification by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "notification", id));
     }
     if (notification.get().getDeleteFlag()) {
-      throw new VsException("This notification was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     return notification.get();
   }
@@ -62,7 +66,8 @@ public class NotificationServiceImp implements INotificationService {
   public Notification createNotification(Long userId, NotificationDTO notificationDTO) {
     User user = userService.getUserById(userId);
     if (user == null) {
-      throw new VsException("Can not find user by id: " + userId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "user", userId));
     }
     Notification notification = notificationMapper.toNotification(notificationDTO);
     notification.setUser(user);

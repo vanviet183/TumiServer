@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.AnswerRepository;
 import com.example.tumiweb.application.dai.ChapterRepository;
 import com.example.tumiweb.application.dai.CourseRepository;
@@ -58,7 +60,8 @@ public class ChapterServiceImp implements IChapterService {
   public List<Chapter> findAllChapterByCourseId(Long courseId, Long page, int size, boolean deleteFlag, boolean both) {
     Optional<Course> courseOptional = courseRepository.findById(courseId);
     if (courseOptional.isEmpty()) {
-      throw new VsException("Can not find course by id: " + courseId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "course", courseId));
     }
 
     List<Chapter> chapters = chapterRepository.findAllByCourse_IdAndActiveFlag(courseId, true);
@@ -80,10 +83,12 @@ public class ChapterServiceImp implements IChapterService {
   public Chapter findChapterById(Long id) {
     Optional<Chapter> chapter = chapterRepository.findById(id);
     if (chapter.isEmpty()) {
-      throw new VsException("Can not find chapter by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "chapter", id));
     }
     if (!chapter.get().getActiveFlag()) {
-      throw new VsException("This chapter is disable active");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DISABLE, id));
     }
     return chapter.get();
   }
@@ -93,7 +98,8 @@ public class ChapterServiceImp implements IChapterService {
   public Chapter createNewChapter(ChapterDTO chapterDTO, Long courseId) {
     Optional<Course> optional = courseRepository.findById(courseId);
     if (optional.isEmpty()) {
-      throw new VsException("Can not find course by id: " + courseId);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "course", courseId));
     }
     Chapter chapter = chapterMapper.toChapter(chapterDTO);
 

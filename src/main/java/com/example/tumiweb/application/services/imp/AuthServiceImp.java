@@ -1,6 +1,6 @@
 package com.example.tumiweb.application.services.imp;
 
-import com.example.tumiweb.adapter.web.v1.transfer.parameter.AuthenticationRequest;
+import com.example.tumiweb.adapter.web.v1.transfer.parameter.auth.AuthenticationRequest;
 import com.example.tumiweb.adapter.web.v1.transfer.response.AuthenticationResponse;
 import com.example.tumiweb.adapter.web.v1.transfer.response.TrueFalseResponse;
 import com.example.tumiweb.application.constants.AuthenticationProvider;
@@ -19,9 +19,6 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,14 +67,8 @@ public class AuthServiceImp implements IAuthService {
     List<String> roles = new ArrayList<>();
     Set<Role> roleSet = user.getRoles();
     if (CollectionUtils.isNotEmpty(roleSet)) {
-      roleSet.forEach(item -> roles.add(item.getName()));
+      roles = List.copyOf(roles);
     }
-
-    UserDetails principal = myUserDetailsService.loadUserByUsername(user.getUsername());
-    Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(),
-        principal.getAuthorities());
-    SecurityContext context = SecurityContextHolder.createEmptyContext();
-    context.setAuthentication(authentication);
 
     diaryService.createNewDiary(user.getId());
 

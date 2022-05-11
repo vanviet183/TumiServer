@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Service
 public class DBFileStorageServiceImp implements IDBFileStorageService {
@@ -22,7 +23,7 @@ public class DBFileStorageServiceImp implements IDBFileStorageService {
   @Override
   public DBFile storeFile(MultipartFile file, Long uploadBy) {
     // Normalize file name
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
     try {
       // Check if the file's name contains invalid characters

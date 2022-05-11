@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.application.constants.EmailConstant;
+import com.example.tumiweb.application.constants.CommonConstant;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.INotificationService;
 import com.example.tumiweb.domain.dto.NotificationDTO;
@@ -26,7 +26,7 @@ public class NotificationController {
   @GetMapping(UrlConstant.Notification.DATA_NOTIFICATION)
   public ResponseEntity<?> getAllNotification(@RequestParam(name = "page", required = false) Long page,
                                               @RequestParam(name = "status", required = false) boolean status) {
-    return VsResponseUtil.ok(notificationService.getAllNotification(page, EmailConstant.SIZE_OFF_PAGE, status));
+    return VsResponseUtil.ok(notificationService.getAllNotification(page, CommonConstant.SIZE_OFF_PAGE, status));
   }
 
   @PostMapping(UrlConstant.Notification.DATA_NOTIFICATION_USER_ID)

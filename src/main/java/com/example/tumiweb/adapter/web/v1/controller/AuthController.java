@@ -2,7 +2,7 @@ package com.example.tumiweb.adapter.web.v1.controller;
 
 import com.example.tumiweb.adapter.web.base.RestApiV1;
 import com.example.tumiweb.adapter.web.base.VsResponseUtil;
-import com.example.tumiweb.adapter.web.v1.transfer.parameter.AuthenticationRequest;
+import com.example.tumiweb.adapter.web.v1.transfer.parameter.auth.AuthenticationRequest;
 import com.example.tumiweb.adapter.web.v1.transfer.response.AuthenticationResponse;
 import com.example.tumiweb.application.constants.UrlConstant;
 import com.example.tumiweb.application.services.IAuthService;

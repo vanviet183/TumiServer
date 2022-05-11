@@ -1,15 +1,18 @@
-package com.example.tumiweb.adapter.web.v1.transfer.parameter;
+package com.example.tumiweb.application.output.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class AuthenticationRequest {
-  private String username;
-  private String password;
+public class GetAllDataOutput <T> {
+
+  private List<T> items;
+
 }

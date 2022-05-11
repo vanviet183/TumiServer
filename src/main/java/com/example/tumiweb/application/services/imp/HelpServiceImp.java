@@ -1,5 +1,7 @@
 package com.example.tumiweb.application.services.imp;
 
+import com.example.tumiweb.application.constants.DevMessageConstant;
+import com.example.tumiweb.application.constants.UserMessageConstant;
 import com.example.tumiweb.application.dai.HelpRepository;
 import com.example.tumiweb.application.dai.UserRepository;
 import com.example.tumiweb.application.mapper.HelpMapper;
@@ -9,7 +11,6 @@ import com.example.tumiweb.domain.dto.HelpDTO;
 import com.example.tumiweb.domain.entity.Help;
 import com.example.tumiweb.domain.entity.User;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -48,10 +49,12 @@ public class HelpServiceImp implements IHelpService {
   public Help findHelpById(Long id) {
     Optional<Help> help = helpRepository.findById(id);
     if (help.isEmpty()) {
-      throw new VsException("Not find help by id: " + id);
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "help", id));
     }
     if (help.get().getDeleteFlag()) {
-      throw new VsException("This help was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.DATA_WAS_DELETE, id));
     }
     return help.get();
   }
@@ -61,10 +64,12 @@ public class HelpServiceImp implements IHelpService {
   public Help createNewHelp(Long userId, HelpDTO helpDTO) {
     Optional<User> user = userRepository.findById(userId);
     if (user.isEmpty()) {
-      throw new VsException("Can not find user to create help");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Common.NOT_FOUND_OBJECT_BY_ID, "user", userId));
     }
     if (user.get().getDeleteFlag()) {
-      throw new VsException("This user was delete");
+      throw new VsException(UserMessageConstant.ERR_EXCEPTION_GENERAL,
+          String.format(DevMessageConstant.Help.USER_WAS_DELETE, userId));
     }
     Help help = helpMapper.toHelp(helpDTO);
     help.setUser(user.get());

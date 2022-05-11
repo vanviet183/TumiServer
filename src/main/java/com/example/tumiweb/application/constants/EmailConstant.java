@@ -1,7 +1,6 @@
 package com.example.tumiweb.application.constants;
 
 public class EmailConstant {
-  public static int SIZE_OFF_PAGE = 10;
 
   public static String MY_EMAIL = "tumi01.edu@gmail.com";
   public static String MY_PASSWORD = "pngmthvwtviohevd";
